@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Employee Portal</title>
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        html, body { width: 100%; overflow-x: hidden; background: #f8fafc; color: #1e293b; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        
+        /* App Container for Mobile View Look */
+        .app-shell { width: 100%; max-width: 480px; min-height: 100vh; background: #f8fafc; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; overflow-x: hidden; }
+        @media(min-width: 481px) { .app-shell { min-height: 90vh; border-radius: 24px; border: 1px solid #e2e8f0; } }
+
+        /* Auth Screen Styles */
+        .auth-screen { padding: 30px 24px; display: flex; flex-direction: column; justify-content: center; flex: 1; background: #ffffff; width: 100%; }
+        .auth-logo { width: 70px; height: 70px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; margin: 0 auto 20px auto; box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); }
+        .auth-screen h2 { text-align: center; font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+        .auth-screen p.subtitle { text-align: center; font-size: 14px; color: #64748b; margin-bottom: 24px; }
+        
+        .input-group { position: relative; margin-bottom: 16px; width: 100%; }
+        .input-group i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+        .auth-screen input { width: 100%; padding: 14px 16px 14px 48px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 15px; outline: none; transition: 0.2s; background: #f8fafc; color: #1e293b; }
+        .auth-screen input:focus { border-color: #3b82f6; background: #ffffff; box-shadow: 0 0 0 4px rgba(59,130,246,0.1); }
+        
+        .btn-primary { width: 100%; padding: 14px; border-radius: 12px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; box-shadow: 0 4px 12px rgba(59,130,246,0.3); transition: 0.2s; margin-top: 8px; }
+        .btn-primary:active { transform: scale(0.98); }
+        
+        .auth-links { text-align: center; margin-top: 20px; }
+        .link { color: #3b82f6; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: 500; display: inline-block; margin: 6px 10px; }
+        .link:hover { text-decoration: underline; }
+
+        /* Dashboard Styles */
+        .navbar { background: #ffffff; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 10; width: 100%; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; }
+        .nav-logo { width: 38px; height: 38px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
+        .nav-title { font-size: 16px; font-weight: 700; color: #0f172a; line-height: 1.2; }
+        .nav-subtitle { font-size: 12px; color: #64748b; font-weight: 400; }
+        .menu-btn { font-size: 20px; cursor: pointer; background: #f1f5f9; border: none; color: #475569; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .menu-btn:active { background: #e2e8f0; }
+
+        /* Sidebar Drawer */
+        .sidebar { height: 100%; width: 280px; position: fixed; top: 0; left: -280px; background-color: #ffffff; padding-top: 20px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; box-shadow: 5px 0 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; }
+        .sidebar a { padding: 16px 24px; text-decoration: none; font-size: 15px; font-weight: 500; color: #475569; display: flex; align-items: center; gap: 14px; transition: 0.2s; }
+        .sidebar a i { font-size: 18px; width: 24px; color: #64748b; }
+        .sidebar a:hover { background: #f8fafc; color: #3b82f6; }
+        .sidebar a:hover i { color: #3b82f6; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(2px); z-index: 999; display: none; }
+
+        /* --- PAYTM STYLE LOADING ANIMATION --- */
+        .paytm-loader-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            border-radius: inherit;
+        }
+        .paytm-loader-overlay.hidden-loader {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .paytm-spinner-wrapper {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .paytm-outer-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 4px solid #e0f2fe;
+            border-top: 4px solid #00baf2; /* Paytm Cyan */
+            border-right: 4px solid #002e6e; /* Paytm Dark Blue */
+            border-radius: 50%;
+            animation: paytmSpin 0.8s linear infinite;
+        }
+        .paytm-inner-icon {
+            font-size: 22px;
+            color: #002e6e;
+            animation: paytmPulse 1.2s ease-in-out infinite alternate;
+        }
+        .paytm-loader-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+            letter-spacing: 0.2px;
+        }
+        .paytm-loader-subtext {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+        @keyframes paytmSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes paytmPulse {
+            0% { transform: scale(0.85); opacity: 0.7; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
+
+        /* Dashboard Content */
+        .dashboard-body { padding: 20px; flex: 1; overflow-y: auto; width: 100%; max-width: 100%; }
+        
+        /* Stats Cards */
+        .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; width: 100%; }
+        .stat-card { background: #ffffff; padding: 16px 6px; border-radius: 16px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden; }
+        .stat-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+        .stat-card p { font-size: 10px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card.present h3 { color: #10b981; }
+        .stat-card.ot h3 { color: #f59e0b; }
+        .stat-card.absent h3 { color: #ef4444; }
+
+        /* Punch Box */
+        .punch-card { background: #ffffff; padding: 24px 20px; border-radius: 20px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 20px; width: 100%; }
+        .punch-card h3 { font-size: 16px; font-weight: 600; color: #334155; margin-bottom: 16px; }
+        .time-input-wrap { position: relative; width: 100%; max-width: 220px; margin: 0 auto 16px auto; }
+        .punch-card input[type="time"] { width: 100%; padding: 12px; font-size: 20px; font-weight: 600; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; text-align: center; color: #1e293b; background: #f8fafc; }
+        .punch-card input[type="time"]:focus { border-color: #3b82f6; }
+        
+        .punch-action-btn { background: #10b981; color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: 600; border-radius: 14px; cursor: pointer; transition: 0.2s; width: 100%; max-width: 220px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+        .punch-action-btn.out-mode { background: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+        .punch-action-btn.done-mode { background: #cbd5e1; color: #64748b; cursor: not-allowed; box-shadow: none; }
+
+        /* History Table Card */
+        .history-card { background: #ffffff; padding: 20px 16px; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); width: 100%; overflow: hidden; }
+        .history-card h3 { font-size: 15px; font-weight: 600; color: #334155; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+        .table-responsive { width: 100%; overflow-x: hidden; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th, td { padding: 12px 6px; text-align: left; font-size: 13px; border-bottom: 1px solid #f1f5f9; word-break: break-word; }
+        th { font-weight: 600; color: #64748b; background: #f8fafc; }
+        tr:last-child td { border-bottom: none; }
+
+        /* PWA Install Prompt Banner */
+        #installBanner { position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 440px; margin: 0 auto; background: #0f172a; color: white; padding: 16px; border-radius: 16px; display: none; align-items: center; justify-content: space-between; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 2000; animation: slideUp 0.3s ease; }
+        .install-info { display: flex; align-items: center; gap: 12px; }
+        .install-info i { font-size: 24px; color: #3b82f6; }
+        .install-info div h4 { font-size: 14px; font-weight: 600; }
+        .install-info div p { font-size: 12px; color: #94a3b8; }
+        .install-actions { display: flex; gap: 8px; }
+        .btn-install { background: #3b82f6; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .btn-close-banner { background: transparent; color: #94a3b8; border: none; font-size: 16px; cursor: pointer; padding: 4px; }
+
+        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+
+    <!-- Login Screen -->
+    <div class="auth-screen" id="loginBox">
+        <div class="auth-logo"><i class="fa-solid fa-clock-rotate-left"></i></div>
+        <h2>Welcome Back</h2>
+        <p class="subtitle">Sign in to track your daily attendance</p>
+        
+        <div class="input-group">
+            <i class="fa-solid fa-phone"></i>
+            <input type="number" id="loginMobile" placeholder="Mobile Number">
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="loginPassword" placeholder="Password">
+        </div>
+        
+        <button class="btn-primary" onclick="login()">Login</button>
+        
+        <div class="auth-links">
+            <p class="link" onclick="toggleAuth('forgotBox')">Forgot Password?</p><br>
+            <p class="link" onclick="toggleAuth('registerBox')">Create New Account</p>
+        </div>
+    </div>
+
+    <!-- Register Screen -->
+    <div class="auth-screen hidden" id="registerBox">
+        <div class="auth-logo"><i class="fa-solid fa-user-plus"></i></div>
+        <h2>Create Account</h2>
+        <p class="subtitle">Register to get started</p>
+        
+        <div class="input-group"><i class="fa-solid fa-user"></i><input type="text" id="regName" placeholder="Full Name"></div>
+        <div class="input-group"><i class="fa-solid fa-phone"></i><input type="number" id="regMobile" placeholder="Mobile Number"></div>
+        <div class="input-group"><i class="fa-solid fa-envelope"></i><input type="email" id="regEmail" placeholder="Email Address"></div>
+        <div class="input-group"><i class="fa-solid fa-lock"></i><input type="password" id="regPassword" placeholder="Create Password"></div>
+        <div class="input-group"><i class="fa-solid fa-ticket"></i><input type="text" id="regReferral" placeholder="Referral Code (Optional)"></div>
+        
+        <button class="btn-primary" onclick="registerUser()">Register Now</button>
+        <div class="auth-links">
+            <p class="link" onclick="toggleAuth('loginBox')">Already have an account? Login</p>
+        </div>
+    </div>
+
+    <!-- Forgot Password Screen -->
+    <div class="auth-screen hidden" id="forgotBox">
+        <div class="auth-logo"><i class="fa-solid fa-key"></i></div>
+        <h2>Reset Password</h2>
+        <p class="subtitle">We will send your password to your registered email</p>
+        
+        <div class="input-group"><i class="fa-solid fa-phone"></i><input type="number" id="forgotMobile" placeholder="Mobile Number"></div>
+        
+        <button class="btn-primary" onclick="forgotPassword()">Send Password</button>
+        <div class="auth-links">
+            <p class="link" onclick="toggleAuth('loginBox')">Back to Login</p>
+        </div>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div id="dashboardBox" class="hidden" style="position: relative; display: flex; flex-direction: column; flex: 1; width: 100%;">
+        
+        <!-- Paytm Style Dashboard Loader -->
+        <div id="paytmLoader" class="paytm-loader-overlay hidden-loader">
+            <div class="paytm-spinner-wrapper">
+                <div class="paytm-outer-ring"></div>
+                <i class="fa-solid fa-shield-halved paytm-inner-icon"></i>
+            </div>
+            <div class="paytm-loader-text">Syncing Attendance Data...</div>
+            <div class="paytm-loader-subtext">Please wait a moment</div>
+        </div>
+
+        <div class="navbar">
+            <div class="nav-brand">
+                <div class="nav-logo"><i class="fa-solid fa-user-shield"></i></div>
+                <div>
+                    <div class="nav-title" id="welcomeText">User Portal</div>
+                    <div class="nav-subtitle">Online</div>
+                </div>
+            </div>
+            <button class="menu-btn" onclick="openNav()"><i class="fa-solid fa-bars"></i></button>
+        </div>
+
+        <!-- Sidebar Drawer -->
+        <div id="mySidebar" class="sidebar">
+            <div class="sidebar-header">
+                <span style="font-weight: 700; font-size: 16px;">Menu</span>
+                <button class="menu-btn" onclick="closeNav()" style="background: none;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <a onclick="closeNav()"><i class="fa-solid fa-house"></i> Home</a>
+            <a onclick="loadData(); closeNav()"><i class="fa-solid fa-rotate"></i> Refresh Data</a>
+            <a onclick="logout()" style="color: #ef4444; margin-top: auto; margin-bottom: 20px;"><i class="fa-solid fa-right-from-bracket" style="color: #ef4444;"></i> Logout</a>
+        </div>
+        <div id="overlay" class="overlay" onclick="closeNav()"></div>
+
+        <div class="dashboard-body">
+            <!-- Cards Section -->
+            <div class="cards-grid">
+                <div class="stat-card present">
+                    <h3 id="statPresent">0</h3>
+                    <p>Present</p>
+                </div>
+                <div class="stat-card ot">
+                    <h3 id="statOT">0</h3>
+                    <p>Total OT</p>
+                </div>
+                <div class="stat-card absent">
+                    <h3 id="statAbsent">26</h3>
+                    <p>Absent</p>
+                </div>
+            </div>
+
+            <!-- Punch Action Card -->
+            <div class="punch-card">
+                <h3 id="punchTitle">Mark Attendance</h3>
+                <div class="time-input-wrap">
+                    <input type="time" id="punchTime">
+                </div>
+                <button id="mainPunchBtn" class="punch-action-btn" onclick="handlePunch()">Punch In</button>
+            </div>
+
+            <!-- History Table -->
+            <div class="history-card">
+                <h3><i class="fa-solid fa-calendar-days" style="color: #3b82f6;"></i> Attendance History</h3>
+                <div class="table-responsive">
+                    <table id="dataTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 44%;">Date</th>
+                                <th style="width: 28%;">In</th>
+                                <th style="width: 28%;">Out</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- PWA Install Banner -->
+<div id="installBanner">
+    <div class="install-info">
+        <i class="fa-solid fa-mobile-screen-button"></i>
+        <div>
+            <h4>Install Employee App</h4>
+            <p>Add to home screen for fast access</p>
+        </div>
+    </div>
+    <div class="install-actions">
+        <button class="btn-install" id="installBtn">Install</button>
+        <button class="btn-close-banner" onclick="hideInstallBanner()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+</div>
+
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBVFU_4vp-8ux4BwZ2rYES0lyzpNKTbm62LbGHA6g2NJb3bbSMcFXaYnT-BOyGxKXR/exec"; 
+    let currentMobile = "";
+    let currentPunchState = "punchIn"; 
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('installBanner').style.display = 'flex';
+    });
+
+    document.getElementById('installBtn').addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                document.getElementById('installBanner').style.display = 'none';
+            }
+            deferredPrompt = null;
+        }
+    });
+
+    function hideInstallBanner() {
+        document.getElementById('installBanner').style.display = 'none';
+    }
+
+    function toggleAuth(boxId) {
+        document.getElementById('loginBox').classList.add('hidden');
+        document.getElementById('forgotBox').classList.add('hidden');
+        document.getElementById('registerBox').classList.add('hidden');
+        document.getElementById(boxId).classList.remove('hidden');
+    }
+
+    function openNav() {
+        document.getElementById("mySidebar").style.left = "0";
+        document.getElementById("overlay").style.display = "block";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidebar").style.left = "-280px";
+        document.getElementById("overlay").style.display = "none";
+    }
+
+    async function sendRequest(payload) {
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+            return await response.json();
+        } catch (error) {
+            return { status: "error", message: "Network error. Please try again." };
+        }
+    }
+
+    async function registerUser() {
+        const name = document.getElementById('regName').value;
+        const mobile = document.getElementById('regMobile').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        const referral = document.getElementById('regReferral').value;
+
+        if(!name || !mobile || !email || !password) return alert("Please fill all required fields!");
+
+        const btn = document.querySelector("#registerBox button");
+        const originalText = btn.innerText;
+        btn.innerText = "Registering...";
+        btn.disabled = true;
+
+        const res = await sendRequest({ action: "register", name, mobile, email, password, referral });
+        btn.innerText = originalText;
+        btn.disabled = false;
+
+        if(res.status === "success") {
+            alert(res.message);
+            toggleAuth('loginBox'); 
+        } else {
+            alert(res.message);
+        }
+    }
+
+    async function login() {
+        const mobile = document.getElementById('loginMobile').value;
+        const password = document.getElementById('loginPassword').value;
+        if(!mobile || !password) return alert("Please fill all fields!");
+
+        const btn = document.querySelector("#loginBox button");
+        const originalText = btn.innerText;
+        btn.innerText = "Loading...";
+        btn.disabled = true;
+
+        const res = await sendRequest({ action: "login", mobile, password });
+        btn.innerText = originalText;
+        btn.disabled = false;
+
+        if(res.status === "success") {
+            currentMobile = mobile;
+            document.getElementById('welcomeText').innerText = res.name;
+            document.getElementById('loginBox').classList.add('hidden');
+            document.getElementById('dashboardBox').classList.remove('hidden');
+            
+            // Background Data Load with Paytm Loader Animation
+            loadData();
+        } else {
+            alert(res.message);
+        }
+    }
+
+    async function forgotPassword() {
+        const mobile = document.getElementById('forgotMobile').value;
+        if(!mobile) return alert("Please enter mobile number!");
+
+        const btn = document.querySelector("#forgotBox button");
+        const originalText = btn.innerText;
+        btn.innerText = "Sending...";
+        btn.disabled = true;
+
+        const res = await sendRequest({ action: "forgot", mobile });
+        btn.innerText = originalText;
+        btn.disabled = false;
+
+        if(res.status === "success") {
+            alert("Success! Password sent to Email: " + res.email);
+            toggleAuth('loginBox');
+        } else {
+            alert(res.message);
+        }
+    }
+
+    function logout() {
+        currentMobile = "";
+        closeNav();
+        document.getElementById('dashboardBox').classList.add('hidden');
+        document.getElementById('loginBox').classList.remove('hidden');
+        document.getElementById('loginMobile').value = "";
+        document.getElementById('loginPassword').value = "";
+    }
+
+    async function handlePunch() {
+        if (currentPunchState === "done") {
+            return alert("Today's duty is already marked completed!");
+        }
+
+        const time = document.getElementById('punchTime').value;
+        if(!time) return alert("Please select time first!");
+
+        const btn = document.getElementById('mainPunchBtn');
+        const originalText = btn.innerText;
+        btn.innerText = "Processing...";
+        btn.disabled = true;
+
+        const res = await sendRequest({ action: currentPunchState, mobile: currentMobile, time: time });
+        alert(res.message);
+        btn.innerText = originalText;
+        btn.disabled = false;
+        
+        if (res.status === "success") {
+            loadData();
+        }
+    }
+
+    // Dashboard Data Loader with Paytm Spinner Animation
+    async function loadData() {
+        // Show Paytm Loader
+        const loader = document.getElementById('paytmLoader');
+        loader.classList.remove('hidden-loader');
+
+        sendRequest({ action: "getData", mobile: currentMobile }).then(res => {
+            if(res && res.status === "success") {
+                const data = res.data;
+                const tbody = document.querySelector("#dataTable tbody");
+                tbody.innerHTML = "";
+
+                let totalPresent = 0;
+                let totalOT = 0;
+                const today = new Date();
+                const todayDateStr = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear();
+                
+                let hasPunchedInToday = false;
+                let hasPunchedOutToday = false;
+
+                const currentMonth = today.getMonth(); 
+                const currentYear = today.getFullYear();
+
+                [...data].reverse().forEach(row => {
+                    tbody.innerHTML += `<tr>
+                        <td style="font-weight:500;">${row.date}</td>
+                        <td style="color: #10b981; font-weight: 600;">${row.in}</td>
+                        <td style="color: #ef4444; font-weight: 600;">${row.out || "--:--"}</td>
+                    </tr>`;
+
+                    const parts = row.date.split('/');
+                    const rowMonth = parseInt(parts[1], 10) - 1; 
+                    const rowYear = parseInt(parts[2], 10);
+
+                    if (rowMonth === currentMonth && rowYear === currentYear) {
+                        totalPresent++;
+                        if (row.ot && !isNaN(row.ot)) {
+                            totalOT += parseFloat(row.ot);
+                        }
+                    }
+
+                    if (row.date === todayDateStr) {
+                        hasPunchedInToday = true;
+                        if (row.out !== "") {
+                            hasPunchedOutToday = true;
+                        }
+                    }
+                });
+
+                document.getElementById('statPresent').innerText = totalPresent;
+                document.getElementById('statOT').innerText = totalOT.toFixed(1);
+                
+                let absentDays = 26 - totalPresent;
+                if (absentDays < 0) absentDays = 0;
+                document.getElementById('statAbsent').innerText = absentDays;
+
+                const punchBtn = document.getElementById('mainPunchBtn');
+                const punchTitle = document.getElementById('punchTitle');
+
+                punchBtn.classList.remove('out-mode', 'done-mode');
+
+                if (!hasPunchedInToday) {
+                    currentPunchState = "punchIn";
+                    punchBtn.innerText = "Punch In";
+                    punchTitle.innerText = "Morning Attendance";
+                } else if (hasPunchedInToday && !hasPunchedOutToday) {
+                    currentPunchState = "punchOut";
+                    punchBtn.innerText = "Punch Out";
+                    punchBtn.classList.add('out-mode');
+                    punchTitle.innerText = "End Your Duty";
+                } else {
+                    currentPunchState = "done";
+                    punchBtn.innerText = "Duty Completed";
+                    punchBtn.classList.add('done-mode');
+                    punchTitle.innerText = "See you tomorrow!";
+                    document.getElementById('punchTime').value = "";
+                }
+            }
+        }).finally(() => {
+            // Smooth Hide Loader
+            setTimeout(() => {
+                loader.classList.add('hidden-loader');
+            }, 350);
+        });
+    }
+</script>
+
+</body>
+</html>
