@@ -53,67 +53,15 @@
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(2px); z-index: 999; display: none; }
 
         /* --- PAYTM STYLE LOADING ANIMATION --- */
-        .paytm-loader-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(4px);
-            z-index: 200;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-            border-radius: inherit;
-        }
-        .paytm-loader-overlay.hidden-loader {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-        .paytm-spinner-wrapper {
-            position: relative;
-            width: 64px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-        }
-        .paytm-outer-ring {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 4px solid #e0f2fe;
-            border-top: 4px solid #00baf2; /* Paytm Cyan */
-            border-right: 4px solid #002e6e; /* Paytm Dark Blue */
-            border-radius: 50%;
-            animation: paytmSpin 0.8s linear infinite;
-        }
-        .paytm-inner-icon {
-            font-size: 22px;
-            color: #002e6e;
-            animation: paytmPulse 1.2s ease-in-out infinite alternate;
-        }
-        .paytm-loader-text {
-            font-size: 14px;
-            font-weight: 600;
-            color: #0f172a;
-            letter-spacing: 0.2px;
-        }
-        .paytm-loader-subtext {
-            font-size: 11px;
-            color: #64748b;
-            margin-top: 4px;
-        }
-        @keyframes paytmSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes paytmPulse {
-            0% { transform: scale(0.85); opacity: 0.7; }
-            100% { transform: scale(1.1); opacity: 1; }
-        }
+        .paytm-loader-overlay { position: absolute; inset: 0; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(4px); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.3s ease, visibility 0.3s ease; border-radius: inherit; }
+        .paytm-loader-overlay.hidden-loader { opacity: 0; visibility: hidden; pointer-events: none; }
+        .paytm-spinner-wrapper { position: relative; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+        .paytm-outer-ring { position: absolute; width: 100%; height: 100%; border: 4px solid #e0f2fe; border-top: 4px solid #00baf2; border-right: 4px solid #002e6e; border-radius: 50%; animation: paytmSpin 0.8s linear infinite; }
+        .paytm-inner-icon { font-size: 22px; color: #002e6e; animation: paytmPulse 1.2s ease-in-out infinite alternate; }
+        .paytm-loader-text { font-size: 14px; font-weight: 600; color: #0f172a; letter-spacing: 0.2px; }
+        .paytm-loader-subtext { font-size: 11px; color: #64748b; margin-top: 4px; }
+        @keyframes paytmSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes paytmPulse { 0% { transform: scale(0.85); opacity: 0.7; } 100% { transform: scale(1.1); opacity: 1; } }
 
         /* Dashboard Content */
         .dashboard-body { padding: 20px; flex: 1; overflow-y: auto; width: 100%; max-width: 100%; }
@@ -129,14 +77,37 @@
 
         /* Punch Box */
         .punch-card { background: #ffffff; padding: 24px 20px; border-radius: 20px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 20px; width: 100%; }
-        .punch-card h3 { font-size: 16px; font-weight: 600; color: #334155; margin-bottom: 16px; }
-        .time-input-wrap { position: relative; width: 100%; max-width: 220px; margin: 0 auto 16px auto; }
-        .punch-card input[type="time"] { width: 100%; padding: 12px; font-size: 20px; font-weight: 600; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; text-align: center; color: #1e293b; background: #f8fafc; }
-        .punch-card input[type="time"]:focus { border-color: #3b82f6; }
+        .punch-card h3 { font-size: 16px; font-weight: 600; color: #334155; margin-bottom: 20px; }
         
         .punch-action-btn { background: #10b981; color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: 600; border-radius: 14px; cursor: pointer; transition: 0.2s; width: 100%; max-width: 220px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
         .punch-action-btn.out-mode { background: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
         .punch-action-btn.done-mode { background: #cbd5e1; color: #64748b; cursor: not-allowed; box-shadow: none; }
+
+        /* Custom Time Select Modal */
+        .time-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #ffffff; padding: 24px; border-radius: 20px; z-index: 1501; width: 90%; max-width: 340px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); opacity: 0; visibility: hidden; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; }
+        .time-modal.active { transform: translate(-50%, -50%) scale(1); opacity: 1; visibility: visible; }
+        .time-modal h3 { font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 20px; text-align: center; }
+        .custom-time-selector { width: 100%; margin-bottom: 16px; }
+        .custom-time-selector input[type="time"] { width: 100%; padding: 16px; font-size: 28px; font-weight: 700; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; text-align: center; color: #1e293b; background: #f8fafc; font-family: 'Inter', sans-serif; cursor: pointer;}
+        .custom-time-selector input[type="time"]:focus { border-color: #3b82f6; }
+        .btn-current-time { background: #e0f2fe; color: #0284c7; border: none; padding: 12px 16px; font-size: 14px; font-weight: 600; border-radius: 10px; cursor: pointer; margin-bottom: 24px; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-current-time:active { transform: scale(0.98); }
+        .modal-actions { display: flex; gap: 12px; width: 100%; }
+        .modal-actions button { flex: 1; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; }
+        .btn-cancel { background: #f1f5f9; color: #475569; }
+        .btn-confirm { background: #3b82f6; color: white; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+        .btn-confirm.out-mode { background: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+
+        /* --- Custom Alert Modal --- */
+        .custom-alert { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #ffffff; padding: 28px 24px; border-radius: 20px; z-index: 2001; width: 90%; max-width: 320px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .custom-alert.active { transform: translate(-50%, -50%) scale(1); opacity: 1; visibility: visible; }
+        .alert-icon-box { font-size: 48px; margin-bottom: 16px; }
+        .alert-icon-box.success { color: #10b981; }
+        .alert-icon-box.error { color: #ef4444; }
+        .alert-icon-box.info { color: #3b82f6; }
+        .custom-alert h3 { font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
+        .custom-alert p { font-size: 14px; color: #64748b; margin-bottom: 24px; line-height: 1.5; }
+        .custom-alert .btn-primary { margin-top: 0; }
 
         /* History Table Card */
         .history-card { background: #ffffff; padding: 20px 16px; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); width: 100%; overflow: hidden; }
@@ -275,11 +246,8 @@
 
             <!-- Punch Action Card -->
             <div class="punch-card">
-                <h3 id="punchTitle">Mark Attendance</h3>
-                <div class="time-input-wrap">
-                    <input type="time" id="punchTime">
-                </div>
-                <button id="mainPunchBtn" class="punch-action-btn" onclick="handlePunch()">Punch In</button>
+                <h3 id="punchTitle">Morning Attendance</h3>
+                <button id="mainPunchBtn" class="punch-action-btn" onclick="openTimeModal()">Punch In</button>
             </div>
 
             <!-- History Table -->
@@ -300,6 +268,34 @@
                 </div>
             </div>
         </div>
+    </div>
+    
+    <!-- Custom Time Picker Modal -->
+    <div id="timeModalOverlay" class="overlay" style="z-index: 1500;" onclick="closeTimeModal()"></div>
+    <div id="timeModal" class="time-modal">
+        <h3 id="modalPunchTitle">Select Time</h3>
+        
+        <div class="custom-time-selector">
+            <input type="time" id="modalPunchTime">
+        </div>
+        
+        <button class="btn-current-time" onclick="setCurrentTime()">
+            <i class="fa-regular fa-clock"></i> Set Current Time
+        </button>
+        
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeTimeModal()">Cancel</button>
+            <button class="btn-confirm" id="confirmPunchBtn" onclick="confirmPunch()">Confirm</button>
+        </div>
+    </div>
+
+    <!-- Custom Alert Popup -->
+    <div id="alertOverlay" class="overlay" style="z-index: 2000;" onclick="closeCustomAlert()"></div>
+    <div id="customAlert" class="custom-alert">
+        <div id="alertIcon" class="alert-icon-box info"><i class="fa-solid fa-circle-info"></i></div>
+        <h3 id="alertTitle">Notification</h3>
+        <p id="alertMessage">Message goes here</p>
+        <button class="btn-primary" onclick="closeCustomAlert()">OK</button>
     </div>
 
 </div>
@@ -363,6 +359,78 @@
         document.getElementById("overlay").style.display = "none";
     }
 
+    /* --- Custom Alert Functions --- */
+    function showCustomAlert(message, type = "info") {
+        const overlay = document.getElementById('alertOverlay');
+        const alertBox = document.getElementById('customAlert');
+        const iconBox = document.getElementById('alertIcon');
+        const title = document.getElementById('alertTitle');
+        const msg = document.getElementById('alertMessage');
+
+        // Reset classes
+        iconBox.className = "alert-icon-box";
+        
+        if (type === "success") {
+            iconBox.classList.add("success");
+            iconBox.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+            title.innerText = "Success!";
+        } else if (type === "error") {
+            iconBox.classList.add("error");
+            iconBox.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+            title.innerText = "Oops!";
+        } else {
+            iconBox.classList.add("info");
+            iconBox.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
+            title.innerText = "Notice";
+        }
+
+        msg.innerText = message;
+        overlay.style.display = 'block';
+        alertBox.classList.add('active');
+    }
+
+    function closeCustomAlert() {
+        document.getElementById('alertOverlay').style.display = 'none';
+        document.getElementById('customAlert').classList.remove('active');
+    }
+
+    /* --- Custom Modal Functions --- */
+    function openTimeModal() {
+        if (currentPunchState === "done") {
+            showCustomAlert("Today's duty is already marked completed!", "info");
+            return;
+        }
+
+        const modalTitle = document.getElementById('modalPunchTitle');
+        const confirmBtn = document.getElementById('confirmPunchBtn');
+
+        if(currentPunchState === "punchOut") {
+            modalTitle.innerText = "Select Punch Out Time";
+            confirmBtn.innerText = "Punch Out";
+            confirmBtn.classList.add('out-mode');
+        } else {
+            modalTitle.innerText = "Select Punch In Time";
+            confirmBtn.innerText = "Punch In";
+            confirmBtn.classList.remove('out-mode');
+        }
+
+        setCurrentTime();
+        document.getElementById('timeModalOverlay').style.display = 'block';
+        document.getElementById('timeModal').classList.add('active');
+    }
+
+    function closeTimeModal() {
+        document.getElementById('timeModalOverlay').style.display = 'none';
+        document.getElementById('timeModal').classList.remove('active');
+    }
+
+    function setCurrentTime() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        document.getElementById('modalPunchTime').value = `${hours}:${minutes}`;
+    }
+
     async function sendRequest(payload) {
         try {
             const response = await fetch(SCRIPT_URL, {
@@ -382,7 +450,10 @@
         const password = document.getElementById('regPassword').value;
         const referral = document.getElementById('regReferral').value;
 
-        if(!name || !mobile || !email || !password) return alert("Please fill all required fields!");
+        if(!name || !mobile || !email || !password) {
+            showCustomAlert("Please fill all required fields!", "error");
+            return;
+        }
 
         const btn = document.querySelector("#registerBox button");
         const originalText = btn.innerText;
@@ -394,17 +465,20 @@
         btn.disabled = false;
 
         if(res.status === "success") {
-            alert(res.message);
+            showCustomAlert(res.message, "success");
             toggleAuth('loginBox'); 
         } else {
-            alert(res.message);
+            showCustomAlert(res.message, "error");
         }
     }
 
     async function login() {
         const mobile = document.getElementById('loginMobile').value;
         const password = document.getElementById('loginPassword').value;
-        if(!mobile || !password) return alert("Please fill all fields!");
+        if(!mobile || !password) {
+            showCustomAlert("Please fill all fields!", "error");
+            return;
+        }
 
         const btn = document.querySelector("#loginBox button");
         const originalText = btn.innerText;
@@ -421,16 +495,18 @@
             document.getElementById('loginBox').classList.add('hidden');
             document.getElementById('dashboardBox').classList.remove('hidden');
             
-            // Background Data Load with Paytm Loader Animation
             loadData();
         } else {
-            alert(res.message);
+            showCustomAlert(res.message, "error");
         }
     }
 
     async function forgotPassword() {
         const mobile = document.getElementById('forgotMobile').value;
-        if(!mobile) return alert("Please enter mobile number!");
+        if(!mobile) {
+            showCustomAlert("Please enter mobile number!", "error");
+            return;
+        }
 
         const btn = document.querySelector("#forgotBox button");
         const originalText = btn.innerText;
@@ -442,10 +518,10 @@
         btn.disabled = false;
 
         if(res.status === "success") {
-            alert("Success! Password sent to Email: " + res.email);
+            showCustomAlert("Success! Password sent to Email: " + res.email, "success");
             toggleAuth('loginBox');
         } else {
-            alert(res.message);
+            showCustomAlert(res.message, "error");
         }
     }
 
@@ -458,32 +534,34 @@
         document.getElementById('loginPassword').value = "";
     }
 
-    async function handlePunch() {
-        if (currentPunchState === "done") {
-            return alert("Today's duty is already marked completed!");
+    async function confirmPunch() {
+        const time = document.getElementById('modalPunchTime').value;
+        if(!time) {
+            showCustomAlert("Please select time first!", "error");
+            return;
         }
 
-        const time = document.getElementById('punchTime').value;
-        if(!time) return alert("Please select time first!");
-
-        const btn = document.getElementById('mainPunchBtn');
+        const btn = document.getElementById('confirmPunchBtn');
         const originalText = btn.innerText;
         btn.innerText = "Processing...";
         btn.disabled = true;
 
         const res = await sendRequest({ action: currentPunchState, mobile: currentMobile, time: time });
-        alert(res.message);
+        
         btn.innerText = originalText;
         btn.disabled = false;
         
         if (res.status === "success") {
+            showCustomAlert(res.message, "success");
+            closeTimeModal();
             loadData();
+        } else {
+            showCustomAlert(res.message, "error");
         }
     }
 
     // Dashboard Data Loader with Paytm Spinner Animation
     async function loadData() {
-        // Show Paytm Loader
         const loader = document.getElementById('paytmLoader');
         loader.classList.remove('hidden-loader');
 
@@ -556,11 +634,9 @@
                     punchBtn.innerText = "Duty Completed";
                     punchBtn.classList.add('done-mode');
                     punchTitle.innerText = "See you tomorrow!";
-                    document.getElementById('punchTime').value = "";
                 }
             }
         }).finally(() => {
-            // Smooth Hide Loader
             setTimeout(() => {
                 loader.classList.add('hidden-loader');
             }, 350);
