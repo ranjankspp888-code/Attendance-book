@@ -1,827 +1,922 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Employee Portal</title>
-    <!-- Google Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Pro - Workforce Management System</title>
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#2563eb">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Attendance Pro">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3652/3652191.png">
+
+  <!-- Dynamic Web Manifest Data URI -->
+  <link rel="manifest" id="manifest-placeholder">
+
+  <!-- Google Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --secondary: #64748b;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --background: #f8fafc;
+      --surface: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background-color: var(--background); color: var(--text-main); line-height: 1.5; padding-bottom: 40px; }
+
+    /* Layout Containers */
+    .app-container { max-width: 900px; margin: 0 auto; padding: 20px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); margin-bottom: 24px; }
+    .auth-card { max-width: 440px; margin: 60px auto; }
+
+    /* Typography */
+    h2 { font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; letter-spacing: -0.025em; }
+    p.subtitle { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 24px; }
+    h3 { font-size: 1.125rem; font-weight: 600; color: var(--text-main); margin-bottom: 16px; }
+
+    /* Inputs & Buttons */
+    .form-group { margin-bottom: 16px; text-align: left; }
+    .form-group label { display: block; font-size: 0.875rem; font-weight: 500; color: var(--text-main); margin-bottom: 6px; }
+    input[type="text"], input[type="password"], input[type="time"], input[type="month"], input[type="date"], select {
+      width: 100%; padding: 12px 16px; font-size: 0.95rem; border: 1px solid var(--border); border-radius: 8px; background: #fafafa; transition: all 0.2s ease; outline: none;
+    }
+    input:focus, select:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
     
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        html, body { width: 100%; overflow-x: hidden; background: #f8fafc; color: #1e293b; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        
-        /* App Container for Mobile View Look */
-        .app-shell { width: 100%; max-width: 480px; min-height: 100vh; background: #f8fafc; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; overflow-x: hidden; }
-        @media(min-width: 481px) { .app-shell { min-height: 90vh; border-radius: 24px; border: 1px solid #e2e8f0; } }
+    button {
+      display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 12px 20px; font-size: 0.95rem; font-weight: 600;
+      color: white; background-color: var(--primary); border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; gap: 8px;
+    }
+    button:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+    button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+    button.btn-out { background-color: var(--danger); }
+    button.btn-out:hover { background-color: #dc2626; }
+    button.btn-secondary { background-color: var(--secondary); width: auto; }
+    button.btn-edit { background-color: #f3f4f6; color: var(--text-main); border: 1px solid var(--border); width: auto; padding: 6px 12px; font-size: 0.85rem; }
 
-        /* Auth Screen Styles */
-        .auth-screen { padding: 30px 24px; display: flex; flex-direction: column; justify-content: center; flex: 1; background: #ffffff; width: 100%; }
-        .auth-logo { width: 70px; height: 70px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; margin: 0 auto 20px auto; box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); }
-        .auth-screen h2 { text-align: center; font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
-        .auth-screen p.subtitle { text-align: center; font-size: 14px; color: #64748b; margin-bottom: 24px; }
-        
-        .input-group { position: relative; margin-bottom: 16px; width: 100%; }
-        .input-group i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
-        .auth-screen input { width: 100%; padding: 14px 16px 14px 48px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 15px; outline: none; transition: 0.2s; background: #f8fafc; color: #1e293b; }
-        .auth-screen input:focus { border-color: #3b82f6; background: #ffffff; box-shadow: 0 0 0 4px rgba(59,130,246,0.1); }
-        
-        .btn-primary { width: 100%; padding: 14px; border-radius: 12px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; box-shadow: 0 4px 12px rgba(59,130,246,0.3); transition: 0.2s; margin-top: 8px; }
-        .btn-primary:active { transform: scale(0.98); }
-        
-        .auth-links { text-align: center; margin-top: 20px; }
-        .link { color: #3b82f6; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: 500; display: inline-block; margin: 6px 10px; }
-        .link:hover { text-decoration: underline; }
+    /* Loading Spinner */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #ffffff;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
-        /* Dashboard Styles */
-        .navbar { background: #ffffff; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 10; width: 100%; }
-        .nav-brand { display: flex; align-items: center; gap: 12px; }
-        .nav-logo { width: 38px; height: 38px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
-        .nav-title { font-size: 16px; font-weight: 700; color: #0f172a; line-height: 1.2; }
-        .nav-subtitle { font-size: 12px; color: #64748b; font-weight: 400; }
-        .menu-btn { font-size: 20px; cursor: pointer; background: #f1f5f9; border: none; color: #475569; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .menu-btn:active { background: #e2e8f0; }
+    /* Navbar & Hamburger Menu */
+    .navbar { display: flex; justify-content: space-between; align-items: center; background: var(--surface); padding: 16px 24px; border-bottom: 1px solid var(--border); margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+    .nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+    .hamburger-btn { background: none; border: none; font-size: 1.4rem; color: var(--text-main); cursor: pointer; width: auto; padding: 4px; }
+    .hamburger-btn:hover { background: none; transform: none; color: var(--primary); }
 
-        /* Sidebar Drawer */
-        .sidebar { height: 100%; width: 280px; position: fixed; top: 0; left: -280px; background-color: #ffffff; padding-top: 20px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; box-shadow: 5px 0 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .sidebar-header { padding: 20px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; }
-        .sidebar a { padding: 16px 24px; text-decoration: none; font-size: 15px; font-weight: 500; color: #475569; display: flex; align-items: center; gap: 14px; transition: 0.2s; }
-        .sidebar a i { font-size: 18px; width: 24px; color: #64748b; }
-        .sidebar a:hover { background: #f8fafc; color: #3b82f6; }
-        .sidebar a:hover i { color: #3b82f6; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(2px); z-index: 999; display: none; }
+    /* Slide Menu Drawer */
+    .side-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--surface); box-shadow: -5px 0 15px rgba(0,0,0,0.1); z-index: 1000; transition: right 0.3s ease; display: flex; flex-direction: column; }
+    .side-drawer.open { right: 0; }
+    .drawer-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+    .drawer-body { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+    .drawer-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-weight: 500; color: var(--text-main); border-radius: 8px; cursor: pointer; text-decoration: none; transition: background 0.2s; }
+    .drawer-item:hover { background: #f1f5f9; color: var(--primary); }
+    .drawer-item i { width: 20px; color: var(--secondary); }
+    .drawer-item:hover i { color: var(--primary); }
+    .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 999; display: none; }
+    .drawer-overlay.active { display: block; }
 
-        /* --- PAYTM STYLE LOADING ANIMATION --- */
-        .paytm-loader-overlay { position: absolute; inset: 0; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(4px); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.3s ease, visibility 0.3s ease; border-radius: inherit; }
-        .paytm-loader-overlay.hidden-loader { opacity: 0; visibility: hidden; pointer-events: none; }
-        .paytm-spinner-wrapper { position: relative; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
-        .paytm-outer-ring { position: absolute; width: 100%; height: 100%; border: 4px solid #e0f2fe; border-top: 4px solid #00baf2; border-right: 4px solid #002e6e; border-radius: 50%; animation: paytmSpin 0.8s linear infinite; }
-        .paytm-inner-icon { font-size: 22px; color: #002e6e; animation: paytmPulse 1.2s ease-in-out infinite alternate; }
-        .paytm-loader-text { font-size: 14px; font-weight: 600; color: #0f172a; letter-spacing: 0.2px; }
-        .paytm-loader-subtext { font-size: 11px; color: #64748b; margin-top: 4px; }
-        @keyframes paytmSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes paytmPulse { 0% { transform: scale(0.85); opacity: 0.7; } 100% { transform: scale(1.1); opacity: 1; } }
+    /* Single Row Stats Grid */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-box { background: var(--surface); border: 1px solid var(--border); padding: 18px; border-radius: var(--radius); text-align: left; }
+    .stat-box h4 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-box p { font-size: 1.3rem; font-weight: 700; color: var(--text-main); }
 
-        /* Dashboard Content */
-        .dashboard-body { padding: 20px; flex: 1; overflow-y: auto; width: 100%; max-width: 100%; }
-        
-        /* Stats Cards */
-        .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; width: 100%; }
-        .stat-card { background: #ffffff; padding: 16px 6px; border-radius: 16px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden; }
-        .stat-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-        .stat-card p { font-size: 10px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-card.present h3 { color: #10b981; }
-        .stat-card.ot h3 { color: #f59e0b; }
-        .stat-card.absent h3 { color: #ef4444; }
+    /* Action Punch Card */
+    .action-card { background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: var(--radius); padding: 24px; text-align: center; margin-bottom: 24px; }
+    .action-card label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; }
+    .punch-controls { display: flex; gap: 12px; justify-content: center; align-items: center; max-width: 400px; margin: 0 auto; }
+    
+    /* Table Styling */
+    .table-container { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); min-height: 120px; }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); text-align: left; }
+    th { background: #f8fafc; padding: 12px 14px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+    td { padding: 12px 14px; font-size: 0.85rem; border-bottom: 1px solid var(--border); color: var(--text-main); white-space: nowrap; }
+    tr:last-child td { border-bottom: none; }
+    .status-badge { display: inline-block; padding: 4px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; background: #d1fae5; color: #065f46; }
 
-        /* Punch Box */
-        .punch-card { background: #ffffff; padding: 24px 20px; border-radius: 20px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 20px; width: 100%; }
-        .punch-card h3 { font-size: 16px; font-weight: 600; color: #334155; margin-bottom: 20px; }
-        
-        .punch-action-btn { background: #10b981; color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: 600; border-radius: 14px; cursor: pointer; transition: 0.2s; width: 100%; max-width: 220px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
-        .punch-action-btn.out-mode { background: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
-        .punch-action-btn.done-mode { background: #cbd5e1; color: #64748b; cursor: not-allowed; box-shadow: none; }
+    /* Custom Alert & Modal Styling */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px);
+      z-index: 2000; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .custom-modal {
+      background: #ffffff; border-radius: 16px; width: 90%; max-width: 420px;
+      padding: 24px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      transform: scale(0.95); transition: transform 0.2s ease; text-align: center;
+    }
+    .modal-overlay.active .custom-modal { transform: scale(1); }
+    .modal-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 1.25rem; }
+    .modal-icon.info { background: #dbeafe; color: #2563eb; }
+    .modal-icon.success { background: #d1fae5; color: #10b981; }
+    .modal-icon.danger { background: #fee2e2; color: #ef4444; }
+    .modal-title { font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+    .modal-message { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; word-break: break-word; }
+    .modal-actions { display: flex; gap: 10px; }
 
-        /* History Table Card */
-        .history-card { background: #ffffff; padding: 20px 16px; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); width: 100%; overflow: hidden; }
-        .history-card h3 { font-size: 15px; font-weight: 600; color: #334155; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-        .table-responsive { width: 100%; overflow-x: hidden; }
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th, td { padding: 12px 6px; text-align: left; font-size: 13px; border-bottom: 1px solid #f1f5f9; word-break: break-word; }
-        th { font-weight: 600; color: #64748b; background: #f8fafc; }
-        tr:last-child td { border-bottom: none; }
-        
-        .btn-show-more { width: 100%; background: #f8fafc; color: #3b82f6; border: 1px solid #e2e8f0; padding: 12px; border-radius: 12px; margin-top: 16px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .btn-show-more:active { background: #e2e8f0; }
+    /* PWA Install Banner UI */
+    .pwa-banner {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(120%);
+      width: 90%; max-width: 420px; background: #ffffff; border: 1px solid var(--border);
+      border-radius: 16px; padding: 16px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      z-index: 3000; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .pwa-banner.show { transform: translateX(-50%) translateY(0); }
+    .pwa-info { display: flex; align-items: center; gap: 12px; }
+    .pwa-icon { width: 42px; height: 42px; border-radius: 10px; }
+    .pwa-text h4 { font-size: 0.95rem; font-weight: 700; color: var(--text-main); }
+    .pwa-text p { font-size: 0.75rem; color: var(--text-muted); }
+    .pwa-btns { display: flex; gap: 8px; align-items: center; }
+    .pwa-btns button { padding: 8px 14px; font-size: 0.825rem; width: auto; border-radius: 6px; }
 
-        /* Custom Time Select Modal */
-        .time-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #ffffff; padding: 24px; border-radius: 20px; z-index: 1501; width: 90%; max-width: 340px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); opacity: 0; visibility: hidden; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; }
-        .time-modal.active { transform: translate(-50%, -50%) scale(1); opacity: 1; visibility: visible; }
-        .time-modal h3 { font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 20px; text-align: center; }
-        .custom-time-selector { width: 100%; margin-bottom: 16px; }
-        .custom-time-selector input[type="time"] { width: 100%; padding: 16px; font-size: 28px; font-weight: 700; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; text-align: center; color: #1e293b; background: #f8fafc; font-family: 'Inter', sans-serif; cursor: pointer;}
-        .custom-time-selector input[type="time"]:focus { border-color: #3b82f6; }
-        .btn-current-time { background: #e0f2fe; color: #0284c7; border: none; padding: 12px 16px; font-size: 14px; font-weight: 600; border-radius: 10px; cursor: pointer; margin-bottom: 24px; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
-        .btn-current-time:active { transform: scale(0.98); }
-        .modal-actions { display: flex; gap: 12px; width: 100%; }
-        .modal-actions button { flex: 1; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; }
-        .btn-cancel { background: #f1f5f9; color: #475569; }
-        .btn-confirm { background: #3b82f6; color: white; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
-        .btn-confirm.out-mode { background: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+    /* Utilities */
+    .hidden { display: none !important; }
+    a { color: var(--primary); text-decoration: none; font-weight: 500; }
+    a:hover { text-decoration: underline; }
+    .auth-footer { margin-top: 20px; font-size: 0.875rem; text-align: center; color: var(--text-muted); }
 
-        /* --- Custom Alert Modal --- */
-        .custom-alert { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #ffffff; padding: 28px 24px; border-radius: 20px; z-index: 2001; width: 90%; max-width: 320px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .custom-alert.active { transform: translate(-50%, -50%) scale(1); opacity: 1; visibility: visible; }
-        .alert-icon-box { font-size: 48px; margin-bottom: 16px; }
-        .alert-icon-box.success { color: #10b981; }
-        .alert-icon-box.error { color: #ef4444; }
-        .alert-icon-box.info { color: #3b82f6; }
-        .custom-alert h3 { font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
-        .custom-alert p { font-size: 14px; color: #64748b; margin-bottom: 24px; line-height: 1.5; }
-        .custom-alert .btn-primary { margin-top: 0; }
-
-        /* PWA Install Prompt Banner */
-        #installBanner { position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 440px; margin: 0 auto; background: #0f172a; color: white; padding: 16px; border-radius: 16px; display: none; align-items: center; justify-content: space-between; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 2000; animation: slideUp 0.3s ease; }
-        .install-info { display: flex; align-items: center; gap: 12px; }
-        .install-info i { font-size: 24px; color: #3b82f6; }
-        .install-info div h4 { font-size: 14px; font-weight: 600; }
-        .install-info div p { font-size: 12px; color: #94a3b8; }
-        .install-actions { display: flex; gap: 8px; }
-        .btn-install { background: #3b82f6; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
-        .btn-close-banner { background: transparent; color: #94a3b8; border: none; font-size: 16px; cursor: pointer; padding: 4px; }
-
-        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .hidden { display: none !important; }
-    </style>
+    @media (max-width: 640px) {
+      .app-container { padding: 10px; }
+      .card { padding: 18px; }
+      .stats-grid { gap: 8px; }
+      .stat-box { padding: 12px; }
+      .stat-box p { font-size: 1rem; }
+      .punch-controls { flex-direction: column; width: 100%; }
+      input[type="time"] { width: 100% !important; }
+      th, td { padding: 10px 8px; font-size: 0.8rem; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="app-shell">
+  <!-- PWA INSTALL POP-UP / BANNER -->
+  <div id="pwa-install-banner" class="pwa-banner">
+    <div class="pwa-info">
+      <img src="https://cdn-icons-png.flaticon.com/512/3652/3652191.png" class="pwa-icon" alt="App Icon">
+      <div class="pwa-text">
+        <h4>Attendance Pro</h4>
+        <p>Install App for faster access</p>
+      </div>
+    </div>
+    <div class="pwa-btns">
+      <button class="btn-secondary" onclick="dismissPWA()"><i class="fa-solid fa-xmark"></i></button>
+      <button id="pwa-install-btn" onclick="installPWA()"><i class="fa-solid fa-download"></i> Install</button>
+    </div>
+  </div>
 
-    <!-- Login Screen -->
-    <div class="auth-screen" id="loginBox">
-        <div class="auth-logo"><i class="fa-solid fa-clock-rotate-left"></i></div>
+  <!-- TOP NAVBAR & DRAWER (Visible after Login) -->
+  <div id="navbar-container" class="hidden">
+    <nav class="navbar">
+      <div class="nav-brand"><i class="fa-solid fa-business-time"></i> Attendance Pro</div>
+      <button class="hamburger-btn" onclick="toggleDrawer(true)"><i class="fa-solid fa-bars"></i></button>
+    </nav>
+  </div>
+
+  <!-- SLIDE DRAWER MENU -->
+  <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer(false)"></div>
+  <div id="side-drawer" class="side-drawer">
+    <div class="drawer-header">
+      <div>
+        <h4 id="drawer-user-name" style="font-size: 1rem; font-weight: 700;">User</h4>
+        <p id="drawer-user-pid" style="font-size: 0.8rem; color: var(--text-muted);">ID: -</p>
+      </div>
+      <button class="hamburger-btn" onclick="toggleDrawer(false)"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="drawer-body">
+      <a href="#" class="drawer-item" onclick="switchView('dashboard'); return false;"><i class="fa-solid fa-house"></i> Dashboard</a>
+      <a href="#" class="drawer-item" onclick="switchView('history'); return false;"><i class="fa-solid fa-calendar-days"></i> Attendance History</a>
+      <a href="#" class="drawer-item" onclick="openPastDutyModal(); return false;"><i class="fa-solid fa-calendar-plus"></i> Add Past Duty</a>
+      <a href="#" id="drawer-install-item" class="drawer-item hidden" onclick="installPWA(); return false;"><i class="fa-solid fa-mobile-screen-button"></i> Install App</a>
+      <!-- ADDED SHARE APP OPTION -->
+      <a href="#" class="drawer-item" onclick="shareApp(); return false;"><i class="fa-solid fa-share-nodes"></i> Share App</a>
+      
+      <div style="margin-top: auto;">
+        <a href="#" class="drawer-item" onclick="logout(); return false;" style="color: var(--danger);"><i class="fa-solid fa-right-from-bracket" style="color: var(--danger);"></i> Logout</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-container">
+    <!-- AUTH SECTION -->
+    <div id="auth-section">
+      <!-- DEFAULT: LOGIN BOX -->
+      <div id="login-box" class="card auth-card">
         <h2>Welcome Back</h2>
-        <p class="subtitle">Sign in to track your daily attendance</p>
-        
-        <div class="input-group">
-            <i class="fa-solid fa-phone"></i>
-            <input type="number" id="loginMobile" placeholder="Mobile Number">
-        </div>
-        <div class="input-group">
-            <i class="fa-solid fa-lock"></i>
-            <input type="password" id="loginPassword" placeholder="Password">
-        </div>
-        
-        <button class="btn-primary" onclick="login()">Login</button>
-        
-        <div class="auth-links">
-            <p class="link" onclick="toggleAuth('forgotBox')">Forgot Password?</p><br>
-            <p class="link" onclick="toggleAuth('registerBox')">Create New Account</p>
-        </div>
-    </div>
+        <p class="subtitle">Log in using your Punching ID or Mobile Number.</p>
 
-    <!-- Register Screen -->
-    <div class="auth-screen hidden" id="registerBox">
-        <div class="auth-logo"><i class="fa-solid fa-user-plus"></i></div>
-        <h2>Create Account</h2>
-        <p class="subtitle">Register to get started</p>
-        
-        <div class="input-group"><i class="fa-solid fa-user"></i><input type="text" id="regName" placeholder="Full Name"></div>
-        <div class="input-group"><i class="fa-solid fa-phone"></i><input type="number" id="regMobile" placeholder="Mobile Number"></div>
-        <div class="input-group"><i class="fa-solid fa-envelope"></i><input type="email" id="regEmail" placeholder="Email Address"></div>
-        <div class="input-group"><i class="fa-solid fa-lock"></i><input type="password" id="regPassword" placeholder="Create Password"></div>
-        <div class="input-group"><i class="fa-solid fa-ticket"></i><input type="text" id="regReferral" placeholder="Referral Code (Optional)"></div>
-        
-        <button class="btn-primary" onclick="registerUser()">Register Now</button>
-        <div class="auth-links">
-            <p class="link" onclick="toggleAuth('loginBox')">Already have an account? Login</p>
-        </div>
-    </div>
+        <div class="form-group"><label>ID or Mobile Number</label><input type="text" id="login-id" placeholder="Enter ID or Mobile" required></div>
+        <div class="form-group"><label>Password</label><input type="password" id="login-password" placeholder="••••••••" required></div>
 
-    <!-- Forgot Password Screen -->
-    <div class="auth-screen hidden" id="forgotBox">
-        <div class="auth-logo"><i class="fa-solid fa-key"></i></div>
-        <h2>Reset Password</h2>
-        <p class="subtitle">We will send your password to your registered email</p>
-        
-        <div class="input-group"><i class="fa-solid fa-phone"></i><input type="number" id="forgotMobile" placeholder="Mobile Number"></div>
-        
-        <button class="btn-primary" onclick="forgotPassword()">Send Password</button>
-        <div class="auth-links">
-            <p class="link" onclick="toggleAuth('loginBox')">Back to Login</p>
-        </div>
-    </div>
-
-    <!-- Dashboard Screen -->
-    <div id="dashboardBox" class="hidden" style="position: relative; display: flex; flex-direction: column; flex: 1; width: 100%;">
-        
-        <!-- Paytm Style Dashboard Loader -->
-        <div id="paytmLoader" class="paytm-loader-overlay hidden-loader">
-            <div class="paytm-spinner-wrapper">
-                <div class="paytm-outer-ring"></div>
-                <i class="fa-solid fa-shield-halved paytm-inner-icon"></i>
-            </div>
-            <div class="paytm-loader-text">Syncing Attendance Data...</div>
-            <div class="paytm-loader-subtext">Please wait a moment</div>
-        </div>
-
-        <div class="navbar">
-            <div class="nav-brand">
-                <div class="nav-logo"><i class="fa-solid fa-user-shield"></i></div>
-                <div>
-                    <div class="nav-title" id="welcomeText">User Portal</div>
-                    <div class="nav-subtitle">Online</div>
-                </div>
-            </div>
-            <button class="menu-btn" onclick="openNav()"><i class="fa-solid fa-bars"></i></button>
-        </div>
-
-        <!-- Sidebar Drawer -->
-        <div id="mySidebar" class="sidebar">
-            <div class="sidebar-header">
-                <span style="font-weight: 700; font-size: 16px;">Menu</span>
-                <button class="menu-btn" onclick="closeNav()" style="background: none;"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <a onclick="closeNav()"><i class="fa-solid fa-house"></i> Home</a>
-            <a onclick="loadData(); closeNav()"><i class="fa-solid fa-rotate"></i> Refresh Data</a>
-            <a onclick="logout()" style="color: #ef4444; margin-top: auto; margin-bottom: 20px;"><i class="fa-solid fa-right-from-bracket" style="color: #ef4444;"></i> Logout</a>
-        </div>
-        <div id="overlay" class="overlay" onclick="closeNav()"></div>
-
-        <div class="dashboard-body">
-            <!-- Cards Section -->
-            <div class="cards-grid">
-                <div class="stat-card present">
-                    <h3 id="statPresent">0</h3>
-                    <p>Present</p>
-                </div>
-                <div class="stat-card ot">
-                    <h3 id="statOT">0</h3>
-                    <p>Total OT</p>
-                </div>
-                <div class="stat-card absent">
-                    <h3 id="statAbsent">26</h3>
-                    <p>Absent</p>
-                </div>
-            </div>
-
-            <!-- Punch Action Card -->
-            <div class="punch-card">
-                <h3 id="punchTitle">Morning Attendance</h3>
-                <button id="mainPunchBtn" class="punch-action-btn" onclick="openTimeModal()">Punch In</button>
-            </div>
-
-            <!-- History Table -->
-            <div class="history-card">
-                <h3><i class="fa-solid fa-calendar-days" style="color: #3b82f6;"></i> Recent Attendance</h3>
-                <div class="table-responsive">
-                    <table id="dataTable">
-                        <thead>
-                            <tr>
-                                <th style="width: 44%;">Date</th>
-                                <th style="width: 28%;">In</th>
-                                <th style="width: 28%;">Out</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Show More Button -->
-                <button id="showMoreBtn" class="btn-show-more hidden" onclick="openFullHistory()">
-                    Show Full History <i class="fa-solid fa-angle-right"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- New Page: Full History Screen with Monthly Select -->
-    <div id="fullHistoryBox" class="hidden" style="position: relative; display: flex; flex-direction: column; flex: 1; width: 100%;">
-        <div class="navbar">
-            <div class="nav-brand">
-                <button class="menu-btn" onclick="closeFullHistory()" style="margin-right: 12px; background: #e2e8f0;"><i class="fa-solid fa-arrow-left"></i></button>
-                <div class="nav-title">Monthly History</div>
-            </div>
-        </div>
-        
-        <div class="dashboard-body">
-            <!-- Filter Section -->
-            <div style="margin-bottom: 16px;">
-                <select id="monthFilter" onchange="renderMonthlyHistory()" style="width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 15px; font-weight: 600; outline: none; background: #ffffff; color: #1e293b; cursor:pointer;">
-                </select>
-            </div>
-
-            <!-- Monthly Specific Stats Cards -->
-            <div class="cards-grid">
-                <div class="stat-card present">
-                    <h3 id="histStatPresent">0</h3>
-                    <p>Present</p>
-                </div>
-                <div class="stat-card ot">
-                    <h3 id="histStatOT">0</h3>
-                    <p>Total OT</p>
-                </div>
-                <div class="stat-card absent">
-                    <h3 id="histStatAbsent">26</h3>
-                    <p>Absent</p>
-                </div>
-            </div>
-
-            <!-- Filtered Monthly Table -->
-            <div class="history-card">
-                <div class="table-responsive">
-                    <table id="fullDataTable">
-                        <thead>
-                            <tr>
-                                <th style="width: 44%;">Date</th>
-                                <th style="width: 28%;">In</th>
-                                <th style="width: 28%;">Out</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Custom Time Picker Modal -->
-    <div id="timeModalOverlay" class="overlay" style="z-index: 1500;" onclick="closeTimeModal()"></div>
-    <div id="timeModal" class="time-modal">
-        <h3 id="modalPunchTitle">Select Time</h3>
-        
-        <div class="custom-time-selector">
-            <input type="time" id="modalPunchTime">
-        </div>
-        
-        <button class="btn-current-time" onclick="setCurrentTime()">
-            <i class="fa-regular fa-clock"></i> Set Current Time
+        <button id="btn-login" onclick="loginUser()">
+          <span id="btn-login-text">Sign In</span>
+          <span id="btn-login-spinner" class="spinner hidden"></span>
         </button>
+        <div class="auth-footer">
+          <p style="margin-bottom: 8px;"><a href="#" onclick="showCustomAlert('Information', 'Contact Admin to Reset Password!', 'info'); return false;">Forgot Password?</a></p>
+          <p>Don't have an account? <a href="#" onclick="toggleAuth(false); return false;">Register Here</a></p>
+        </div>
+      </div>
+
+      <!-- REGISTER BOX -->
+      <div id="reg-box" class="card auth-card hidden">
+        <h2>Create Account</h2>
+        <p class="subtitle">Enter your details to register for the attendance portal.</p>
         
-        <div class="modal-actions">
-            <button class="btn-cancel" onclick="closeTimeModal()">Cancel</button>
-            <button class="btn-confirm" id="confirmPunchBtn" onclick="confirmPunch()">Confirm</button>
+        <div class="form-group"><label>Punching ID (Optional)</label><input type="text" id="reg-punching-id" placeholder="e.g. EMP-1024"></div>
+        <div class="form-group"><label>Full Name</label><input type="text" id="reg-name" placeholder="John Doe" required></div>
+        <div class="form-group"><label>Mobile Number</label><input type="text" id="reg-mobile" placeholder="9876543210" required></div>
+        <div class="form-group"><label>Password</label><input type="password" id="reg-password" placeholder="••••••••" required></div>
+        <div class="form-group"><label>Referral Code (Optional)</label><input type="text" id="reg-refer" placeholder="REF123"></div>
+
+        <button id="btn-reg" onclick="registerUser()">
+          <span id="btn-reg-text">Register Account</span>
+          <span id="btn-reg-spinner" class="spinner hidden"></span>
+        </button>
+        <div class="auth-footer">Already have an account? <a href="#" onclick="toggleAuth(true); return false;">Login Here</a></div>
+      </div>
+    </div>
+
+    <!-- MAIN DASHBOARD VIEW -->
+    <div id="dashboard-section" class="hidden">
+      <div class="card">
+        <h2>Welcome, <span id="user-name-display"></span></h2>
+        <p class="subtitle">Employee ID: <span id="user-pid-display"></span></p>
+
+        <!-- 1. SUMMARY CARDS -->
+        <div class="stats-grid">
+          <div class="stat-box"><h4>Present</h4><p id="stat-present">0 Days</p></div>
+          <div class="stat-box"><h4>Over Time</h4><p id="stat-ot">0 Hrs</p></div>
+          <div class="stat-box"><h4>Absent</h4><p id="stat-absent">0 Days</p></div>
         </div>
-    </div>
 
-    <!-- Custom Alert Popup -->
-    <div id="alertOverlay" class="overlay" style="z-index: 2000;" onclick="closeCustomAlert()"></div>
-    <div id="customAlert" class="custom-alert">
-        <div id="alertIcon" class="alert-icon-box info"><i class="fa-solid fa-circle-info"></i></div>
-        <h3 id="alertTitle">Notification</h3>
-        <p id="alertMessage">Message goes here</p>
-        <button class="btn-primary" onclick="closeCustomAlert()">OK</button>
-    </div>
+        <!-- 2. PUNCHING CARD -->
+        <div class="action-card">
+          <label>Record Today's Attendance</label>
+          <div class="punch-controls">
+            <input type="time" id="punch-time">
+            <button id="btn-punch-in" onclick="handlePunch('IN')">Punch In</button>
+            <button id="btn-punch-out" class="btn-out hidden" onclick="handlePunch('OUT')">Punch Out</button>
+          </div>
+          <p id="punch-status" style="font-weight:600; color:var(--primary); margin-top:12px; font-size:0.9rem;"></p>
+        </div>
 
-</div>
-
-<!-- PWA Install Banner -->
-<div id="installBanner">
-    <div class="install-info">
-        <i class="fa-solid fa-mobile-screen-button"></i>
+        <!-- 3. ATTENDANCE HISTORY CARD -->
         <div>
-            <h4>Install Employee App</h4>
-            <p>Add to home screen for fast access</p>
-        </div>
-    </div>
-    <div class="install-actions">
-        <button class="btn-install" id="installBtn">Install</button>
-        <button class="btn-close-banner" onclick="hideInstallBanner()"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3>Attendance History</h3>
+            <button onclick="downloadPDF()" class="btn-secondary" style="background:#0891b2; width: auto;"><i class="fa-solid fa-file-pdf" style="margin-right: 6px;"></i> Export PDF</button>
+          </div>
 
-<script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2ka8WzEVWOyMN6AOQ-v9oikS-GPznkzGfb-xlfJfUnYsoWAfXZHtz-OND2zc_X9-w/exec"; 
-    let currentMobile = "";
-    let currentPunchState = "punchIn"; 
-    let allAttendanceData = []; // Store globally for filtering
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>In</th>
+                  <th>Out</th>
+                  <th>Duty</th>
+                  <th>OT</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="attendance-table-body-dash"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ATTENDANCE HISTORY VIEW -->
+    <div id="history-section" class="hidden">
+      <div class="card">
+        <h2>Attendance History</h2>
+        <p class="subtitle">Filter and check records by selecting a specific month.</p>
+
+        <div class="form-group" style="max-width: 300px; margin-bottom: 20px;">
+          <label>Select Month</label>
+          <input type="month" id="filter-month" onchange="loadHistoryData()">
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box"><h4>Month Present</h4><p id="hist-present">0 Days</p></div>
+          <div class="stat-box"><h4>Month OT</h4><p id="hist-ot">0 Hrs</p></div>
+          <div class="stat-box"><h4>Month Absent</h4><p id="hist-absent">0 Days</p></div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+          <button onclick="downloadPDF('history')" class="btn-secondary" style="background:#0891b2; width: auto;"><i class="fa-solid fa-file-pdf" style="margin-right: 6px;"></i> Export PDF</button>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>In</th>
+                <th>Out</th>
+                <th>Duty</th>
+                <th>OT</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="attendance-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CUSTOM ALERT MODAL -->
+  <div id="custom-alert-modal" class="modal-overlay">
+    <div class="custom-modal">
+      <div id="alert-icon" class="modal-icon info"><i id="alert-icon-i" class="fa-solid fa-info"></i></div>
+      <h3 id="alert-title" class="modal-title">Alert</h3>
+      <p id="alert-message" class="modal-message">Message text goes here.</p>
+      <button onclick="closeCustomAlert()">OK</button>
+    </div>
+  </div>
+
+  <!-- ADD PAST DUTY MODAL -->
+  <div id="past-duty-modal" class="modal-overlay">
+    <div class="custom-modal" style="text-align: left;">
+      <h3 class="modal-title" style="margin-bottom: 16px;">Add Past Duty Record</h3>
+      <div class="form-group"><label>Select Date</label><input type="date" id="past-date" value="2026-08-03"></div>
+      <div class="form-group"><label>Punch IN Time</label><input type="time" id="past-in-time" value="08:30"></div>
+      <div class="form-group"><label>Punch OUT Time</label><input type="time" id="past-out-time" value="20:30"></div>
+      <div class="modal-actions" style="margin-top: 20px;">
+        <button class="btn-secondary" style="flex:1;" onclick="closePastDutyModal()">Cancel</button>
+        <button style="flex:1;" onclick="submitPastDuty()">Save Duty</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT ATTENDANCE MODAL -->
+  <div id="edit-duty-modal" class="modal-overlay">
+    <div class="custom-modal" style="text-align: left;">
+      <h3 class="modal-title" style="margin-bottom: 16px;">Edit Attendance Time</h3>
+      <input type="hidden" id="edit-row-id">
+      <input type="hidden" id="edit-row-date">
+      <div class="form-group"><label>New Punch IN Time</label><input type="time" id="edit-in-time"></div>
+      <div class="form-group"><label>New Punch OUT Time</label><input type="time" id="edit-out-time"></div>
+      <div class="modal-actions" style="margin-top: 20px;">
+        <button class="btn-secondary" style="flex:1;" onclick="closeEditDutyModal()">Cancel</button>
+        <button style="flex:1;" onclick="submitEditDuty()">Update Record</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* PWA Configuration Dynamic Injection */
+    const manifest = {
+      name: "Attendance Pro",
+      short_name: "AttendancePro",
+      start_url: ".",
+      display: "standalone",
+      background_color: "#ffffff",
+      theme_color: "#2563eb",
+      icons: [
+        { src: "https://cdn-icons-png.flaticon.com/512/3652/3652191.png", sizes: "192x192", type: "image/png" },
+        { src: "https://cdn-icons-png.flaticon.com/512/3652/3652191.png", sizes: "512x512", type: "image/png" }
+      ]
+    };
+    const stringManifest = JSON.stringify(manifest);
+    const blob = new Blob([stringManifest], {type: 'application/json'});
+    const manifestURL = URL.createObjectURL(blob);
+    document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
+
+    // Register Inline Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      const swCode = `
+        self.addEventListener('install', (e) => self.skipWaiting());
+        self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request)));
+      `;
+      const swBlob = new Blob([swCode], {type: 'text/javascript'});
+      const swUrl = URL.createObjectURL(swBlob);
+      navigator.serviceWorker.register(swUrl).catch(()=>{});
+    }
 
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        document.getElementById('installBanner').style.display = 'flex';
+      e.preventDefault();
+      deferredPrompt = e;
+      setTimeout(() => {
+        document.getElementById('pwa-install-banner').classList.add('show');
+        document.getElementById('drawer-install-item').classList.remove('hidden');
+      }, 1000);
     });
 
-    document.getElementById('installBtn').addEventListener('click', async () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                document.getElementById('installBanner').style.display = 'none';
-            }
-            deferredPrompt = null;
-        }
-    });
-
-    function hideInstallBanner() {
-        document.getElementById('installBanner').style.display = 'none';
-    }
-
-    function toggleAuth(boxId) {
-        document.getElementById('loginBox').classList.add('hidden');
-        document.getElementById('forgotBox').classList.add('hidden');
-        document.getElementById('registerBox').classList.add('hidden');
-        document.getElementById(boxId).classList.remove('hidden');
-    }
-
-    function openNav() {
-        document.getElementById("mySidebar").style.left = "0";
-        document.getElementById("overlay").style.display = "block";
-    }
-
-    function closeNav() {
-        document.getElementById("mySidebar").style.left = "-280px";
-        document.getElementById("overlay").style.display = "none";
-    }
-
-    /* --- Full Monthly History Page Functions --- */
-    function openFullHistory() {
-        document.getElementById('dashboardBox').classList.add('hidden');
-        document.getElementById('fullHistoryBox').classList.remove('hidden');
-    }
-
-    function closeFullHistory() {
-        document.getElementById('fullHistoryBox').classList.add('hidden');
-        document.getElementById('dashboardBox').classList.remove('hidden');
-    }
-
-    function populateMonthFilter() {
-        const monthFilter = document.getElementById('monthFilter');
-        monthFilter.innerHTML = '';
-        const uniqueMonths = new Set();
-        
-        // Find all unique Month/Year from the data
-        allAttendanceData.forEach(row => {
-            const parts = row.date.split('/');
-            if(parts.length === 3) {
-                const monthYear = parts[1] + '/' + parts[2]; // MM/YYYY
-                uniqueMonths.add(monthYear);
-            }
+    function installPWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            dismissPWA();
+          }
+          deferredPrompt = null;
         });
-
-        // Ensure current month is always in the dropdown
-        const today = new Date();
-        const currentMonthYear = ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear();
-        uniqueMonths.add(currentMonthYear);
-
-        // Sort months descending
-        const sortedMonths = Array.from(uniqueMonths).sort((a, b) => {
-            const [mA, yA] = a.split('/');
-            const [mB, yB] = b.split('/');
-            if(yA !== yB) return yB - yA;
-            return mB - mA;
-        });
-
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-        sortedMonths.forEach(my => {
-            const [m, y] = my.split('/');
-            const monthName = monthNames[parseInt(m, 10) - 1] + ' ' + y;
-            const option = document.createElement('option');
-            option.value = my;
-            option.innerText = monthName;
-            monthFilter.appendChild(option);
-        });
-        
-        // Set dropdown default to the current month
-        monthFilter.value = currentMonthYear;
+      } else {
+        showCustomAlert('App Install', 'Tap on Browser menu (3 dots) and select "Add to Home Screen".', 'info');
+      }
     }
 
-    function renderMonthlyHistory() {
-        const selectedMonthYear = document.getElementById('monthFilter').value;
-        const fullTbody = document.querySelector("#fullDataTable tbody");
-        fullTbody.innerHTML = "";
-
-        let monthPresent = 0;
-        let monthOT = 0;
-
-        allAttendanceData.forEach(row => {
-            const parts = row.date.split('/');
-            if(parts.length === 3) {
-                const rowMonthYear = parts[1] + '/' + parts[2]; // Extract MM/YYYY
-                
-                if(rowMonthYear === selectedMonthYear) {
-                    monthPresent++;
-                    if (row.ot && !isNaN(row.ot)) {
-                        monthOT += parseFloat(row.ot);
-                    }
-                    
-                    const rowHTML = `<tr>
-                        <td style="font-weight:500;">${row.date}</td>
-                        <td style="color: #10b981; font-weight: 600;">${row.in}</td>
-                        <td style="color: #ef4444; font-weight: 600;">${row.out || "--:--"}</td>
-                    </tr>`;
-                    fullTbody.innerHTML += rowHTML;
-                }
-            }
-        });
-
-        if(fullTbody.innerHTML === "") {
-            fullTbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding: 20px; color:#64748b;">No attendance recorded for this month</td></tr>`;
-        }
-
-        // Update Specific Monthly Cards in the Full History Screen
-        document.getElementById('histStatPresent').innerText = monthPresent;
-        document.getElementById('histStatOT').innerText = monthOT.toFixed(1);
-        
-        let monthAbsent = 26 - monthPresent;
-        if (monthAbsent < 0) monthAbsent = 0;
-        document.getElementById('histStatAbsent').innerText = monthAbsent;
+    function dismissPWA() {
+      document.getElementById('pwa-install-banner').classList.remove('show');
     }
 
-    /* --- Custom Alert Functions --- */
-    function showCustomAlert(message, type = "info") {
-        const overlay = document.getElementById('alertOverlay');
-        const alertBox = document.getElementById('customAlert');
-        const iconBox = document.getElementById('alertIcon');
-        const title = document.getElementById('alertTitle');
-        const msg = document.getElementById('alertMessage');
+    /* SHARE APP FUNCTIONALITY */
+    function shareApp() {
+      toggleDrawer(false);
+      const shareData = {
+        title: 'Attendance Pro',
+        text: 'Manage attendance and duty records easily with Attendance Pro App!',
+        url: window.location.href
+      };
 
-        // Reset classes
-        iconBox.className = "alert-icon-box";
-        
-        if (type === "success") {
-            iconBox.classList.add("success");
-            iconBox.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-            title.innerText = "Success!";
-        } else if (type === "error") {
-            iconBox.classList.add("error");
-            iconBox.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
-            title.innerText = "Oops!";
-        } else {
-            iconBox.classList.add("info");
-            iconBox.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
-            title.innerText = "Notice";
-        }
+      if (navigator.share) {
+        navigator.share(shareData).catch((err) => {});
+      } else {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          showCustomAlert('Link Copied', 'App URL has been copied to clipboard!', 'success');
+        }).catch(() => {
+          showCustomAlert('Share App', `Share this link: ${window.location.href}`, 'info');
+        });
+      }
+    }
 
-        msg.innerText = message;
-        overlay.style.display = 'block';
-        alertBox.classList.add('active');
+    const SUPABASE_URL = 'https://ruezcsreintvfxqnyriy.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1ZXpjc3JlaW50dmZ4cW55cml5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU5NDczNTQsImV4cCI6MjEwMTUyMzM1NH0.eJVs8zzC_tYtDL3OJwmlXGXrjnKOAJl8xV_jz_Jz_bM';
+    
+    const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let currentUser = null;
+
+    /* Custom Modern Alert Helpers */
+    function showCustomAlert(title, message, type = 'info') {
+      const modal = document.getElementById('custom-alert-modal');
+      const iconBox = document.getElementById('alert-icon');
+      const iconI = document.getElementById('alert-icon-i');
+      
+      document.getElementById('alert-title').innerText = title;
+      document.getElementById('alert-message').innerText = message;
+      
+      iconBox.className = `modal-icon ${type}`;
+      if (type === 'success') iconI.className = 'fa-solid fa-check';
+      else if (type === 'danger') iconI.className = 'fa-solid fa-triangle-exclamation';
+      else iconI.className = 'fa-solid fa-circle-info';
+
+      modal.classList.add('active');
     }
 
     function closeCustomAlert() {
-        document.getElementById('alertOverlay').style.display = 'none';
-        document.getElementById('customAlert').classList.remove('active');
+      document.getElementById('custom-alert-modal').classList.remove('active');
     }
 
-    /* --- Custom Modal Functions --- */
-    function openTimeModal() {
-        if (currentPunchState === "done") {
-            showCustomAlert("Today's duty is already marked completed!", "info");
-            return;
-        }
-
-        const modalTitle = document.getElementById('modalPunchTitle');
-        const confirmBtn = document.getElementById('confirmPunchBtn');
-
-        if(currentPunchState === "punchOut") {
-            modalTitle.innerText = "Select Punch Out Time";
-            confirmBtn.innerText = "Punch Out";
-            confirmBtn.classList.add('out-mode');
-        } else {
-            modalTitle.innerText = "Select Punch In Time";
-            confirmBtn.innerText = "Punch In";
-            confirmBtn.classList.remove('out-mode');
-        }
-
-        setCurrentTime();
-        document.getElementById('timeModalOverlay').style.display = 'block';
-        document.getElementById('timeModal').classList.add('active');
+    function setDefaultTime() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('punch-time').value = `${hours}:${minutes}`;
+      
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      document.getElementById('filter-month').value = `${year}-${month}`;
     }
 
-    function closeTimeModal() {
-        document.getElementById('timeModalOverlay').style.display = 'none';
-        document.getElementById('timeModal').classList.remove('active');
+    function toggleAuth(showLogin) {
+      document.getElementById('login-box').classList.toggle('hidden', !showLogin);
+      document.getElementById('reg-box').classList.toggle('hidden', showLogin);
     }
 
-    function setCurrentTime() {
-        const now = new Date();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        document.getElementById('modalPunchTime').value = `${hours}:${minutes}`;
+    function toggleDrawer(open) {
+      document.getElementById('side-drawer').classList.toggle('open', open);
+      document.getElementById('drawer-overlay').classList.toggle('active', open);
     }
 
-    async function sendRequest(payload) {
-        try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            });
-            return await response.json();
-        } catch (error) {
-            return { status: "error", message: "Network error. Please try again." };
-        }
+    function switchView(viewName) {
+      toggleDrawer(false);
+      document.getElementById('dashboard-section').classList.add('hidden');
+      document.getElementById('history-section').classList.add('hidden');
+
+      if (viewName === 'dashboard') {
+        document.getElementById('dashboard-section').classList.remove('hidden');
+        loadDashboard();
+      } else if (viewName === 'history') {
+        document.getElementById('history-section').classList.remove('hidden');
+        loadHistoryData();
+      }
     }
 
     async function registerUser() {
-        const name = document.getElementById('regName').value;
-        const mobile = document.getElementById('regMobile').value;
-        const email = document.getElementById('regEmail').value;
-        const password = document.getElementById('regPassword').value;
-        const referral = document.getElementById('regReferral').value;
+      let punchingId = document.getElementById('reg-punching-id').value.trim();
+      const name = document.getElementById('reg-name').value.trim();
+      const mobile = document.getElementById('reg-mobile').value.trim();
+      const password = document.getElementById('reg-password').value.trim();
+      const refer = document.getElementById('reg-refer').value.trim();
 
-        if(!name || !mobile || !email || !password) {
-            showCustomAlert("Please fill all required fields!", "error");
-            return;
-        }
+      if (!name || !mobile || !password) return showCustomAlert('Missing Info', 'Please fill all required fields!', 'danger');
+      if (!punchingId) punchingId = 'P' + Math.floor(100000 + Math.random() * 900000);
 
-        const btn = document.querySelector("#registerBox button");
-        const originalText = btn.innerText;
-        btn.innerText = "Registering...";
-        btn.disabled = true;
+      // Show Spinner
+      const btn = document.getElementById('btn-reg');
+      const btnText = document.getElementById('btn-reg-text');
+      const spinner = document.getElementById('btn-reg-spinner');
+      btn.disabled = true;
+      btnText.innerText = 'Registering...';
+      spinner.classList.remove('hidden');
 
-        const res = await sendRequest({ action: "register", name, mobile, email, password, referral });
-        btn.innerText = originalText;
-        btn.disabled = false;
+      const { error } = await sbClient.from('users').insert([
+        { punching_id: punchingId, name, mobile, password, refer_code: refer }
+      ]);
 
-        if(res.status === "success") {
-            showCustomAlert(res.message, "success");
-            toggleAuth('loginBox'); 
-        } else {
-            showCustomAlert(res.message, "error");
-        }
+      // Reset Button State
+      btn.disabled = false;
+      btnText.innerText = 'Register Account';
+      spinner.classList.add('hidden');
+
+      if (error) {
+        showCustomAlert('Registration Failed', error.message, 'danger');
+      } else {
+        showCustomAlert('Success', `Registration Successful!\nYour Punching ID is: ${punchingId}`, 'success');
+        toggleAuth(true);
+      }
     }
 
-    async function login() {
-        const mobile = document.getElementById('loginMobile').value;
-        const password = document.getElementById('loginPassword').value;
-        if(!mobile || !password) {
-            showCustomAlert("Please fill all fields!", "error");
-            return;
-        }
+    async function loginUser() {
+      const loginInput = document.getElementById('login-id').value.trim();
+      const password = document.getElementById('login-password').value.trim();
 
-        const btn = document.querySelector("#loginBox button");
-        const originalText = btn.innerText;
-        btn.innerText = "Loading...";
-        btn.disabled = true;
+      if (!loginInput || !password) return showCustomAlert('Missing Fields', 'Please enter ID/Mobile and Password!', 'danger');
 
-        const res = await sendRequest({ action: "login", mobile, password });
-        btn.innerText = originalText;
-        btn.disabled = false;
+      // Show Spinner
+      const btn = document.getElementById('btn-login');
+      const btnText = document.getElementById('btn-login-text');
+      const spinner = document.getElementById('btn-login-spinner');
+      btn.disabled = true;
+      btnText.innerText = 'Signing In...';
+      spinner.classList.remove('hidden');
 
-        if(res.status === "success") {
-            currentMobile = mobile;
-            document.getElementById('welcomeText').innerText = res.name;
-            document.getElementById('loginBox').classList.add('hidden');
-            document.getElementById('dashboardBox').classList.remove('hidden');
-            
-            loadData();
-        } else {
-            showCustomAlert(res.message, "error");
-        }
-    }
+      const { data, error } = await sbClient.from('users')
+        .select('*')
+        .or(`punching_id.eq.${loginInput},mobile.eq.${loginInput}`)
+        .eq('password', password)
+        .maybeSingle();
 
-    async function forgotPassword() {
-        const mobile = document.getElementById('forgotMobile').value;
-        if(!mobile) {
-            showCustomAlert("Please enter mobile number!", "error");
-            return;
-        }
+      // Reset Button State
+      btn.disabled = false;
+      btnText.innerText = 'Sign In';
+      spinner.classList.add('hidden');
 
-        const btn = document.querySelector("#forgotBox button");
-        const originalText = btn.innerText;
-        btn.innerText = "Sending...";
-        btn.disabled = true;
-
-        const res = await sendRequest({ action: "forgot", mobile });
-        btn.innerText = originalText;
-        btn.disabled = false;
-
-        if(res.status === "success") {
-            showCustomAlert("Success! Password sent to Email: " + res.email, "success");
-            toggleAuth('loginBox');
-        } else {
-            showCustomAlert(res.message, "error");
-        }
+      if (error || !data) {
+        showCustomAlert('Login Failed', 'Invalid Punching ID or Password!', 'danger');
+      } else {
+        currentUser = data;
+        document.getElementById('auth-section').classList.add('hidden');
+        document.getElementById('navbar-container').classList.remove('hidden');
+        document.getElementById('dashboard-section').classList.remove('hidden');
+        
+        document.getElementById('user-name-display').innerText = currentUser.name;
+        document.getElementById('user-pid-display').innerText = currentUser.punching_id;
+        document.getElementById('drawer-user-name').innerText = currentUser.name;
+        document.getElementById('drawer-user-pid').innerText = `ID: ${currentUser.punching_id}`;
+        
+        setDefaultTime();
+        loadDashboard();
+      }
     }
 
     function logout() {
-        currentMobile = "";
-        closeNav();
-        document.getElementById('dashboardBox').classList.add('hidden');
-        document.getElementById('fullHistoryBox').classList.add('hidden');
-        document.getElementById('loginBox').classList.remove('hidden');
-        document.getElementById('loginMobile').value = "";
-        document.getElementById('loginPassword').value = "";
+      currentUser = null;
+      toggleDrawer(false);
+      document.getElementById('navbar-container').classList.add('hidden');
+      document.getElementById('dashboard-section').classList.add('hidden');
+      document.getElementById('history-section').classList.add('hidden');
+      document.getElementById('auth-section').classList.remove('hidden');
+      toggleAuth(true);
     }
 
-    async function confirmPunch() {
-        const time = document.getElementById('modalPunchTime').value;
-        if(!time) {
-            showCustomAlert("Please select time first!", "error");
-            return;
-        }
+    function calculateHours(punchIn, punchOut, dateStr) {
+      const inTime = new Date(`${dateStr}T${punchIn}`);
+      const outTime = new Date(`${dateStr}T${punchOut}`);
+      let diffMs = outTime - inTime;
+      if (diffMs < 0) diffMs += 24 * 60 * 60 * 1000;
+      
+      let totalHours = (diffMs / (1000 * 60 * 60));
+      const dayOfWeek = new Date(dateStr).getDay();
 
-        const btn = document.getElementById('confirmPunchBtn');
-        const originalText = btn.innerText;
-        btn.innerText = "Processing...";
-        btn.disabled = true;
-
-        const res = await sendRequest({ action: currentPunchState, mobile: currentMobile, time: time });
-        
-        btn.innerText = originalText;
-        btn.disabled = false;
-        
-        if (res.status === "success") {
-            showCustomAlert(res.message, "success");
-            closeTimeModal();
-            loadData();
+      let dutyHours = 0, otHours = 0;
+      if (dayOfWeek === 0) {
+        otHours = totalHours;
+      } else {
+        let actualWorked = Math.max(0, totalHours - 1);
+        if (actualWorked > 8) {
+          dutyHours = 8;
+          otHours = actualWorked - 8;
         } else {
-            showCustomAlert(res.message, "error");
+          dutyHours = actualWorked;
+          otHours = 0;
         }
+      }
+      return { totalHours, dutyHours, otHours };
     }
 
-    // Dashboard Data Loader with Paytm Spinner Animation
-    async function loadData() {
-        const loader = document.getElementById('paytmLoader');
-        loader.classList.remove('hidden-loader');
+    async function handlePunch(type) {
+      const timeVal = document.getElementById('punch-time').value;
+      if (!timeVal) return showCustomAlert('Time Required', 'Please select punch time first!', 'danger');
+      const today = new Date().toISOString().split('T')[0];
 
-        sendRequest({ action: "getData", mobile: currentMobile }).then(res => {
-            if(res && res.status === "success") {
-                const data = res.data;
-                const reversedData = [...data].reverse();
-                allAttendanceData = reversedData; // Save globally
-                
-                const tbody = document.querySelector("#dataTable tbody");
-                tbody.innerHTML = "";
+      if (type === 'IN') {
+        const { error } = await sbClient.from('attendance').insert([
+          { punching_id: currentUser.punching_id, date: today, punch_in: timeVal, status: 'Present' }
+        ]);
+        if (!error) loadDashboard();
+        else showCustomAlert('Punch Error', error.message, 'danger');
+      } 
+      else if (type === 'OUT') {
+        const { data } = await sbClient.from('attendance')
+          .select('*').eq('punching_id', currentUser.punching_id).eq('date', today).single();
 
-                let totalPresent = 0;
-                let totalOT = 0;
-                const today = new Date();
-                const todayDateStr = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear();
-                
-                let hasPunchedInToday = false;
-                let hasPunchedOutToday = false;
+        if (data) {
+          const calc = calculateHours(data.punch_in, timeVal, today);
+          await sbClient.from('attendance').update({
+            punch_out: timeVal,
+            total_hours: calc.totalHours.toFixed(2),
+            duty_hours: calc.dutyHours.toFixed(2),
+            overtime_hours: calc.otHours.toFixed(2)
+          }).eq('id', data.id);
 
-                const currentMonth = today.getMonth(); 
-                const currentYear = today.getFullYear();
+          loadDashboard();
+        }
+      }
+    }
 
-                reversedData.forEach((row, index) => {
-                    const rowHTML = `<tr>
-                        <td style="font-weight:500;">${row.date}</td>
-                        <td style="color: #10b981; font-weight: 600;">${row.in}</td>
-                        <td style="color: #ef4444; font-weight: 600;">${row.out || "--:--"}</td>
-                    </tr>`;
+    /* Modal Dialog Handlers for Past Duty & Edit */
+    function openPastDutyModal() {
+      toggleDrawer(false);
+      document.getElementById('past-duty-modal').classList.add('active');
+    }
 
-                    // Only show 5 rows in main dashboard
-                    if (index < 5) {
-                        tbody.innerHTML += rowHTML;
-                    }
+    function closePastDutyModal() {
+      document.getElementById('past-duty-modal').classList.remove('active');
+    }
 
-                    // Dashboard stats logic (Resets automatically every new month)
-                    const parts = row.date.split('/');
-                    if (parts.length === 3) {
-                        const rowMonth = parseInt(parts[1], 10) - 1; 
-                        const rowYear = parseInt(parts[2], 10);
+    async function submitPastDuty() {
+      const dateInput = document.getElementById('past-date').value;
+      const inTime = document.getElementById('past-in-time').value;
+      const outTime = document.getElementById('past-out-time').value;
 
-                        if (rowMonth === currentMonth && rowYear === currentYear) {
-                            totalPresent++;
-                            if (row.ot && !isNaN(row.ot)) {
-                                totalOT += parseFloat(row.ot);
-                            }
-                        }
-                    }
+      if (!dateInput || !inTime || !outTime) {
+        return showCustomAlert('Missing Info', 'Please enter all time & date details!', 'danger');
+      }
 
-                    if (row.date === todayDateStr) {
-                        hasPunchedInToday = true;
-                        if (row.out !== "") {
-                            hasPunchedOutToday = true;
-                        }
-                    }
-                });
-                
-                // Initialize the Monthly Full History Data
-                populateMonthFilter();
-                renderMonthlyHistory();
-                
-                // Show/Hide "Show More" Button
-                const showMoreBtn = document.getElementById('showMoreBtn');
-                if (reversedData.length > 5) {
-                    showMoreBtn.classList.remove('hidden');
-                } else {
-                    showMoreBtn.classList.add('hidden');
-                }
+      const calc = calculateHours(inTime, outTime, dateInput);
 
-                // Main Dashboard Stats Assignment
-                document.getElementById('statPresent').innerText = totalPresent;
-                document.getElementById('statOT').innerText = totalOT.toFixed(1);
-                
-                let absentDays = 26 - totalPresent;
-                if (absentDays < 0) absentDays = 0;
-                document.getElementById('statAbsent').innerText = absentDays;
+      const { error } = await sbClient.from('attendance').insert([{
+        punching_id: currentUser.punching_id,
+        date: dateInput,
+        punch_in: inTime,
+        punch_out: outTime,
+        total_hours: calc.totalHours.toFixed(2),
+        duty_hours: calc.dutyHours.toFixed(2),
+        overtime_hours: calc.otHours.toFixed(2),
+        status: 'Present'
+      }]);
 
-                const punchBtn = document.getElementById('mainPunchBtn');
-                const punchTitle = document.getElementById('punchTitle');
+      closePastDutyModal();
 
-                punchBtn.classList.remove('out-mode', 'done-mode');
+      if (error) {
+        showCustomAlert('Error', error.message, 'danger');
+      } else {
+        showCustomAlert('Success', 'Past Duty Added Successfully!', 'success');
+        loadDashboard();
+        loadHistoryData();
+      }
+    }
 
-                if (!hasPunchedInToday) {
-                    currentPunchState = "punchIn";
-                    punchBtn.innerText = "Punch In";
-                    punchTitle.innerText = "Morning Attendance";
-                } else if (hasPunchedInToday && !hasPunchedOutToday) {
-                    currentPunchState = "punchOut";
-                    punchBtn.innerText = "Punch Out";
-                    punchBtn.classList.add('out-mode');
-                    punchTitle.innerText = "End Your Duty";
-                } else {
-                    currentPunchState = "done";
-                    punchBtn.innerText = "Duty Completed";
-                    punchBtn.classList.add('done-mode');
-                    punchTitle.innerText = "See you tomorrow!";
-                }
-            }
-        }).finally(() => {
-            setTimeout(() => {
-                loader.classList.add('hidden-loader');
-            }, 350);
+    function editAttendance(id, dateStr) {
+      document.getElementById('edit-row-id').value = id;
+      document.getElementById('edit-row-date').value = dateStr;
+      document.getElementById('edit-duty-modal').classList.add('active');
+    }
+
+    function closeEditDutyModal() {
+      document.getElementById('edit-duty-modal').classList.remove('active');
+    }
+
+    async function submitEditDuty() {
+      const id = document.getElementById('edit-row-id').value;
+      const dateStr = document.getElementById('edit-row-date').value;
+      const newIn = document.getElementById('edit-in-time').value;
+      const newOut = document.getElementById('edit-out-time').value;
+
+      if (!newIn || !newOut) return showCustomAlert('Missing Info', 'Please fill both Punch In & Out times!', 'danger');
+
+      const calc = calculateHours(newIn, newOut, dateStr);
+      await sbClient.from('attendance').update({ 
+        punch_in: newIn, 
+        punch_out: newOut,
+        total_hours: calc.totalHours.toFixed(2),
+        duty_hours: calc.dutyHours.toFixed(2),
+        overtime_hours: calc.otHours.toFixed(2)
+      }).eq('id', id);
+      
+      closeEditDutyModal();
+      showCustomAlert('Updated', 'Record Updated Successfully!', 'success');
+      loadDashboard();
+      loadHistoryData();
+    }
+
+    async function loadDashboard() {
+      const today = new Date().toISOString().split('T')[0];
+      const { data: todayRec } = await sbClient.from('attendance')
+        .select('*').eq('punching_id', currentUser.punching_id).eq('date', today).maybeSingle();
+
+      const btnIn = document.getElementById('btn-punch-in');
+      const btnOut = document.getElementById('btn-punch-out');
+      const statusText = document.getElementById('punch-status');
+
+      if (!todayRec) {
+        btnIn.classList.remove('hidden');
+        btnOut.classList.add('hidden');
+        statusText.innerText = "Status: Not Punched In Today";
+      } else if (todayRec.punch_in && !todayRec.punch_out) {
+        btnIn.classList.add('hidden');
+        btnOut.classList.remove('hidden');
+        statusText.innerText = `Punched IN at ${todayRec.punch_in}. Click Punch Out to finish.`;
+      } else {
+        btnIn.classList.add('hidden');
+        btnOut.classList.add('hidden');
+        statusText.innerText = `Today's Shift Complete (${todayRec.duty_hours || 8} hrs duty, ${todayRec.overtime_hours || 0} hrs OT)`;
+      }
+
+      const currentYearMonth = today.substring(0, 7);
+      const startDate = `${currentYearMonth}-01`;
+      const endDate = `${currentYearMonth}-31`;
+
+      const { data: history } = await sbClient.from('attendance')
+        .select('*')
+        .eq('punching_id', currentUser.punching_id)
+        .gte('date', startDate)
+        .lte('date', endDate)
+        .order('date', { ascending: false });
+
+      let totalPresent = 0;
+      let totalAbsent = 0;
+      let totalOT = 0;
+
+      const tbody = document.getElementById('attendance-table-body-dash');
+      tbody.innerHTML = '';
+
+      if (history && history.length > 0) {
+        history.forEach(row => {
+          if (row.status === 'Absent') {
+            totalAbsent++;
+          } else {
+            totalPresent++;
+          }
+          totalOT += parseFloat(row.overtime_hours || 0);
+
+          tbody.innerHTML += `
+            <tr>
+              <td><b>${row.date}</b></td>
+              <td>${row.punch_in || '-'}</td>
+              <td>${row.punch_out || '-'}</td>
+              <td>${row.duty_hours || 0}h</td>
+              <td>${row.overtime_hours || 0}h</td>
+              <td><span class="status-badge" style="${row.status === 'Absent' ? 'background:#fee2e2; color:#991b1b;' : ''}">${row.status || 'Present'}</span></td>
+              <td><button class="btn-edit" onclick="editAttendance(${row.id}, '${row.date}')">Edit</button></td>
+            </tr>
+          `;
         });
-    }
-</script>
+      } else {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding: 20px;">No records found for this month</td></tr>`;
+      }
 
+      document.getElementById('stat-present').innerText = `${totalPresent} Days`;
+      document.getElementById('stat-ot').innerText = `${totalOT.toFixed(1)} Hrs`;
+      document.getElementById('stat-absent').innerText = `${totalAbsent} Days`;
+    }
+
+    async function loadHistoryData() {
+      const selectedMonth = document.getElementById('filter-month').value;
+      if (!selectedMonth) return;
+
+      const startDate = `${selectedMonth}-01`;
+      const endDate = `${selectedMonth}-31`;
+
+      const { data: history } = await sbClient.from('attendance')
+        .select('*')
+        .eq('punching_id', currentUser.punching_id)
+        .gte('date', startDate)
+        .lte('date', endDate)
+        .order('date', { ascending: false });
+
+      const tbody = document.getElementById('attendance-table-body');
+      tbody.innerHTML = '';
+
+      let totalPresent = 0, totalAbsent = 0, totalOT = 0;
+      if (history && history.length > 0) {
+        history.forEach(row => {
+          if (row.status === 'Absent') {
+            totalAbsent++;
+          } else {
+            totalPresent++;
+          }
+          totalOT += parseFloat(row.overtime_hours || 0);
+
+          tbody.innerHTML += `
+            <tr>
+              <td><b>${row.date}</b></td>
+              <td>${row.punch_in || '-'}</td>
+              <td>${row.punch_out || '-'}</td>
+              <td>${row.duty_hours || 0}h</td>
+              <td>${row.overtime_hours || 0}h</td>
+              <td><span class="status-badge" style="${row.status === 'Absent' ? 'background:#fee2e2; color:#991b1b;' : ''}">${row.status || 'Present'}</span></td>
+              <td><button class="btn-edit" onclick="editAttendance(${row.id}, '${row.date}')">Edit</button></td>
+            </tr>
+          `;
+        });
+      } else {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding: 20px;">No records found for this month</td></tr>`;
+      }
+
+      document.getElementById('hist-present').innerText = `${totalPresent} Days`;
+      document.getElementById('hist-ot').innerText = `${totalOT.toFixed(1)} Hrs`;
+      document.getElementById('hist-absent').innerText = `${totalAbsent} Days`;
+    }
+
+    async function downloadPDF(type = 'dashboard') {
+      const selectedMonth = type === 'history' ? document.getElementById('filter-month').value : new Date().toISOString().substring(0, 7);
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.setFontSize(16);
+      doc.text(`Attendance Report (${selectedMonth})`, 14, 15);
+      doc.setFontSize(11);
+      doc.text(`Employee Name: ${currentUser.name}`, 14, 22);
+      doc.text(`Punching ID: ${currentUser.punching_id}`, 14, 28);
+
+      const startDate = `${selectedMonth}-01`;
+      const endDate = `${selectedMonth}-31`;
+
+      const { data } = await sbClient.from('attendance')
+        .select('*')
+        .eq('punching_id', currentUser.punching_id)
+        .gte('date', startDate)
+        .lte('date', endDate)
+        .order('date', { ascending: false });
+
+      const tableData = data ? data.map(r => [
+        r.date, 
+        r.punch_in || '-', 
+        r.punch_out || '-', 
+        r.duty_hours || '0', 
+        r.overtime_hours || '0', 
+        r.status || 'Present'
+      ]) : [];
+
+      doc.autoTable({
+        head: [['Date', 'In', 'Out', 'Duty (Hrs)', 'OT (Hrs)', 'Status']],
+        body: tableData,
+        startY: 35
+      });
+
+      doc.save(`Attendance_${currentUser.punching_id}_${selectedMonth}.pdf`);
+    }
+  </script>
 </body>
 </html>
