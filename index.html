@@ -2,540 +2,753 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Attendance Pro - Workforce Management System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Attendance Pro - Modern Dashboard</title>
   
-  <!-- PWA Meta Tags -->
-  <meta name="theme-color" content="#16a34a">
+  <meta name="theme-color" content="#10b981">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Attendance Pro">
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3652/3652191.png">
-
-  <!-- Dynamic Web Manifest Data URI -->
   <link rel="manifest" id="manifest-placeholder">
 
-  <!-- Google Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
   <style>
+    #page-content { display: none; }
+
+    #page-loader {
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh; width: 100vw; position: fixed; top: 0; left: 0;
+      background-color: #f8fafc; z-index: 99999;
+    }
+
+    .page-spinner {
+      width: 36px; height: 36px; border: 3px solid #e2e8f0;
+      border-top: 3px solid #10b981; border-radius: 50%;
+      animation: pageSpin 0.8s linear infinite;
+    }
+
+    @keyframes pageSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
     :root {
       --primary: #2563eb;
       --primary-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-      --primary-hover: #1d4ed8;
-      /* Vibrant Green Punch In Gradient */
-      --punch-in-gradient: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-      --punch-in-shadow: rgba(22, 163, 74, 0.4);
-      --secondary: #64748b;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
+      --punch-in-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      --punch-out-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
       --background: #f1f5f9;
       --surface: #ffffff;
       --text-main: #0f172a;
       --text-muted: #64748b;
       --border: #e2e8f0;
-      --radius: 16px;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-      --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.03);
+      --shadow-md: 0 6px 16px -4px rgba(15, 23, 42, 0.06);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background-color: var(--background); color: var(--text-main); line-height: 1.5; padding-bottom: 40px; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--background); color: var(--text-main); line-height: 1.4; padding-bottom: 16px; }
 
-    /* Layout Containers */
-    .app-container { max-width: 900px; margin: 0 auto; padding: 16px; }
+    /* Compact Screen Layout */
+    .app-container { max-width: 440px; margin: 0 auto; padding: 8px; }
+    
     .card { 
       background: var(--surface); 
       border: 1px solid rgba(226, 232, 240, 0.8); 
-      border-radius: var(--radius); 
-      padding: 24px; 
+      border-radius: var(--radius-lg); 
+      padding: 14px 12px; 
       box-shadow: var(--shadow-md); 
-      margin-bottom: 20px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      margin-bottom: 10px;
     }
-    .auth-card { max-width: 420px; margin: 40px auto; }
 
-    /* Typography */
-    h2 { font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 6px; letter-spacing: -0.02em; }
-    p.subtitle { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 20px; }
-    h3 { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 14px; }
+    .auth-card { max-width: 400px; margin: 16px auto; }
 
-    /* Inputs & Buttons */
-    .form-group { margin-bottom: 16px; text-align: left; }
-    .form-group label { display: block; font-size: 0.825rem; font-weight: 600; color: var(--text-main); margin-bottom: 6px; }
-    input[type="text"], input[type="password"], input[type="time"], input[type="month"], input[type="date"], select {
-      width: 100%; padding: 12px 14px; font-size: 0.9rem; border: 1.5px solid var(--border); border-radius: 10px; background: #f8fafc; transition: all 0.2s ease; outline: none; font-weight: 500;
+    /* Clean Profile Header */
+    .profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border);
     }
-    input:focus, select:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12); }
+    .user-greeting { font-size: 1.1rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; line-height: 1.2; }
+    .emp-id-text { color: var(--text-muted); font-size: 0.75rem; font-weight: 700; margin-top: 2px; }
+    
+    .btn-pencil-icon {
+      background: #f1f5f9;
+      color: var(--primary);
+      border: 1px solid var(--border);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      cursor: pointer;
+      box-shadow: none;
+      padding: 0;
+    }
+    .btn-pencil-icon:hover { background: #eff6ff; border-color: #bfdbfe; }
+
+    /* Salary Pill Compact Highlight */
+    .salary-badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      padding: 6px 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .salary-badge-label { font-size: 0.7rem; font-weight: 800; color: #047857; text-transform: uppercase; letter-spacing: 0.03em; }
+    .salary-badge-val { font-size: 0.95rem; font-weight: 800; color: #059669; }
+
+    /* Tighter Single Row Stats Grid */
+    .stats-grid-single { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 6px; 
+      margin-bottom: 10px; 
+    }
+    
+    .stat-box { 
+      background: #f8fafc; 
+      border: 1px solid #e2e8f0; 
+      padding: 8px 4px; 
+      border-radius: 10px; 
+      text-align: center; 
+    }
+
+    .stat-box.present { background: #f0fdf4; border-color: #bbf7d0; }
+    .stat-box.present h4 { color: #15803d; }
+    .stat-box.present p { color: #166534; }
+
+    .stat-box.ot { background: #eff6ff; border-color: #bfdbfe; }
+    .stat-box.ot h4 { color: #1d4ed8; }
+    .stat-box.ot p { color: #1e40af; }
+
+    .stat-box.absent { background: #fef2f2; border-color: #fecaca; }
+    .stat-box.absent h4 { color: #b91c1c; }
+    .stat-box.absent p { color: #991b1b; }
+
+    .stat-box h4 { 
+      font-size: 0.6rem; 
+      font-weight: 800; 
+      text-transform: uppercase; 
+      letter-spacing: 0.02em; 
+      margin-bottom: 1px; 
+    }
+    .stat-box p { 
+      font-size: 0.85rem; 
+      font-weight: 800; 
+    }
+
+    /* Form Controls Tighter */
+    .form-group { margin-bottom: 10px; text-align: left; }
+    .form-group label { display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-main); margin-bottom: 3px; text-transform: uppercase; }
+    .form-group label .req { color: #ef4444; margin-left: 2px; }
+    
+    input[type="text"], input[type="number"], input[type="password"], input[type="time"], input[type="month"], input[type="date"], select {
+      width: 100%; padding: 8px 12px; font-size: 0.825rem; border: 1.5px solid var(--border); border-radius: var(--radius-md); background: #f8fafc; outline: none; font-weight: 600; color: var(--text-main);
+    }
+    input:focus, select:focus { border-color: var(--primary); background: #fff; }
     
     button {
-      display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 12px 18px; font-size: 0.9rem; font-weight: 700;
-      color: white; background: var(--primary-gradient); border: none; border-radius: 10px; cursor: pointer; transition: all 0.2s ease; gap: 8px;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+      display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 9px 14px; font-size: 0.825rem; font-weight: 700;
+      color: white; background: var(--primary-gradient); border: none; border-radius: var(--radius-md); cursor: pointer; gap: 6px;
+      box-shadow: 0 3px 8px rgba(37, 99, 235, 0.2);
     }
-    button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3); }
-    button:active { transform: translateY(0); }
-    button:disabled { opacity: 0.65; cursor: not-allowed !important; transform: none !important; box-shadow: none !important; }
+    button:active { transform: scale(0.98); }
+    button:disabled { opacity: 0.65; cursor: not-allowed !important; transform: none !important; }
     
-    /* VIBRANT GREEN PUNCH IN BUTTON STYLING */
     button.btn-punch-in-custom { 
       background: var(--punch-in-gradient) !important; 
-      box-shadow: 0 6px 16px var(--punch-in-shadow) !important; 
-      font-size: 1.05rem !important;
-      padding: 14px 22px !important;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-    button.btn-punch-in-custom:hover {
-      box-shadow: 0 8px 22px var(--punch-in-shadow) !important;
-      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4) !important; 
+      font-size: 0.875rem !important;
+      padding: 10px 18px !important;
+      border-radius: 12px !important;
     }
 
-    button.btn-out { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
-    button.btn-secondary { background: var(--secondary); box-shadow: none; width: auto; }
-    button.btn-edit { background: #f1f5f9; color: var(--text-main); border: 1px solid var(--border); width: auto; padding: 6px 12px; font-size: 0.8rem; box-shadow: none; }
-    button.btn-edit:hover { background: #e2e8f0; }
+    button.btn-out { 
+      background: var(--punch-out-gradient) !important; 
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4) !important;
+      font-size: 0.875rem !important;
+      padding: 10px 18px !important;
+      border-radius: 12px !important;
+    }
+    
+    button.btn-secondary { background: #f1f5f9; color: var(--text-main); border: 1px solid var(--border); box-shadow: none; width: auto; }
+    button.btn-edit { background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; width: auto; padding: 4px 12px; font-size: 0.725rem; box-shadow: none; border-radius: 6px; }
 
-    /* Loading Spinner */
+    /* Spinner */
     .spinner {
-      width: 16px; height: 16px; border: 2.5px solid rgba(255, 255, 255, 0.3); border-radius: 50%;
+      width: 14px; height: 14px; border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%;
       border-top-color: #ffffff; animation: spin 0.8s linear infinite; display: inline-block;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Navbar & Hamburger Menu */
+    /* Header Navbar */
+    #navbar-container { position: sticky; top: 0; z-index: 1000; width: 100%; }
     .navbar { 
-      display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.85); 
-      backdrop-filter: blur(10px); padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 20px; 
-      position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm);
+      display: flex; justify-content: space-between; align-items: center; 
+      background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); 
+      padding: 10px 14px; border-bottom: 1px solid var(--border); box-shadow: var(--shadow-sm); width: 100%;
     }
-    .nav-brand { font-weight: 800; font-size: 1.15rem; color: var(--primary); display: flex; align-items: center; gap: 8px; letter-spacing: -0.02em; }
-    .hamburger-btn { background: none; border: none; font-size: 1.3rem; color: var(--text-main); cursor: pointer; width: auto; padding: 4px; box-shadow: none; }
-    .hamburger-btn:hover { background: none; transform: none; color: var(--primary); box-shadow: none; }
+    .nav-brand { font-weight: 800; font-size: 1rem; color: var(--primary); display: flex; align-items: center; gap: 6px; }
+    .hamburger-btn { background: #f1f5f9; border: 1px solid var(--border); font-size: 0.9rem; color: var(--text-main); cursor: pointer; width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
 
-    /* Slide Menu Drawer */
-    .side-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--surface); box-shadow: -10px 0 30px rgba(0,0,0,0.1); z-index: 1000; transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; }
+    /* Side Drawer */
+    .side-drawer { position: fixed; top: 0; right: -280px; width: 250px; height: 100%; background: var(--surface); box-shadow: -10px 0 30px rgba(0,0,0,0.1); z-index: 2000; transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; }
     .side-drawer.open { right: 0; }
-    .drawer-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
-    .drawer-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
-    .drawer-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; font-weight: 600; font-size: 0.9rem; color: var(--text-main); border-radius: 10px; cursor: pointer; text-decoration: none; transition: all 0.2s; }
-    .drawer-item:hover { background: #f1f5f9; color: var(--primary); }
-    .drawer-item i { width: 20px; color: var(--secondary); text-align: center; }
-    .drawer-item:hover i { color: var(--primary); }
-    .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(2px); z-index: 999; display: none; }
+    .drawer-header { padding: 14px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+    .drawer-body { padding: 10px; flex: 1; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+    .drawer-item { display: flex; align-items: center; gap: 10px; padding: 10px; font-weight: 600; font-size: 0.8rem; color: var(--text-main); border-radius: var(--radius-md); text-decoration: none; }
+    .drawer-item:hover { background: #eff6ff; color: var(--primary); }
+    .drawer-item i { width: 16px; color: var(--secondary); text-align: center; }
+    .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 1500; display: none; }
     .drawer-overlay.active { display: block; }
 
-    /* Single Row Stats Grid */
-    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
-    .stat-box { background: #f8fafc; border: 1px solid var(--border); padding: 14px; border-radius: 12px; text-align: left; }
-    .stat-box h4 { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 4px; }
-    .stat-box p { font-size: 1.15rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; }
+    /* HIGHLIGHTED & PREMIUM RECORD ATTENDANCE CARD DESIGN */
+    .highlight-action-card { 
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+      border: 1px solid #334155; 
+      border-radius: 18px; 
+      padding: 14px 12px; 
+      text-align: center; 
+      margin-bottom: 12px; 
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1); 
+      position: relative;
+      overflow: hidden;
+    }
 
-    /* Action Punch Card */
-    .action-card { background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; margin-bottom: 20px; }
-    .action-card label { display: block; font-weight: 800; margin-bottom: 4px; font-size: 0.95rem; color: var(--text-main); }
-    
-    /* Live Clock Styling */
-    .live-clock-container {
-      margin-bottom: 16px;
-      padding: 6px 12px;
-      background: #e0e7ff;
-      border-radius: 20px;
+    .highlight-action-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .card-title-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      color: var(--primary);
-      font-weight: 700;
-      font-size: 0.9rem;
+      color: #38bdf8;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
     }
 
-    .punch-controls { display: flex; gap: 10px; justify-content: center; align-items: center; max-width: 320px; margin: 0 auto; }
-    
-    /* Table Styling */
-    .table-container { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; min-height: 120px; }
-    table { width: 100%; border-collapse: collapse; background: var(--surface); text-align: left; }
-    th { background: #f8fafc; padding: 10px 12px; font-size: 0.725rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
-    td { padding: 12px; font-size: 0.85rem; border-bottom: 1px solid var(--border); color: var(--text-main); white-space: nowrap; font-weight: 500; }
-    tr:last-child td { border-bottom: none; }
-    .status-badge { display: inline-block; padding: 3px 8px; border-radius: 9999px; font-size: 0.725rem; font-weight: 700; background: #d1fae5; color: #065f46; }
+    .live-clock-container {
+      margin-bottom: 10px; 
+      padding: 5px 12px; 
+      background: rgba(255, 255, 255, 0.07); 
+      border: 1px solid rgba(255, 255, 255, 0.12); 
+      border-radius: 999px; 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px; 
+      color: #f8fafc; 
+      font-weight: 700; 
+      font-size: 0.775rem;
+      backdrop-filter: blur(6px);
+    }
+    .live-clock-container i { color: #10b981; animation: pulse 2s infinite; }
 
-    /* Custom Alert & Modal Styling */
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+
+    .punch-controls { display: flex; gap: 8px; justify-content: center; align-items: center; width: 100%; max-width: 280px; margin: 0 auto; }
+    
+    /* Compact Attendance History Items */
+    .attendance-cards-list { display: flex; flex-direction: column; gap: 8px; }
+    .attendance-card-item {
+      background: #ffffff; border: 1px solid var(--border); border-radius: 12px; padding: 10px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 6px;
+    }
+    .att-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 6px; }
+    .att-card-date { font-size: 0.8rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 5px; }
+
+    .att-card-body {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: #f8fafc; padding: 6px; border-radius: 8px; text-align: center;
+    }
+    .att-info-box { display: flex; flex-direction: column; }
+    .att-info-box label { font-size: 0.55rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); }
+    .att-info-box span { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
+
+    /* Footer without ID display */
+    .att-card-footer { display: flex; justify-content: flex-end; align-items: center; }
+    .status-badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 9999px; font-size: 0.65rem; font-weight: 800; background: #d1fae5; color: #065f46; }
+    .status-badge.absent { background: #fee2e2; color: #991b1b; }
+
+    /* Modals Compact */
     .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px);
-      z-index: 2000; display: flex; align-items: center; justify-content: center;
-      opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 12px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
     }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
-    .custom-modal {
-      background: #ffffff; border-radius: 18px; width: 90%; max-width: 400px;
-      padding: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      transform: scale(0.95); transition: transform 0.2s ease; text-align: center;
-    }
+    .custom-modal { background: #ffffff; border-radius: var(--radius-lg); width: 100%; max-width: 340px; padding: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: scale(0.95); transition: transform 0.2s; text-align: center; }
     .modal-overlay.active .custom-modal { transform: scale(1); }
-    .modal-icon { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 1.2rem; }
+    .modal-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 1rem; }
     .modal-icon.info { background: #dbeafe; color: #2563eb; }
     .modal-icon.success { background: #d1fae5; color: #10b981; }
     .modal-icon.danger { background: #fee2e2; color: #ef4444; }
-    .modal-title { font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 6px; }
-    .modal-message { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 18px; word-break: break-word; }
-    .modal-actions { display: flex; gap: 10px; }
+    .modal-title { font-size: 0.95rem; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
+    .modal-message { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; font-weight: 500; }
+    .modal-actions { display: flex; gap: 6px; }
 
-    /* Custom Time Input Picker Box */
-    .time-picker-box {
-      background: #f8fafc;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      margin-top: 10px;
-      margin-bottom: 10px;
-    }
-    .time-picker-box input[type="time"] {
-      font-size: 1.5rem;
-      font-weight: 800;
-      text-align: center;
-      color: #16a34a;
-      background: #ffffff;
-      height: 54px;
-      letter-spacing: 2px;
-    }
+    /* Time Picker Box Compact */
+    .time-picker-box { background: #f8fafc; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 8px; margin: 8px 0; }
+    .time-picker-box input[type="time"] { font-size: 1.25rem; font-weight: 800; text-align: center; color: #10b981; background: #ffffff; height: 42px; border-radius: 6px; }
 
-    /* PWA Install Banner UI */
+    /* PWA Banner */
     .pwa-banner {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(120%);
-      width: 90%; max-width: 420px; background: #ffffff; border: 1px solid var(--border);
-      border-radius: 16px; padding: 14px 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
-      z-index: 3000; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: fixed; bottom: 8px; left: 50%; transform: translateX(-50%) translateY(120%); width: calc(100% - 16px); max-width: 420px; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; gap: 8px; z-index: 4000; transition: transform 0.3s;
     }
     .pwa-banner.show { transform: translateX(-50%) translateY(0); }
-    .pwa-info { display: flex; align-items: center; gap: 12px; }
-    .pwa-icon { width: 40px; height: 40px; border-radius: 10px; }
-    .pwa-text h4 { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
-    .pwa-text p { font-size: 0.75rem; color: var(--text-muted); }
-    .pwa-btns { display: flex; gap: 8px; align-items: center; }
-    .pwa-btns button { padding: 6px 12px; font-size: 0.8rem; width: auto; border-radius: 8px; }
+    .pwa-info { display: flex; align-items: center; gap: 8px; }
+    .pwa-icon { width: 30px; height: 30px; border-radius: 6px; }
+    .pwa-text h4 { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
+    .pwa-text p { font-size: 0.625rem; color: var(--text-muted); }
+    .pwa-btns { display: flex; gap: 4px; align-items: center; }
+    .pwa-btns button { padding: 4px 8px; font-size: 0.675rem; width: auto; border-radius: 6px; }
 
-    /* Utilities */
     .hidden { display: none !important; }
     a { color: var(--primary); text-decoration: none; font-weight: 600; }
-    a:hover { text-decoration: underline; }
-    .auth-footer { margin-top: 18px; font-size: 0.85rem; text-align: center; color: var(--text-muted); }
-
-    /* Refresh Animation */
+    .auth-footer { margin-top: 10px; font-size: 0.725rem; text-align: center; color: var(--text-muted); font-weight: 500; }
     .spin-icon { animation: spin 0.6s ease-in-out; }
-
-    @media (max-width: 640px) {
-      .app-container { padding: 12px; }
-      .card { padding: 16px; }
-      .stats-grid { gap: 8px; }
-      .stat-box { padding: 10px; }
-      .stat-box p { font-size: 0.95rem; }
-      .punch-controls { flex-direction: column; width: 100%; }
-      th, td { padding: 8px 6px; font-size: 0.775rem; }
-    }
   </style>
 </head>
 <body>
 
-  <!-- PWA INSTALL POP-UP / BANNER -->
-  <div id="pwa-install-banner" class="pwa-banner">
-    <div class="pwa-info">
-      <img src="https://cdn-icons-png.flaticon.com/512/3652/3652191.png" class="pwa-icon" alt="App Icon">
-      <div class="pwa-text">
-        <h4>Attendance Pro</h4>
-        <p>Install App for faster access</p>
-      </div>
-    </div>
-    <div class="pwa-btns">
-      <button class="btn-secondary" onclick="dismissPWA()"><i class="fa-solid fa-xmark"></i></button>
-      <button id="pwa-install-btn" onclick="installPWA()"><i class="fa-solid fa-download"></i> Install</button>
-    </div>
+  <!-- Fullscreen Page Loader -->
+  <div id="page-loader">
+    <div class="page-spinner"></div>
   </div>
 
-  <!-- TOP NAVBAR & DRAWER (Visible after Login) -->
-  <div id="navbar-container" class="hidden">
-    <nav class="navbar">
-      <div class="nav-brand"><i class="fa-solid fa-business-time"></i> Attendance Pro</div>
-      <button class="hamburger-btn" onclick="toggleDrawer(true)"><i class="fa-solid fa-bars"></i></button>
-    </nav>
-  </div>
+  <div id="page-content">
 
-  <!-- SLIDE DRAWER MENU -->
-  <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer(false)"></div>
-  <div id="side-drawer" class="side-drawer">
-    <div class="drawer-header">
-      <div>
-        <h4 id="drawer-user-name" style="font-size: 0.95rem; font-weight: 800;">User</h4>
-        <p id="drawer-user-pid" style="font-size: 0.775rem; color: var(--text-muted); font-weight: 500;">ID: -</p>
-      </div>
-      <button class="hamburger-btn" onclick="toggleDrawer(false)"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="drawer-body">
-      <a href="#" class="drawer-item" onclick="switchView('dashboard'); return false;"><i class="fa-solid fa-house"></i> Dashboard</a>
-      <a href="#" class="drawer-item" onclick="switchView('history'); return false;"><i class="fa-solid fa-calendar-days"></i> Attendance History</a>
-      <a href="#" class="drawer-item" onclick="openPastDutyModal(); return false;"><i class="fa-solid fa-calendar-plus"></i> Add Past Duty</a>
-      
-      <!-- REFRESH BUTTON -->
-      <a href="#" class="drawer-item" onclick="refreshAppData(); return false;"><i id="drawer-refresh-icon" class="fa-solid fa-arrows-rotate"></i> Refresh Data</a>
-      
-      <a href="#" id="drawer-install-item" class="drawer-item hidden" onclick="installPWA(); return false;"><i class="fa-solid fa-mobile-screen-button"></i> Install App</a>
-      <a href="#" class="drawer-item" onclick="shareApp(); return false;"><i class="fa-solid fa-share-nodes"></i> Share App</a>
-      
-      <div style="margin-top: auto; padding-top: 10px;">
-        <a href="#" class="drawer-item" onclick="logout(); return false;" style="color: var(--danger);"><i class="fa-solid fa-right-from-bracket" style="color: var(--danger);"></i> Logout</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="app-container">
-    <!-- AUTH SECTION -->
-    <div id="auth-section">
-      <!-- DEFAULT: LOGIN BOX -->
-      <div id="login-box" class="card auth-card">
-        <h2>Welcome Back</h2>
-        <p class="subtitle">Log in using your Punching ID or Mobile Number.</p>
-
-        <div class="form-group"><label>ID or Mobile Number</label><input type="text" id="login-id" placeholder="Enter ID or Mobile" required></div>
-        <div class="form-group"><label>Password</label><input type="password" id="login-password" placeholder="••••••••" required></div>
-
-        <button id="btn-login" onclick="loginUser()">
-          <span id="btn-login-text">Sign In</span>
-          <span id="btn-login-spinner" class="spinner hidden"></span>
-        </button>
-        <div class="auth-footer">
-          <p style="margin-bottom: 6px;"><a href="#" onclick="showCustomAlert('Information', 'Contact Admin to Reset Password!', 'info'); return false;">Forgot Password?</a></p>
-          <p>Don't have an account? <a href="#" onclick="toggleAuth(false); return false;">Register Here</a></p>
+    <!-- PWA BANNER -->
+    <div id="pwa-install-banner" class="pwa-banner">
+      <div class="pwa-info">
+        <img src="https://cdn-icons-png.flaticon.com/512/3652/3652191.png" class="pwa-icon" alt="App Icon">
+        <div class="pwa-text">
+          <h4>Attendance Pro</h4>
+          <p>Install App for fast access</p>
         </div>
       </div>
-
-      <!-- REGISTER BOX -->
-      <div id="reg-box" class="card auth-card hidden">
-        <h2>Create Account</h2>
-        <p class="subtitle">Enter your details to register for the attendance portal.</p>
-        
-        <div class="form-group"><label>Punching ID (Optional)</label><input type="text" id="reg-punching-id" placeholder="e.g. EMP-1024"></div>
-        <div class="form-group"><label>Full Name</label><input type="text" id="reg-name" placeholder="John Doe" required></div>
-        <div class="form-group"><label>Mobile Number</label><input type="text" id="reg-mobile" placeholder="9876543210" required></div>
-        <div class="form-group"><label>Password</label><input type="password" id="reg-password" placeholder="••••••••" required></div>
-        <div class="form-group"><label>Referral Code (Optional)</label><input type="text" id="reg-refer" placeholder="REF123"></div>
-
-        <button id="btn-reg" onclick="registerUser()">
-          <span id="btn-reg-text">Register Account</span>
-          <span id="btn-reg-spinner" class="spinner hidden"></span>
-        </button>
-        <div class="auth-footer">Already have an account? <a href="#" onclick="toggleAuth(true); return false;">Login Here</a></div>
+      <div class="pwa-btns">
+        <button class="btn-secondary" onclick="dismissPWA()"><i class="fa-solid fa-xmark"></i></button>
+        <button id="pwa-install-btn" onclick="installPWA()"><i class="fa-solid fa-download"></i> Install</button>
       </div>
     </div>
 
-    <!-- MAIN DASHBOARD VIEW -->
-    <div id="dashboard-section" class="hidden">
-      <div class="card">
-        <h2>Welcome, <span id="user-name-display"></span></h2>
-        <p class="subtitle">Employee ID: <span id="user-pid-display"></span></p>
+    <!-- HEADER NAVBAR -->
+    <div id="navbar-container" class="hidden">
+      <nav class="navbar">
+        <div class="nav-brand"><i class="fa-solid fa-business-time"></i> Attendance Pro</div>
+        <button class="hamburger-btn" onclick="toggleDrawer(true)"><i class="fa-solid fa-bars"></i></button>
+      </nav>
+    </div>
 
-        <!-- 1. SUMMARY CARDS -->
-        <div class="stats-grid">
-          <div class="stat-box"><h4>Present</h4><p id="stat-present">0 Days</p></div>
-          <div class="stat-box"><h4>Over Time</h4><p id="stat-ot">0 Hrs</p></div>
-          <div class="stat-box"><h4>Absent</h4><p id="stat-absent">0 Days</p></div>
-        </div>
-
-        <!-- 2. PUNCHING CARD WITH LIVE CLOCK & GREEN PUNCH BUTTON -->
-        <div class="action-card">
-          <label>Record Today's Attendance</label>
-          
-          <!-- Live Date & Time Container -->
-          <div class="live-clock-container">
-            <i class="fa-regular fa-clock"></i>
-            <span id="live-datetime-display">Loading Live Time...</span>
-          </div>
-
-          <div class="punch-controls">
-            <!-- VIBRANT GREEN PUNCH IN BUTTON -->
-            <button id="btn-punch-in" class="btn-punch-in-custom" onclick="openClockWindow('IN')">
-              <span id="btn-punch-in-text"><i class="fa-solid fa-fingerprint"></i> Punch In</span>
-              <span id="btn-punch-in-spinner" class="spinner hidden"></span>
-            </button>
-            <button id="btn-punch-out" class="btn-out hidden" onclick="openClockWindow('OUT')">
-              <span id="btn-punch-out-text"><i class="fa-solid fa-right-from-bracket"></i> Punch Out</span>
-              <span id="btn-punch-out-spinner" class="spinner hidden"></span>
-            </button>
-          </div>
-          <p id="punch-status" style="font-weight:600; color:var(--primary); margin-top:12px; font-size:0.875rem;"></p>
-        </div>
-
-        <!-- 3. ATTENDANCE HISTORY CARD -->
+    <!-- DRAWER -->
+    <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer(false)"></div>
+    <div id="side-drawer" class="side-drawer">
+      <div class="drawer-header">
         <div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-            <h3>Attendance History</h3>
-            <button onclick="downloadPDF()" class="btn-secondary" style="background:#0891b2; width: auto; font-size: 0.8rem; padding: 8px 12px;"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+          <h4 id="drawer-user-name" style="font-size: 0.85rem; font-weight: 800;">User</h4>
+          <p id="drawer-company-name" style="font-size: 0.75rem; color: var(--primary); font-weight: 700;"></p>
+          <p id="drawer-user-pid" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">ID: -</p>
+        </div>
+        <button class="hamburger-btn" onclick="toggleDrawer(false)"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="drawer-body">
+        <a href="#" class="drawer-item" onclick="switchView('dashboard'); return false;"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="#" class="drawer-item" onclick="switchView('history'); return false;"><i class="fa-solid fa-calendar-days"></i> Attendance History</a>
+        <a href="#" class="drawer-item" onclick="openPastDutyModal(); return false;"><i class="fa-solid fa-calendar-plus"></i> Add Past Duty</a>
+        <a href="#" class="drawer-item" onclick="openProfileModal(); return false;"><i class="fa-solid fa-user-gear"></i> Profile Settings</a>
+        <a href="#" class="drawer-item" onclick="refreshAppData(); return false;"><i id="drawer-refresh-icon" class="fa-solid fa-arrows-rotate"></i> Refresh Data</a>
+        <a href="#" id="drawer-install-item" class="drawer-item hidden" onclick="installPWA(); return false;"><i class="fa-solid fa-mobile-screen-button"></i> Install App</a>
+        <a href="#" class="drawer-item" onclick="shareApp(); return false;"><i class="fa-solid fa-share-nodes"></i> Share App</a>
+        
+        <div style="margin-top: auto; padding-top: 6px;">
+          <a href="#" class="drawer-item" onclick="logout(); return false;" style="color: #ef4444;"><i class="fa-solid fa-right-from-bracket" style="color: #ef4444;"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-container">
+      <!-- AUTH SECTION -->
+      <div id="auth-section">
+        <!-- LOGIN -->
+        <div id="login-box" class="card auth-card">
+          <h2 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 2px;">Welcome Back</h2>
+          <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 10px;">Sign in with Punching ID or Mobile Number.</p>
+
+          <div class="form-group"><label>ID or Mobile Number</label><input type="text" id="login-id" placeholder="Enter ID or Mobile" required></div>
+          <div class="form-group"><label>Password</label><input type="password" id="login-password" placeholder="••••••••" required></div>
+
+          <button id="btn-login" onclick="loginUser()">
+            <span id="btn-login-text">Sign In</span>
+            <span id="btn-login-spinner" class="spinner hidden"></span>
+          </button>
+          <div class="auth-footer">
+            <p style="margin-bottom: 4px;"><a href="#" onclick="showCustomAlert('Information', 'Contact Admin to Reset Password!', 'info'); return false;">Forgot Password?</a></p>
+            <p>Don't have an account? <a href="#" onclick="toggleAuth(false); return false;">Register Here</a></p>
+          </div>
+        </div>
+
+        <!-- REGISTER -->
+        <div id="reg-box" class="card auth-card hidden">
+          <h2 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 2px;">Create Account</h2>
+          <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 10px;">Fill in details to register.</p>
+          
+          <div class="form-group"><label>Punching ID (Optional)</label><input type="text" id="reg-punching-id" placeholder="e.g. EMP-1024"></div>
+          <div class="form-group"><label>Full Name</label><input type="text" id="reg-name" placeholder="John Doe" required></div>
+          <div class="form-group"><label>Mobile Number</label><input type="text" id="reg-mobile" placeholder="9876543210" required></div>
+          <div class="form-group"><label>Password</label><input type="password" id="reg-password" placeholder="••••••••" required></div>
+          <div class="form-group"><label>Referral Code (Optional)</label><input type="text" id="reg-refer" placeholder="REF123"></div>
+
+          <button id="btn-reg" onclick="registerUser()">
+            <span id="btn-reg-text">Register Account</span>
+            <span id="btn-reg-spinner" class="spinner hidden"></span>
+          </button>
+          <div class="auth-footer">Already have an account? <a href="#" onclick="toggleAuth(true); return false;">Login Here</a></div>
+        </div>
+      </div>
+
+      <!-- MAIN DASHBOARD -->
+      <div id="dashboard-section" class="hidden">
+        <div class="card">
+          <!-- CLEAN DASHBOARD HEADER: ONLY NAME, ID, COMPANY NAME & PENCIL ICON -->
+          <div class="profile-header">
+            <div>
+              <h2 class="user-greeting" id="user-name-display">Name</h2>
+              <p class="emp-id-text">ID: <span id="user-pid-display"></span> <span id="user-company-display" style="color: var(--primary); font-weight: 700; margin-left: 2px;"></span></p>
+            </div>
+            <button onclick="openProfileModal()" class="btn-pencil-icon" title="Edit Profile"><i class="fa-solid fa-pen"></i></button>
           </div>
 
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>In</th>
-                  <th>Out</th>
-                  <th>Duty</th>
-                  <th>OT</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="attendance-table-body-dash"></tbody>
-            </table>
+          <!-- EST SALARY IN SINGLE LINE -->
+          <div class="salary-badge-row">
+            <span class="salary-badge-label">Est. Monthly Salary:</span>
+            <span class="salary-badge-val" id="stat-salary">₹0</span>
           </div>
+
+          <!-- PRESENT, OT, ABSENT IN SINGLE ROW -->
+          <div class="stats-grid-single">
+            <div class="stat-box present">
+              <h4>Present</h4>
+              <p id="stat-present">0 Days</p>
+            </div>
+            <div class="stat-box ot">
+              <h4>Over Time</h4>
+              <p id="stat-ot">0 Hrs</p>
+            </div>
+            <div class="stat-box absent">
+              <h4>Absent</h4>
+              <p id="stat-absent">0 Days</p>
+            </div>
+          </div>
+
+          <!-- HIGHLIGHTED RECORD ATTENDANCE CARD -->
+          <div class="highlight-action-card">
+            <div class="card-title-badge">
+              <i class="fa-solid fa-bolt"></i> Quick Attendance Action
+            </div>
+            
+            <div style="display: flex; justify-content: center;">
+              <div class="live-clock-container">
+                <i class="fa-solid fa-circle"></i>
+                <span id="live-datetime-display">Loading Live Time...</span>
+              </div>
+            </div>
+
+            <div class="punch-controls">
+              <button id="btn-punch-in" class="btn-punch-in-custom" onclick="openClockWindow('IN')">
+                <span id="btn-punch-in-text"><i class="fa-solid fa-fingerprint"></i> Punch In</span>
+                <span id="btn-punch-in-spinner" class="spinner hidden"></span>
+              </button>
+              <button id="btn-punch-out" class="btn-out hidden" onclick="openClockWindow('OUT')">
+                <span id="btn-punch-out-text"><i class="fa-solid fa-right-from-bracket"></i> Punch Out</span>
+                <span id="btn-punch-out-spinner" class="spinner hidden"></span>
+              </button>
+            </div>
+            <p id="punch-status" style="font-weight:700; color:#cbd5e1; margin-top:8px; font-size:0.725rem;"></p>
+          </div>
+
+          <!-- RECENT ATTENDANCE LIST -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <h3 style="font-size: 0.875rem; font-weight: 800;">Recent History</h3>
+              <button onclick="downloadPDF()" class="btn-secondary" style="background:#0891b2; color:white; width: auto; font-size: 0.675rem; padding: 4px 10px; border-radius: 6px;"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+            </div>
+
+            <div id="attendance-cards-dash" class="attendance-cards-list"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ATTENDANCE HISTORY VIEW -->
+      <div id="history-section" class="hidden">
+        <div class="card">
+          <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 2px;">Attendance History</h2>
+          <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 10px;">Select month to review records.</p>
+
+          <div class="form-group" style="margin-bottom: 8px;">
+            <label>Select Month</label>
+            <input type="month" id="filter-month" onchange="loadHistoryData()">
+          </div>
+
+          <div class="salary-badge-row">
+            <span class="salary-badge-label">Month Salary:</span>
+            <span class="salary-badge-val" id="hist-salary">₹0</span>
+          </div>
+
+          <div class="stats-grid-single">
+            <div class="stat-box present">
+              <h4>Present</h4>
+              <p id="hist-present">0 Days</p>
+            </div>
+            <div class="stat-box ot">
+              <h4>Over Time</h4>
+              <p id="hist-ot">0 Hrs</p>
+            </div>
+            <div class="stat-box absent">
+              <h4>Absent</h4>
+              <p id="hist-absent">0 Days</p>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
+            <button onclick="downloadPDF('history')" class="btn-secondary" style="background:#0891b2; color:white; width: auto; font-size: 0.675rem; padding: 4px 10px; border-radius: 6px;"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+          </div>
+
+          <div id="attendance-cards-hist" class="attendance-cards-list"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PROFILE / SALARY SETTINGS MODAL (ALL MANDATORY FIELDS) -->
+    <div id="profile-settings-modal" class="modal-overlay">
+      <div class="custom-modal" style="text-align: left;">
+        <h3 class="modal-title" style="margin-bottom: 4px;"><i class="fa-solid fa-user-gear"></i> Update Profile Settings</h3>
+        <p style="font-size: 0.7rem; color: #ef4444; font-weight: 700; margin-bottom: 10px;">* All fields are mandatory to proceed.</p>
+        
+        <div class="form-group">
+          <label>Full Name <span class="req">*</span></label>
+          <input type="text" id="prof-name" placeholder="Enter Full Name" required>
+        </div>
+        <div class="form-group">
+          <label>Company Name <span class="req">*</span></label>
+          <input type="text" id="prof-company" placeholder="e.g. Acme Corp" required>
+        </div>
+        <div class="form-group">
+          <label>8 Hrs Basic Monthly Salary (₹) <span class="req">*</span></label>
+          <input type="number" id="prof-salary" placeholder="e.g. 15000" required>
+        </div>
+        <div class="form-group">
+          <label>Overtime Rate Per Hour (₹) <span class="req">*</span></label>
+          <input type="number" id="prof-ot-rate" placeholder="e.g. 144" required>
+        </div>
+        <div class="form-group">
+          <label>Break Time Deduction (In Mins) <span class="req">*</span></label>
+          <input type="number" id="prof-break-mins" placeholder="e.g. 30 or 60" required>
+        </div>
+        <div class="modal-actions" style="margin-top: 10px;">
+          <button class="btn-secondary" style="flex:1;" onclick="closeProfileModal()">Cancel</button>
+          <button id="btn-save-profile" style="flex:1;" onclick="updateUserProfile()">
+            <span id="btn-prof-text">Save Profile</span>
+            <span id="btn-prof-spinner" class="spinner hidden"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLOCK SELECTOR MODAL -->
+    <div id="clock-window-modal" class="modal-overlay">
+      <div class="custom-modal">
+        <div class="modal-icon info" style="background: #dcfce7; color: #10b981;"><i class="fa-regular fa-clock"></i></div>
+        <h3 class="modal-title" id="clock-modal-title">Select Punch Time</h3>
+        <p style="font-size: 0.725rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 500;">Confirm or adjust time and tap OK</p>
+        
+        <input type="hidden" id="selected-punch-type">
+        
+        <div class="time-picker-box">
+          <input type="time" id="clock-time-input">
         </div>
 
-      </div>
-    </div>
-
-    <!-- ATTENDANCE HISTORY VIEW -->
-    <div id="history-section" class="hidden">
-      <div class="card">
-        <h2>Attendance History</h2>
-        <p class="subtitle">Filter and check records by selecting a specific month.</p>
-
-        <div class="form-group" style="max-width: 300px; margin-bottom: 16px;">
-          <label>Select Month</label>
-          <input type="month" id="filter-month" onchange="loadHistoryData()">
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-box"><h4>Month Present</h4><p id="hist-present">0 Days</p></div>
-          <div class="stat-box"><h4>Month OT</h4><p id="hist-ot">0 Hrs</p></div>
-          <div class="stat-box"><h4>Month Absent</h4><p id="hist-absent">0 Days</p></div>
-        </div>
-
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 14px;">
-          <button onclick="downloadPDF('history')" class="btn-secondary" style="background:#0891b2; width: auto; font-size: 0.8rem; padding: 8px 12px;"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
-        </div>
-
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>In</th>
-                <th>Out</th>
-                <th>Duty</th>
-                <th>OT</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="attendance-table-body"></tbody>
-          </table>
+        <div class="modal-actions" style="margin-top: 8px;">
+          <button class="btn-secondary" style="flex:1;" onclick="closeClockWindow()">Cancel</button>
+          <button style="flex:1; background: var(--punch-in-gradient);" onclick="confirmClockPunch()">OK</button>
         </div>
       </div>
     </div>
 
-  </div>
-
-  <!-- DIRECT CLOCK TIME SELECTOR WINDOW (OPENED DIRECTLY ON PUNCH CLICK) -->
-  <div id="clock-window-modal" class="modal-overlay">
-    <div class="custom-modal">
-      <div class="modal-icon info" style="background: #dcfce7; color: #16a34a;"><i class="fa-regular fa-clock"></i></div>
-      <h3 class="modal-title" id="clock-modal-title">Select Punch Time</h3>
-      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Confirm or adjust time and press OK</p>
-      
-      <input type="hidden" id="selected-punch-type">
-      
-      <div class="time-picker-box">
-        <input type="time" id="clock-time-input">
-      </div>
-
-      <div class="modal-actions" style="margin-top: 16px;">
-        <button class="btn-secondary" style="flex:1;" onclick="closeClockWindow()">Cancel</button>
-        <button style="flex:1; background: var(--punch-in-gradient);" onclick="confirmClockPunch()">OK</button>
+    <!-- CUSTOM ALERT MODAL -->
+    <div id="custom-alert-modal" class="modal-overlay">
+      <div class="custom-modal">
+        <div id="alert-icon" class="modal-icon info"><i id="alert-icon-i" class="fa-solid fa-info"></i></div>
+        <h3 id="alert-title" class="modal-title">Alert</h3>
+        <p id="alert-message" class="modal-message">Message text goes here.</p>
+        <button onclick="closeCustomAlert()">OK</button>
       </div>
     </div>
-  </div>
 
-  <!-- CUSTOM ALERT MODAL -->
-  <div id="custom-alert-modal" class="modal-overlay">
-    <div class="custom-modal">
-      <div id="alert-icon" class="modal-icon info"><i id="alert-icon-i" class="fa-solid fa-info"></i></div>
-      <h3 id="alert-title" class="modal-title">Alert</h3>
-      <p id="alert-message" class="modal-message">Message text goes here.</p>
-      <button onclick="closeCustomAlert()">OK</button>
-    </div>
-  </div>
-
-  <!-- ADD PAST DUTY MODAL -->
-  <div id="past-duty-modal" class="modal-overlay">
-    <div class="custom-modal" style="text-align: left;">
-      <h3 class="modal-title" style="margin-bottom: 14px;">Add Past Duty Record</h3>
-      <div class="form-group"><label>Select Date</label><input type="date" id="past-date" value="2026-08-03"></div>
-      <div class="form-group"><label>Punch IN Time</label><input type="time" id="past-in-time" value="08:30"></div>
-      <div class="form-group"><label>Punch OUT Time</label><input type="time" id="past-out-time" value="20:30"></div>
-      <div class="modal-actions" style="margin-top: 18px;">
-        <button class="btn-secondary" style="flex:1;" onclick="closePastDutyModal()">Cancel</button>
-        <button id="btn-save-past" style="flex:1;" onclick="submitPastDuty()">
-          <span id="btn-past-text">Save Duty</span>
-          <span id="btn-past-spinner" class="spinner hidden"></span>
-        </button>
+    <!-- ADD PAST DUTY MODAL -->
+    <div id="past-duty-modal" class="modal-overlay">
+      <div class="custom-modal" style="text-align: left;">
+        <h3 class="modal-title" style="margin-bottom: 8px;">Add Past Duty Record</h3>
+        <div class="form-group"><label>Select Date</label><input type="date" id="past-date"></div>
+        <div class="form-group"><label>Punch IN Time</label><input type="time" id="past-in-time" value="08:30"></div>
+        <div class="form-group"><label>Punch OUT Time</label><input type="time" id="past-out-time" value="20:30"></div>
+        <div class="modal-actions" style="margin-top: 10px;">
+          <button class="btn-secondary" style="flex:1;" onclick="closePastDutyModal()">Cancel</button>
+          <button id="btn-save-past" style="flex:1;" onclick="submitPastDuty()">
+            <span id="btn-past-text">Save Duty</span>
+            <span id="btn-past-spinner" class="spinner hidden"></span>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- EDIT ATTENDANCE MODAL -->
-  <div id="edit-duty-modal" class="modal-overlay">
-    <div class="custom-modal" style="text-align: left;">
-      <h3 class="modal-title" style="margin-bottom: 14px;">Edit Attendance Time</h3>
-      <input type="hidden" id="edit-row-id">
-      <input type="hidden" id="edit-row-date">
-      <div class="form-group"><label>New Punch IN Time</label><input type="time" id="edit-in-time"></div>
-      <div class="form-group"><label>New Punch OUT Time</label><input type="time" id="edit-out-time"></div>
-      <div class="modal-actions" style="margin-top: 18px;">
-        <button class="btn-secondary" style="flex:1;" onclick="closeEditDutyModal()">Cancel</button>
-        <button id="btn-edit-save" style="flex:1;" onclick="submitEditDuty()">
-          <span id="btn-edit-text">Update Record</span>
-          <span id="btn-edit-spinner" class="spinner hidden"></span>
-        </button>
+    <!-- EDIT ATTENDANCE MODAL -->
+    <div id="edit-duty-modal" class="modal-overlay">
+      <div class="custom-modal" style="text-align: left;">
+        <h3 class="modal-title" style="margin-bottom: 8px;">Edit Attendance Time</h3>
+        <input type="hidden" id="edit-row-id">
+        <input type="hidden" id="edit-row-date">
+        <div class="form-group"><label>New Punch IN Time</label><input type="time" id="edit-in-time"></div>
+        <div class="form-group"><label>New Punch OUT Time</label><input type="time" id="edit-out-time"></div>
+        <div class="modal-actions" style="margin-top: 10px;">
+          <button class="btn-secondary" style="flex:1;" onclick="closeEditDutyModal()">Cancel</button>
+          <button id="btn-edit-save" style="flex:1;" onclick="submitEditDuty()">
+            <span id="btn-edit-text">Update Record</span>
+            <span id="btn-edit-spinner" class="spinner hidden"></span>
+          </button>
+        </div>
       </div>
     </div>
+
   </div>
 
   <script>
-    /* Live Clock Functionality with Seconds */
+    // DATE & TIME FORMATTERS FOR ASIA/KOLKATA TIMEZONE
+    function getKolkataYMD(dateObj = new Date()) {
+      const options = { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' };
+      const formatter = new Intl.DateTimeFormat('en-CA', options);
+      return formatter.format(dateObj);
+    }
+
+    function formatDateDDMMYYYY(dateStr) {
+      if (!dateStr) return '-';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
+      return dateStr;
+    }
+
+    function formatTime12Hour(timeStr) {
+      if (!timeStr || timeStr === '-') return '-';
+      const parts = timeStr.split(':');
+      if (parts.length < 2) return timeStr;
+      
+      let hours = parseInt(parts[0], 10);
+      const minutes = parts[1];
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      const strHours = String(hours).padStart(2, '0');
+      
+      return `${strHours}:${minutes} ${ampm}`;
+    }
+
     function startLiveClock() {
       setInterval(() => {
         const now = new Date();
-        const optionsDate = { day: '2-digit', month: 'short', year: 'numeric' };
-        const dateStr = now.toLocaleDateString('en-GB', optionsDate);
-        const timeStr = now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        
+        const dateParts = new Intl.DateTimeFormat('en-GB', {
+          timeZone: 'Asia/Kolkata',
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        }).format(now);
+
+        const formattedDate = dateParts.replace(/\//g, '-');
+
+        const timeStr = new Intl.DateTimeFormat('en-US', {
+          timeZone: 'Asia/Kolkata',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true
+        }).format(now);
+
         const clockElem = document.getElementById('live-datetime-display');
         if (clockElem) {
-          clockElem.innerText = `${dateStr}, ${timeStr}`;
+          clockElem.innerText = `${formattedDate}, ${timeStr}`;
         }
       }, 1000);
     }
     startLiveClock();
 
-    /* DIRECT CLOCK WINDOW LOGIC ON PUNCH CLICK */
+    // Helper to check if user profile is complete
+    function isProfileIncomplete() {
+      if (!currentUser) return true;
+      const name = currentUser.name ? String(currentUser.name).trim() : '';
+      const company = currentUser.company_name ? String(currentUser.company_name).trim() : '';
+      const salary = parseFloat(currentUser.monthly_salary || currentUser.salary || 0);
+      const ot = parseFloat(currentUser.ot_rate_per_hour || currentUser.ot_rate || 0);
+      const breakMins = currentUser.break_minutes;
+
+      return (!name || !company || isNaN(salary) || salary <= 0 || isNaN(ot) || ot <= 0 || breakMins === undefined || breakMins === null || breakMins === '');
+    }
+
     function openClockWindow(type) {
+      if (isProfileIncomplete()) {
+        showCustomAlert('Profile Update Required', 'Please complete all profile details before making your first punch!', 'info');
+        openProfileModal();
+        return;
+      }
+
       const now = new Date();
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const timeParts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      }).format(now).split(':');
+
+      const hours = timeParts[0];
+      const minutes = timeParts[1];
       
       document.getElementById('selected-punch-type').value = type;
       document.getElementById('clock-time-input').value = `${hours}:${minutes}`;
-      document.getElementById('clock-modal-title').innerText = type === 'IN' ? 'Punch IN Time Window' : 'Punch OUT Time Window';
+      document.getElementById('clock-modal-title').innerText = type === 'IN' ? 'Punch IN Time' : 'Punch OUT Time';
       
       const clockModal = document.getElementById('clock-window-modal');
       clockModal.classList.add('active');
       
-      // Auto open native picker if supported
       setTimeout(() => {
         const timeInput = document.getElementById('clock-time-input');
         if (timeInput && typeof timeInput.showPicker === 'function') {
@@ -557,14 +770,13 @@
       }
     }
 
-    /* PWA Configuration Dynamic Injection */
     const manifest = {
       name: "Attendance Pro",
       short_name: "AttendancePro",
       start_url: ".",
       display: "standalone",
       background_color: "#ffffff",
-      theme_color: "#16a34a",
+      theme_color: "#10b981",
       icons: [
         { src: "https://cdn-icons-png.flaticon.com/512/3652/3652191.png", sizes: "192x192", type: "image/png" },
         { src: "https://cdn-icons-png.flaticon.com/512/3652/3652191.png", sizes: "512x512", type: "image/png" }
@@ -636,31 +848,55 @@
     const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let currentUser = null;
 
-    /* PERSISTENT LOGIN */
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedUser = localStorage.getItem('attendance_pro_user');
-      if (savedUser) {
-        try {
-          currentUser = JSON.parse(savedUser);
-          initUserSession();
-        } catch(e) {
-          localStorage.removeItem('attendance_pro_user');
-        }
-      }
-    });
+    function computeEstimatedSalary(totalPresent, totalOT, monthStr) {
+      if (!currentUser) return 0;
 
-    function initUserSession() {
+      const monthlySalary = parseFloat(currentUser.monthly_salary || currentUser.salary || 0);
+      const hourlyOtRate = parseFloat(currentUser.ot_rate_per_hour || currentUser.ot_rate || 0);
+
+      if (isNaN(monthlySalary) || monthlySalary === 0) return 0;
+
+      const workingDaysInMonth = 26; 
+      const perDayRate = monthlySalary / workingDaysInMonth;
+      
+      const totalDutySalary = totalPresent * perDayRate;
+      const totalOTAmount = totalOT * (isNaN(hourlyOtRate) ? 0 : hourlyOtRate);
+
+      return Math.round(totalDutySalary + totalOTAmount);
+    }
+
+    async function initPage() {
+      try {
+        const savedUser = localStorage.getItem('attendance_pro_user');
+        if (savedUser) {
+          currentUser = JSON.parse(savedUser);
+          await initUserSession();
+        }
+      } catch (e) {
+        localStorage.removeItem('attendance_pro_user');
+      } finally {
+        document.getElementById('page-loader').style.display = 'none';
+        document.getElementById('page-content').style.display = 'block';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', initPage);
+
+    async function initUserSession() {
       document.getElementById('auth-section').classList.add('hidden');
       document.getElementById('navbar-container').classList.remove('hidden');
       document.getElementById('dashboard-section').classList.remove('hidden');
       
-      document.getElementById('user-name-display').innerText = currentUser.name;
+      document.getElementById('user-name-display').innerText = currentUser.name || 'Set Name';
       document.getElementById('user-pid-display').innerText = currentUser.punching_id;
-      document.getElementById('drawer-user-name').innerText = currentUser.name;
+      document.getElementById('user-company-display').innerText = currentUser.company_name ? `(${currentUser.company_name})` : '';
+      
+      document.getElementById('drawer-user-name').innerText = currentUser.name || 'User';
+      document.getElementById('drawer-company-name').innerText = currentUser.company_name || '';
       document.getElementById('drawer-user-pid').innerText = `ID: ${currentUser.punching_id}`;
       
       setDefaultMonthFilter();
-      loadDashboard();
+      await loadDashboard();
     }
 
     async function refreshAppData() {
@@ -696,11 +932,94 @@
       document.getElementById('custom-alert-modal').classList.remove('active');
     }
 
+    function openProfileModal() {
+      toggleDrawer(false);
+      if (!currentUser) return;
+      document.getElementById('prof-name').value = currentUser.name || '';
+      document.getElementById('prof-company').value = currentUser.company_name || '';
+      document.getElementById('prof-salary').value = currentUser.monthly_salary || currentUser.salary || '';
+      document.getElementById('prof-ot-rate').value = currentUser.ot_rate_per_hour || currentUser.ot_rate || '';
+      document.getElementById('prof-break-mins').value = (currentUser.break_minutes !== undefined && currentUser.break_minutes !== null) ? currentUser.break_minutes : 60;
+      document.getElementById('profile-settings-modal').classList.add('active');
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profile-settings-modal').classList.remove('active');
+    }
+
+    async function updateUserProfile() {
+      const newName = document.getElementById('prof-name').value.trim();
+      const newCompany = document.getElementById('prof-company').value.trim();
+      const newSalaryStr = document.getElementById('prof-salary').value.trim();
+      const newOtRateStr = document.getElementById('prof-ot-rate').value.trim();
+      const newBreakMinsStr = document.getElementById('prof-break-mins').value.trim();
+
+      if (!newName || !newCompany || !newSalaryStr || !newOtRateStr || !newBreakMinsStr) {
+        return showCustomAlert('Missing Details', 'All profile fields are mandatory. Please fill all fields!', 'danger');
+      }
+
+      const newSalary = parseFloat(newSalaryStr);
+      const newOtRate = parseFloat(newOtRateStr);
+      const newBreakMins = parseFloat(newBreakMinsStr);
+
+      if (isNaN(newSalary) || newSalary <= 0 || isNaN(newOtRate) || newOtRate <= 0 || isNaN(newBreakMins)) {
+        return showCustomAlert('Invalid Data', 'Please enter valid numbers for Salary and Overtime Rate!', 'danger');
+      }
+
+      const btn = document.getElementById('btn-save-profile');
+      const text = document.getElementById('btn-prof-text');
+      const spinner = document.getElementById('btn-prof-spinner');
+
+      btn.disabled = true;
+      text.innerText = "Saving...";
+      spinner.classList.remove('hidden');
+
+      const updatePayload = {
+        name: newName,
+        company_name: newCompany,
+        monthly_salary: newSalary,
+        ot_rate_per_hour: newOtRate,
+        break_minutes: newBreakMins
+      };
+
+      const { error } = await sbClient
+        .from('users')
+        .update(updatePayload)
+        .eq('punching_id', currentUser.punching_id);
+
+      btn.disabled = false;
+      text.innerText = "Save Profile";
+      spinner.classList.add('hidden');
+
+      if (error) {
+        showCustomAlert('Update Failed', error.message, 'danger');
+      } else {
+        currentUser.name = newName;
+        currentUser.company_name = newCompany;
+        currentUser.monthly_salary = newSalary;
+        currentUser.ot_rate_per_hour = newOtRate;
+        currentUser.break_minutes = newBreakMins;
+
+        localStorage.setItem('attendance_pro_user', JSON.stringify(currentUser));
+        
+        closeProfileModal();
+        showCustomAlert('Profile Updated', 'Profile updated successfully! You can now mark attendance.', 'success');
+        
+        document.getElementById('user-name-display').innerText = currentUser.name;
+        document.getElementById('user-company-display').innerText = currentUser.company_name ? `(${currentUser.company_name})` : '';
+        document.getElementById('drawer-user-name').innerText = currentUser.name;
+        document.getElementById('drawer-company-name').innerText = currentUser.company_name || '';
+        
+        loadDashboard();
+        loadHistoryData();
+      }
+    }
+
     function setDefaultMonthFilter() {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      document.getElementById('filter-month').value = `${year}-${month}`;
+      const todayKolkata = getKolkataYMD();
+      const currentYearMonth = todayKolkata.substring(0, 7);
+      document.getElementById('filter-month').value = currentYearMonth;
+      document.getElementById('past-date').value = todayKolkata;
     }
 
     function toggleAuth(showLogin) {
@@ -786,7 +1105,13 @@
       if (error || !data) {
         showCustomAlert('Login Failed', 'Invalid Punching ID or Password!', 'danger');
       } else {
-        currentUser = data;
+        currentUser = {
+          ...data,
+          company_name: data.company_name || '',
+          monthly_salary: data.monthly_salary || data.salary || 0,
+          ot_rate_per_hour: data.ot_rate_per_hour || data.ot_rate || 0,
+          break_minutes: (data.break_minutes !== undefined && data.break_minutes !== null) ? data.break_minutes : 60
+        };
         localStorage.setItem('attendance_pro_user', JSON.stringify(currentUser));
         initUserSession();
       }
@@ -809,27 +1134,32 @@
       let diffMs = outTime - inTime;
       if (diffMs < 0) diffMs += 24 * 60 * 60 * 1000;
       
-      let totalHours = (diffMs / (1000 * 60 * 60));
+      let rawTotalHours = (diffMs / (1000 * 60 * 60));
+      
+      const breakMins = parseFloat(currentUser ? (currentUser.break_minutes !== undefined ? currentUser.break_minutes : 60) : 60);
+      const breakDeductionInHours = breakMins / 60;
+
+      let netWorkedHours = Math.max(0, rawTotalHours - breakDeductionInHours);
       const dayOfWeek = new Date(dateStr).getDay();
 
       let dutyHours = 0, otHours = 0;
       if (dayOfWeek === 0) {
-        otHours = totalHours;
+        dutyHours = 0;
+        otHours = netWorkedHours;
       } else {
-        let actualWorked = Math.max(0, totalHours - 1);
-        if (actualWorked > 8) {
+        if (netWorkedHours > 8) {
           dutyHours = 8;
-          otHours = actualWorked - 8;
+          otHours = netWorkedHours - 8;
         } else {
-          dutyHours = actualWorked;
+          dutyHours = netWorkedHours;
           otHours = 0;
         }
       }
-      return { totalHours, dutyHours, otHours };
+      return { totalHours: rawTotalHours, dutyHours, otHours };
     }
 
     async function handlePunch(type, timeVal) {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getKolkataYMD();
 
       if (type === 'IN') {
         const btn = document.getElementById('btn-punch-in');
@@ -886,6 +1216,11 @@
     }
 
     function openPastDutyModal() {
+      if (isProfileIncomplete()) {
+        showCustomAlert('Profile Update Required', 'Please complete all profile details first!', 'info');
+        openProfileModal();
+        return;
+      }
       toggleDrawer(false);
       document.getElementById('past-duty-modal').classList.add('active');
     }
@@ -985,9 +1320,62 @@
       loadHistoryData();
     }
 
+    function renderAttendanceCards(containerId, history) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+
+      if (!history || history.length === 0) {
+        container.innerHTML = `<div style="text-align:center; color:var(--text-muted); padding: 12px; background:#f8fafc; border-radius:10px; border:1px solid var(--border); font-weight:600; font-size:0.75rem;">No records found for this month</div>`;
+        return;
+      }
+
+      history.forEach(row => {
+        const isAbsent = row.status === 'Absent';
+        
+        const formattedDate = formatDateDDMMYYYY(row.date);
+        const formattedIn = formatTime12Hour(row.punch_in);
+        const formattedOut = formatTime12Hour(row.punch_out);
+
+        const cardHtml = `
+          <div class="attendance-card-item">
+            <div class="att-card-header">
+              <div class="att-card-date">
+                <i class="fa-regular fa-calendar-check" style="color: var(--primary);"></i> ${formattedDate}
+              </div>
+              <span class="status-badge ${isAbsent ? 'absent' : ''}">${row.status || 'Present'}</span>
+            </div>
+            
+            <div class="att-card-body">
+              <div class="att-info-box">
+                <label>In</label>
+                <span>${formattedIn}</span>
+              </div>
+              <div class="att-info-box">
+                <label>Out</label>
+                <span>${formattedOut}</span>
+              </div>
+              <div class="att-info-box">
+                <label>Duty</label>
+                <span>${row.duty_hours || 0}h</span>
+              </div>
+              <div class="att-info-box">
+                <label>OT</label>
+                <span>${row.overtime_hours || 0}h</span>
+              </div>
+            </div>
+
+            <div class="att-card-footer">
+              <button class="btn-edit" onclick="editAttendance(${row.id}, '${row.date}')"><i class="fa-solid fa-pen"></i> Edit</button>
+            </div>
+          </div>
+        `;
+        container.innerHTML += cardHtml;
+      });
+    }
+
     async function loadDashboard() {
       if (!currentUser) return;
-      const today = new Date().toISOString().split('T')[0];
+      const today = getKolkataYMD();
       const { data: todayRec } = await sbClient.from('attendance')
         .select('*').eq('punching_id', currentUser.punching_id).eq('date', today).maybeSingle();
 
@@ -1002,7 +1390,7 @@
       } else if (todayRec.punch_in && !todayRec.punch_out) {
         btnIn.classList.add('hidden');
         btnOut.classList.remove('hidden');
-        statusText.innerText = `Punched IN at ${todayRec.punch_in}. Click Punch Out to finish.`;
+        statusText.innerText = `Punched IN at ${formatTime12Hour(todayRec.punch_in)}. Click Punch Out to finish.`;
       } else {
         btnIn.classList.add('hidden');
         btnOut.classList.add('hidden');
@@ -1022,35 +1410,22 @@
 
       let totalPresent = 0, totalAbsent = 0, totalOT = 0;
 
-      const tbody = document.getElementById('attendance-table-body-dash');
-      tbody.innerHTML = '';
-
       if (history && history.length > 0) {
         history.forEach(row => {
           if (row.status === 'Absent') totalAbsent++;
           else totalPresent++;
-          
           totalOT += parseFloat(row.overtime_hours || 0);
-
-          tbody.innerHTML += `
-            <tr>
-              <td><b>${row.date}</b></td>
-              <td>${row.punch_in || '-'}</td>
-              <td>${row.punch_out || '-'}</td>
-              <td>${row.duty_hours || 0}h</td>
-              <td>${row.overtime_hours || 0}h</td>
-              <td><span class="status-badge" style="${row.status === 'Absent' ? 'background:#fee2e2; color:#991b1b;' : ''}">${row.status || 'Present'}</span></td>
-              <td><button class="btn-edit" onclick="editAttendance(${row.id}, '${row.date}')">Edit</button></td>
-            </tr>
-          `;
         });
-      } else {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding: 20px;">No records found for this month</td></tr>`;
       }
+
+      renderAttendanceCards('attendance-cards-dash', history);
+
+      const estimatedSalary = computeEstimatedSalary(totalPresent, totalOT, currentYearMonth);
 
       document.getElementById('stat-present').innerText = `${totalPresent} Days`;
       document.getElementById('stat-ot').innerText = `${totalOT.toFixed(1)} Hrs`;
       document.getElementById('stat-absent').innerText = `${totalAbsent} Days`;
+      document.getElementById('stat-salary').innerText = `₹${estimatedSalary.toLocaleString('en-IN')}`;
     }
 
     async function loadHistoryData() {
@@ -1068,40 +1443,27 @@
         .lte('date', endDate)
         .order('date', { ascending: false });
 
-      const tbody = document.getElementById('attendance-table-body');
-      tbody.innerHTML = '';
-
       let totalPresent = 0, totalAbsent = 0, totalOT = 0;
       if (history && history.length > 0) {
         history.forEach(row => {
           if (row.status === 'Absent') totalAbsent++;
           else totalPresent++;
-          
           totalOT += parseFloat(row.overtime_hours || 0);
-
-          tbody.innerHTML += `
-            <tr>
-              <td><b>${row.date}</b></td>
-              <td>${row.punch_in || '-'}</td>
-              <td>${row.punch_out || '-'}</td>
-              <td>${row.duty_hours || 0}h</td>
-              <td>${row.overtime_hours || 0}h</td>
-              <td><span class="status-badge" style="${row.status === 'Absent' ? 'background:#fee2e2; color:#991b1b;' : ''}">${row.status || 'Present'}</span></td>
-              <td><button class="btn-edit" onclick="editAttendance(${row.id}, '${row.date}')">Edit</button></td>
-            </tr>
-          `;
         });
-      } else {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding: 20px;">No records found for this month</td></tr>`;
       }
+
+      renderAttendanceCards('attendance-cards-hist', history);
+
+      const estimatedSalary = computeEstimatedSalary(totalPresent, totalOT, selectedMonth);
 
       document.getElementById('hist-present').innerText = `${totalPresent} Days`;
       document.getElementById('hist-ot').innerText = `${totalOT.toFixed(1)} Hrs`;
       document.getElementById('hist-absent').innerText = `${totalAbsent} Days`;
+      document.getElementById('hist-salary').innerText = `₹${estimatedSalary.toLocaleString('en-IN')}`;
     }
 
     async function downloadPDF(type = 'dashboard') {
-      const selectedMonth = type === 'history' ? document.getElementById('filter-month').value : new Date().toISOString().substring(0, 7);
+      const selectedMonth = type === 'history' ? document.getElementById('filter-month').value : getKolkataYMD().substring(0, 7);
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
 
@@ -1109,7 +1471,12 @@
       doc.text(`Attendance Report (${selectedMonth})`, 14, 15);
       doc.setFontSize(11);
       doc.text(`Employee Name: ${currentUser.name}`, 14, 22);
-      doc.text(`Punching ID: ${currentUser.punching_id}`, 14, 28);
+      if (currentUser.company_name) {
+        doc.text(`Company: ${currentUser.company_name}`, 14, 28);
+        doc.text(`Punching ID: ${currentUser.punching_id}`, 14, 34);
+      } else {
+        doc.text(`Punching ID: ${currentUser.punching_id}`, 14, 28);
+      }
 
       const startDate = `${selectedMonth}-01`;
       const endDate = `${selectedMonth}-31`;
@@ -1122,9 +1489,9 @@
         .order('date', { ascending: false });
 
       const tableData = data ? data.map(r => [
-        r.date, 
-        r.punch_in || '-', 
-        r.punch_out || '-', 
+        formatDateDDMMYYYY(r.date), 
+        formatTime12Hour(r.punch_in), 
+        formatTime12Hour(r.punch_out), 
         r.duty_hours || '0', 
         r.overtime_hours || '0', 
         r.status || 'Present'
@@ -1133,7 +1500,7 @@
       doc.autoTable({
         head: [['Date', 'In', 'Out', 'Duty (Hrs)', 'OT (Hrs)', 'Status']],
         body: tableData,
-        startY: 35
+        startY: currentUser.company_name ? 40 : 35
       });
 
       doc.save(`Attendance_${currentUser.punching_id}_${selectedMonth}.pdf`);
