@@ -825,19 +825,24 @@
 
     function shareApp() {
       toggleDrawer(false);
+      const referCode = currentUser ? (currentUser.refer_code || currentUser.punching_id || '') : '';
+      
+      const baseUrl = window.location.origin + window.location.pathname;
+      const shareUrl = referCode ? `${baseUrl}?ref=${encodeURIComponent(referCode)}` : baseUrl;
+
       const shareData = {
         title: 'Attendance Pro',
         text: 'Manage attendance and duty records easily with Attendance Pro App!',
-        url: window.location.href
+        url: shareUrl
       };
 
       if (navigator.share) {
         navigator.share(shareData).catch(() => {});
       } else {
-        navigator.clipboard.writeText(window.location.href).then(() => {
-          showCustomAlert('Link Copied', 'App URL has been copied to clipboard!', 'success');
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          showCustomAlert('Link Copied', 'App Referral URL has been copied to clipboard!', 'success');
         }).catch(() => {
-          showCustomAlert('Share App', `Share this link: ${window.location.href}`, 'info');
+          showCustomAlert('Share App', `Share this link: ${shareUrl}`, 'info');
         });
       }
     }
@@ -867,8 +872,16 @@
 
     async function initPage() {
       try {
+        // AUTO FILL REFERRAL & SWITCH TO REGISTER IF SHARE LINK IS OPENED
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+
         const savedUser = localStorage.getItem('attendance_pro_user');
-        if (savedUser) {
+        
+        if (refCode) {
+          document.getElementById('reg-refer').value = refCode;
+          toggleAuth(false); // Show Registration Page directly
+        } else if (savedUser) {
           currentUser = JSON.parse(savedUser);
           await initUserSession();
         }
