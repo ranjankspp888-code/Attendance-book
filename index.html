@@ -82,23 +82,6 @@
     }
     .user-greeting { font-size: 1.1rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; line-height: 1.2; }
     .emp-id-text { color: var(--text-muted); font-size: 0.75rem; font-weight: 700; margin-top: 2px; }
-    
-    .btn-pencil-icon {
-      background: #f1f5f9;
-      color: var(--primary);
-      border: 1px solid var(--border);
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.85rem;
-      cursor: pointer;
-      box-shadow: none;
-      padding: 0;
-    }
-    .btn-pencil-icon:hover { background: #eff6ff; border-color: #bfdbfe; }
 
     /* Salary Pill Compact Highlight */
     .salary-badge-row {
@@ -201,16 +184,77 @@
     /* Header Navbar */
     #navbar-container { position: sticky; top: 0; z-index: 1000; width: 100%; }
     .navbar { 
-      display: flex; justify-content: space-between; align-items: center; 
-      background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); 
-      padding: 10px 14px; border-bottom: 1px solid var(--border); box-shadow: var(--shadow-sm); width: 100%;
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      background: rgba(255, 255, 255, 0.95); 
+      backdrop-filter: blur(8px); 
+      padding: 10px 14px; 
+      border-bottom: 1px solid var(--border); 
+      box-shadow: var(--shadow-sm); 
+      width: 100%;
     }
-    .nav-brand { font-weight: 800; font-size: 1rem; color: var(--primary); display: flex; align-items: center; gap: 6px; }
-    .hamburger-btn { background: #f1f5f9; border: 1px solid var(--border); font-size: 0.9rem; color: var(--text-main); cursor: pointer; width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .nav-left-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-brand { 
+      font-weight: 800; 
+      font-size: 1rem; 
+      color: var(--primary); 
+      display: flex; 
+      align-items: center; 
+      gap: 6px; 
+    }
+    
+    /* RIGHT SIDE ACTION BUTTONS IN ONE LINE */
+    .nav-right-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-    /* Side Drawer */
-    .side-drawer { position: fixed; top: 0; right: -280px; width: 250px; height: 100%; background: var(--surface); box-shadow: -10px 0 30px rgba(0,0,0,0.1); z-index: 2000; transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; }
-    .side-drawer.open { right: 0; }
+    .nav-icon-btn { 
+      background: #f1f5f9; 
+      border: 1px solid var(--border); 
+      font-size: 0.9rem; 
+      color: var(--text-main); 
+      cursor: pointer; 
+      width: 34px; 
+      height: 34px; 
+      border-radius: 8px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      transition: all 0.2s; 
+    }
+    .nav-icon-btn.support-btn { 
+      color: #2563eb; 
+      background: #eff6ff; 
+      border-color: #bfdbfe; 
+    }
+    .nav-icon-btn.profile-btn { 
+      color: #059669; 
+      background: #ecfdf5; 
+      border-color: #a7f3d0; 
+    }
+
+    /* LEFT SIDE DRAWER */
+    .side-drawer { 
+      position: fixed; 
+      top: 0; 
+      left: -280px;
+      width: 250px; 
+      height: 100%; 
+      background: var(--surface); 
+      box-shadow: 10px 0 30px rgba(0,0,0,0.1); 
+      z-index: 2000; 
+      transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
+      display: flex; 
+      flex-direction: column; 
+    }
+    .side-drawer.open { left: 0; }
     .drawer-header { padding: 14px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
     .drawer-body { padding: 10px; flex: 1; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
     .drawer-item { display: flex; align-items: center; gap: 10px; padding: 10px; font-weight: 600; font-size: 0.8rem; color: var(--text-main); border-radius: var(--radius-md); text-decoration: none; }
@@ -318,17 +362,70 @@
     .time-picker-box { background: #f8fafc; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 8px; margin: 8px 0; }
     .time-picker-box input[type="time"] { font-size: 1.25rem; font-weight: 800; text-align: center; color: #10b981; background: #ffffff; height: 42px; border-radius: 6px; }
 
-    /* PWA Banner */
+    /* ENHANCED PROMINENT PWA INSTALL BANNER */
     .pwa-banner {
-      position: fixed; bottom: 8px; left: 50%; transform: translateX(-50%) translateY(120%); width: calc(100% - 16px); max-width: 420px; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; gap: 8px; z-index: 4000; transition: transform 0.3s;
+      position: fixed; 
+      bottom: 12px; 
+      left: 50%; 
+      transform: translateX(-50%) translateY(140%); 
+      width: calc(100% - 20px); 
+      max-width: 420px; 
+      background: #ffffff; 
+      border: 2px solid #10b981; 
+      border-radius: 18px; 
+      padding: 14px 16px; 
+      box-shadow: 0 15px 35px rgba(16, 185, 129, 0.25), 0 5px 15px rgba(0, 0, 0, 0.08); 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      gap: 12px; 
+      z-index: 4000; 
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     .pwa-banner.show { transform: translateX(-50%) translateY(0); }
-    .pwa-info { display: flex; align-items: center; gap: 8px; }
-    .pwa-icon { width: 30px; height: 30px; border-radius: 6px; }
-    .pwa-text h4 { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
-    .pwa-text p { font-size: 0.625rem; color: var(--text-muted); }
-    .pwa-btns { display: flex; gap: 4px; align-items: center; }
-    .pwa-btns button { padding: 4px 8px; font-size: 0.675rem; width: auto; border-radius: 6px; }
+    .pwa-info { display: flex; align-items: center; gap: 12px; }
+    .pwa-icon { 
+      width: 46px; 
+      height: 46px; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+      flex-shrink: 0;
+    }
+    .pwa-text h4 { font-size: 0.95rem; font-weight: 800; color: #0f172a; line-height: 1.2; }
+    .pwa-text p { font-size: 0.725rem; color: #059669; font-weight: 700; margin-top: 2px; }
+    
+    .pwa-btns { display: flex; gap: 8px; align-items: center; }
+    .pwa-close-btn {
+      background: #f1f5f9;
+      color: #64748b;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.9rem;
+      box-shadow: none;
+    }
+    .pwa-install-action-btn {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+      color: #ffffff !important;
+      padding: 9px 16px !important;
+      font-size: 0.825rem !important;
+      font-weight: 800 !important;
+      border-radius: 10px !important;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+      white-space: nowrap;
+      animation: pulseBtn 2s infinite;
+    }
+
+    @keyframes pulseBtn {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
 
     .hidden { display: none !important; }
     a { color: var(--primary); text-decoration: none; font-weight: 600; }
@@ -345,30 +442,43 @@
 
   <div id="page-content">
 
-    <!-- PWA BANNER -->
+    <!-- PROMINENT ENHANCED PWA BANNER -->
     <div id="pwa-install-banner" class="pwa-banner">
       <div class="pwa-info">
         <img src="https://cdn-icons-png.flaticon.com/512/3652/3652191.png" class="pwa-icon" alt="App Icon">
         <div class="pwa-text">
           <h4>Attendance Pro</h4>
-          <p>Install App for fast access</p>
+          <p><i class="fa-solid fa-bolt"></i> Fast 1-Click Access</p>
         </div>
       </div>
       <div class="pwa-btns">
-        <button class="btn-secondary" onclick="dismissPWA()"><i class="fa-solid fa-xmark"></i></button>
-        <button id="pwa-install-btn" onclick="installPWA()"><i class="fa-solid fa-download"></i> Install</button>
+        <button class="pwa-close-btn" onclick="dismissPWA()"><i class="fa-solid fa-xmark"></i></button>
+        <button id="pwa-install-btn" class="pwa-install-action-btn" onclick="installPWA()"><i class="fa-solid fa-download"></i> INSTALL</button>
       </div>
     </div>
 
     <!-- HEADER NAVBAR -->
     <div id="navbar-container" class="hidden">
       <nav class="navbar">
-        <div class="nav-brand"><i class="fa-solid fa-business-time"></i> Attendance Pro</div>
-        <button class="hamburger-btn" onclick="toggleDrawer(true)"><i class="fa-solid fa-bars"></i></button>
+        <div class="nav-left-group">
+          <button class="nav-icon-btn" onclick="toggleDrawer(true)" title="Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="nav-brand"><i class="fa-solid fa-business-time"></i> Attendance Pro</div>
+        </div>
+        
+        <div class="nav-right-group">
+          <button class="nav-icon-btn profile-btn" onclick="openProfileModal()" title="Edit Profile">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+          <button class="nav-icon-btn support-btn" onclick="openCustomerSupport()" title="Customer Support">
+            <i class="fa-solid fa-headset"></i>
+          </button>
+        </div>
       </nav>
     </div>
 
-    <!-- DRAWER -->
+    <!-- LEFT SIDE DRAWER -->
     <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer(false)"></div>
     <div id="side-drawer" class="side-drawer">
       <div class="drawer-header">
@@ -377,13 +487,14 @@
           <p id="drawer-company-name" style="font-size: 0.75rem; color: var(--primary); font-weight: 700;"></p>
           <p id="drawer-user-pid" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">ID: -</p>
         </div>
-        <button class="hamburger-btn" onclick="toggleDrawer(false)"><i class="fa-solid fa-xmark"></i></button>
+        <button class="nav-icon-btn" onclick="toggleDrawer(false)"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="drawer-body">
         <a href="#" class="drawer-item" onclick="switchView('dashboard'); return false;"><i class="fa-solid fa-house"></i> Dashboard</a>
         <a href="#" class="drawer-item" onclick="switchView('history'); return false;"><i class="fa-solid fa-calendar-days"></i> Attendance History</a>
         <a href="#" class="drawer-item" onclick="openPastDutyModal(); return false;"><i class="fa-solid fa-calendar-plus"></i> Add Past Duty</a>
         <a href="#" class="drawer-item" onclick="openProfileModal(); return false;"><i class="fa-solid fa-user-gear"></i> Profile Settings</a>
+        <a href="#" class="drawer-item" onclick="openCustomerSupport(); return false;"><i class="fa-solid fa-headset"></i> Customer Support</a>
         <a href="#" class="drawer-item" onclick="refreshAppData(); return false;"><i id="drawer-refresh-icon" class="fa-solid fa-arrows-rotate"></i> Refresh Data</a>
         <a href="#" id="drawer-install-item" class="drawer-item hidden" onclick="installPWA(); return false;"><i class="fa-solid fa-mobile-screen-button"></i> Install App</a>
         <a href="#" class="drawer-item" onclick="shareApp(); return false;"><i class="fa-solid fa-share-nodes"></i> Share App</a>
@@ -437,13 +548,12 @@
       <!-- MAIN DASHBOARD -->
       <div id="dashboard-section" class="hidden">
         <div class="card">
-          <!-- CLEAN DASHBOARD HEADER: ONLY NAME, ID, COMPANY NAME & PENCIL ICON -->
+          <!-- CLEAN DASHBOARD HEADER: USER DETAILS -->
           <div class="profile-header">
             <div>
               <h2 class="user-greeting" id="user-name-display">Name</h2>
               <p class="emp-id-text">ID: <span id="user-pid-display"></span> <span id="user-company-display" style="color: var(--primary); font-weight: 700; margin-left: 2px;"></span></p>
             </div>
-            <button onclick="openProfileModal()" class="btn-pencil-icon" title="Edit Profile"><i class="fa-solid fa-pen"></i></button>
           </div>
 
           <!-- EST SALARY IN SINGLE LINE -->
@@ -548,7 +658,7 @@
 
     </div>
 
-    <!-- PROFILE / SALARY SETTINGS MODAL (ALL MANDATORY FIELDS) -->
+    <!-- PROFILE / SALARY SETTINGS MODAL -->
     <div id="profile-settings-modal" class="modal-overlay">
       <div class="custom-modal" style="text-align: left;">
         <h3 class="modal-title" style="margin-bottom: 4px;"><i class="fa-solid fa-user-gear"></i> Update Profile Settings</h3>
@@ -652,6 +762,31 @@
   </div>
 
   <script>
+    // CUSTOMER SUPPORT REDIRECT WITH AUTO-FILLED DETAILS
+    function openCustomerSupport() {
+      const email = "ranjankspp888@gmail.com";
+      const subject = "Attendance Pro - Support Request";
+
+      const userName = currentUser ? (currentUser.name || "Not Provided") : "Not Provided";
+      const userPid = currentUser ? (currentUser.punching_id || "Not Provided") : "Not Provided";
+      const userMobile = currentUser ? (currentUser.mobile || "Not Provided") : "Not Provided";
+
+      const body = `Hello Support Team,
+
+I need assistance with my Attendance Pro account.
+
+--- User Details ---
+Name: ${userName}
+Punching ID: ${userPid}
+Mobile Number: ${userMobile}
+
+--- Message ---
+[Type your issue or query here]`;
+
+      const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailtoUrl;
+    }
+
     // DATE & TIME FORMATTERS FOR ASIA/KOLKATA TIMEZONE
     function getKolkataYMD(dateObj = new Date()) {
       const options = { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -712,7 +847,6 @@
     }
     startLiveClock();
 
-    // Helper to check if user profile is complete
     function isProfileIncomplete() {
       if (!currentUser) return true;
       const name = currentUser.name ? String(currentUser.name).trim() : '';
@@ -804,7 +938,7 @@
       setTimeout(() => {
         document.getElementById('pwa-install-banner').classList.add('show');
         document.getElementById('drawer-install-item').classList.remove('hidden');
-      }, 1000);
+      }, 800);
     });
 
     function installPWA() {
@@ -872,7 +1006,6 @@
 
     async function initPage() {
       try {
-        // AUTO FILL REFERRAL & SWITCH TO REGISTER IF SHARE LINK IS OPENED
         const urlParams = new URLSearchParams(window.location.search);
         const refCode = urlParams.get('ref');
 
@@ -880,7 +1013,7 @@
         
         if (refCode) {
           document.getElementById('reg-refer').value = refCode;
-          toggleAuth(false); // Show Registration Page directly
+          toggleAuth(false);
         } else if (savedUser) {
           currentUser = JSON.parse(savedUser);
           await initUserSession();
