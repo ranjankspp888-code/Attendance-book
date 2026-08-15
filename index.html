@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Attendance Pro</title>
+  <title>Attendance Pro - Modern Dashboard</title>
   
   <meta name="theme-color" content="#10b981">
   <meta name="mobile-web-app-capable" content="yes">
@@ -58,7 +58,6 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background-color: var(--background); color: var(--text-main); line-height: 1.4; padding-bottom: 16px; }
 
-    /* Compact Screen Layout */
     .app-container { max-width: 440px; margin: 0 auto; padding: 8px; }
     
     .card { 
@@ -72,7 +71,6 @@
 
     .auth-card { max-width: 400px; margin: 16px auto; }
 
-    /* Clean Profile Header */
     .profile-header {
       display: flex;
       justify-content: space-between;
@@ -84,7 +82,6 @@
     .user-greeting { font-size: 1.1rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; line-height: 1.2; }
     .emp-id-text { color: var(--text-muted); font-size: 0.75rem; font-weight: 700; margin-top: 2px; }
 
-    /* Salary Pill Compact Highlight */
     .salary-badge-row {
       display: flex;
       align-items: center;
@@ -93,24 +90,24 @@
       border: 1px solid #a7f3d0;
       padding: 6px 12px;
       border-radius: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
     .salary-badge-label { font-size: 0.7rem; font-weight: 800; color: #047857; text-transform: uppercase; letter-spacing: 0.03em; }
     .salary-badge-val { font-size: 0.95rem; font-weight: 800; color: #059669; }
 
-    /* Tighter Single Row Stats Grid */
+    /* Stats Grid Expanded for Night Duty */
     .stats-grid-single { 
       display: grid; 
-      grid-template-columns: repeat(3, 1fr); 
-      gap: 6px; 
+      grid-template-columns: repeat(4, 1fr); 
+      gap: 4px; 
       margin-bottom: 10px; 
     }
     
     .stat-box { 
       background: #f8fafc; 
       border: 1px solid #e2e8f0; 
-      padding: 8px 4px; 
-      border-radius: 10px; 
+      padding: 6px 2px; 
+      border-radius: 8px; 
       text-align: center; 
     }
 
@@ -122,23 +119,26 @@
     .stat-box.ot h4 { color: #1d4ed8; }
     .stat-box.ot p { color: #1e40af; }
 
+    .stat-box.night { background: #faf5ff; border-color: #e9d5ff; }
+    .stat-box.night h4 { color: #7e22ce; }
+    .stat-box.night p { color: #6b21a8; }
+
     .stat-box.absent { background: #fef2f2; border-color: #fecaca; }
     .stat-box.absent h4 { color: #b91c1c; }
     .stat-box.absent p { color: #991b1b; }
 
     .stat-box h4 { 
-      font-size: 0.6rem; 
+      font-size: 0.55rem; 
       font-weight: 800; 
       text-transform: uppercase; 
       letter-spacing: 0.02em; 
       margin-bottom: 1px; 
     }
     .stat-box p { 
-      font-size: 0.85rem; 
+      font-size: 0.75rem; 
       font-weight: 800; 
     }
 
-    /* Form Controls Tighter */
     .form-group { margin-bottom: 10px; text-align: left; }
     .form-group label { display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-main); margin-bottom: 3px; text-transform: uppercase; }
     .form-group label .req { color: #ef4444; margin-left: 2px; }
@@ -187,14 +187,12 @@
     button.btn-secondary:hover { background: #e2e8f0; }
     button.btn-edit { background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; width: auto; padding: 4px 12px; font-size: 0.725rem; box-shadow: none; border-radius: 6px; }
 
-    /* Spinner */
     .spinner {
       width: 14px; height: 14px; border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%;
       border-top-color: #ffffff; animation: spin 0.8s linear infinite; display: inline-block;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Header Navbar */
     #navbar-container { position: sticky; top: 0; z-index: 1000; width: 100%; }
     .navbar { 
       display: flex; 
@@ -207,64 +205,21 @@
       box-shadow: var(--shadow-sm); 
       width: 100%;
     }
-    .nav-left-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .nav-brand { 
-      font-weight: 800; 
-      font-size: 1rem; 
-      color: var(--primary); 
-      display: flex; 
-      align-items: center; 
-      gap: 6px; 
-    }
-    
-    .nav-right-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .nav-left-group { display: flex; align-items: center; gap: 12px; }
+    .nav-brand { font-weight: 800; font-size: 1rem; color: var(--primary); display: flex; align-items: center; gap: 6px; }
+    .nav-right-group { display: flex; align-items: center; gap: 8px; }
 
     .nav-icon-btn { 
-      background: #f1f5f9; 
-      border: 1px solid var(--border); 
-      font-size: 0.9rem; 
-      color: var(--text-main); 
-      cursor: pointer; 
-      width: 34px; 
-      height: 34px; 
-      border-radius: 8px; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      transition: all 0.2s; 
+      background: #f1f5f9; border: 1px solid var(--border); font-size: 0.9rem; color: var(--text-main); cursor: pointer; 
+      width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; 
     }
-    .nav-icon-btn.support-btn { 
-      color: #2563eb; 
-      background: #eff6ff; 
-      border-color: #bfdbfe; 
-    }
-    .nav-icon-btn.profile-btn { 
-      color: #059669; 
-      background: #ecfdf5; 
-      border-color: #a7f3d0; 
-    }
+    .nav-icon-btn.support-btn { color: #2563eb; background: #eff6ff; border-color: #bfdbfe; }
+    .nav-icon-btn.profile-btn { color: #059669; background: #ecfdf5; border-color: #a7f3d0; }
 
-    /* LEFT SIDE DRAWER */
     .side-drawer { 
-      position: fixed; 
-      top: 0; 
-      left: -280px;
-      width: 250px; 
-      height: 100%; 
-      background: var(--surface); 
-      box-shadow: 10px 0 30px rgba(0,0,0,0.1); 
-      z-index: 2000; 
-      transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
-      display: flex; 
-      flex-direction: column; 
+      position: fixed; top: 0; left: -280px; width: 250px; height: 100%; background: var(--surface); 
+      box-shadow: 10px 0 30px rgba(0,0,0,0.1); z-index: 2000; transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
+      display: flex; flex-direction: column; 
     }
     .side-drawer.open { left: 0; }
     .drawer-header { padding: 14px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
@@ -275,67 +230,26 @@
     .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 1500; display: none; }
     .drawer-overlay.active { display: block; }
 
-    /* HIGHLIGHTED CARD */
     .highlight-action-card { 
       background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-      border: 1px solid #334155; 
-      border-radius: 18px; 
-      padding: 14px 12px; 
-      text-align: center; 
-      margin-bottom: 12px; 
-      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1); 
-      position: relative;
-      overflow: hidden;
-    }
-
-    .highlight-action-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 60%);
-      pointer-events: none;
+      border: 1px solid #334155; border-radius: 18px; padding: 14px 12px; text-align: center; margin-bottom: 12px; 
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1); position: relative; overflow: hidden;
     }
 
     .card-title-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: #38bdf8;
-      font-size: 0.7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 8px;
+      display: inline-flex; align-items: center; gap: 6px; color: #38bdf8; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;
     }
 
     .live-clock-container {
-      margin-bottom: 10px; 
-      padding: 5px 12px; 
-      background: rgba(255, 255, 255, 0.07); 
-      border: 1px solid rgba(255, 255, 255, 0.12); 
-      border-radius: 999px; 
-      display: inline-flex; 
-      align-items: center; 
-      gap: 6px; 
-      color: #f8fafc; 
-      font-weight: 700; 
-      font-size: 0.775rem;
-      backdrop-filter: blur(6px);
+      margin-bottom: 10px; padding: 5px 12px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.12); 
+      border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; color: #f8fafc; font-weight: 700; font-size: 0.775rem; backdrop-filter: blur(6px);
     }
     .live-clock-container i { color: #10b981; animation: pulse 2s infinite; }
 
-    @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.4; }
-      100% { opacity: 1; }
-    }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
     .punch-controls { display: flex; gap: 6px; justify-content: center; align-items: center; width: 100%; margin: 0 auto; }
     
-    /* Attendance History List */
     .attendance-cards-list { display: flex; flex-direction: column; gap: 8px; }
     .attendance-card-item {
       background: #ffffff; border: 1px solid var(--border); border-radius: 12px; padding: 10px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 6px;
@@ -354,17 +268,20 @@
       font-size: 0.7rem; font-weight: 600; color: #d97706; background: #fffbebf5; border: 1px solid #fef3c7; padding: 4px 8px; border-radius: 6px; margin-top: 2px;
     }
 
-    .att-card-footer { display: flex; justify-content: flex-end; align-items: center; }
+    .att-card-footer { display: flex; justify-content: space-between; align-items: center; }
+    
+    .status-badges-group { display: flex; gap: 4px; align-items: center; }
     .status-badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 9999px; font-size: 0.65rem; font-weight: 800; background: #d1fae5; color: #065f46; }
     .status-badge.absent { background: #fee2e2; color: #991b1b; }
     .status-badge.leave { background: #fef3c7; color: #92400e; }
+    .status-badge.night { background: #f3e8ff; color: #6b21a8; }
 
-    /* Modals Compact & Modern UI */
     .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(5px); z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 12px; opacity: 0; pointer-events: none; transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(5px); z-index: 3000; 
+      display: flex; align-items: center; justify-content: center; padding: 12px; opacity: 0; pointer-events: none; transition: opacity 0.25s;
     }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
-    .custom-modal { background: #ffffff; border-radius: var(--radius-lg); width: 100%; max-width: 360px; padding: 20px 18px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15), 0 8px 10px -6px rgba(0,0,0,0.1); transform: scale(0.92); transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); text-align: center; border: 1px solid var(--border); }
+    .custom-modal { background: #ffffff; border-radius: var(--radius-lg); width: 100%; max-width: 360px; padding: 20px 18px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15); transform: scale(0.92); transition: transform 0.25s; text-align: center; border: 1px solid var(--border); }
     .modal-overlay.active .custom-modal { transform: scale(1); }
     .modal-icon { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 1.15rem; }
     .modal-icon.info { background: #dbeafe; color: #2563eb; }
@@ -375,66 +292,23 @@
     .modal-message { font-size: 0.775rem; color: var(--text-muted); margin-bottom: 14px; font-weight: 500; }
     .modal-actions { display: flex; gap: 8px; }
 
-    /* Time Picker Box Compact */
     .time-picker-box { background: #f8fafc; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 8px; margin: 8px 0; }
     .time-picker-box input[type="time"] { font-size: 1.25rem; font-weight: 800; text-align: center; color: #10b981; background: #ffffff; height: 42px; border-radius: 6px; }
 
-    /* PWA BANNER - PROMINENT & HIGHLY VISIBLE STYLES */
     .pwa-banner {
-      position: fixed; 
-      bottom: 12px; 
-      left: 50%; 
-      transform: translateX(-50%) translateY(140%); 
-      width: calc(100% - 24px); 
-      max-width: 440px; 
-      background: linear-gradient(135deg, #059669 0%, #10b981 100%); 
-      border: 2px solid #ffffff; 
-      border-radius: 16px; 
-      padding: 14px 16px; 
-      box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4), 0 5px 15px rgba(0, 0, 0, 0.15); 
-      display: flex; 
-      align-items: center; 
-      justify-content: space-between; 
-      gap: 12px; 
-      z-index: 4000; 
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      animation: bannerPulse 2.5s infinite alternate ease-in-out;
+      position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%) translateY(140%); width: calc(100% - 24px); max-width: 440px; 
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%); border: 2px solid #ffffff; border-radius: 16px; padding: 14px 16px; 
+      box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4); display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 4000; transition: transform 0.4s;
     }
     .pwa-banner.show { transform: translateX(-50%) translateY(0); }
     .pwa-info { display: flex; align-items: center; gap: 12px; }
-    .pwa-icon { 
-      width: 44px; 
-      height: 44px; 
-      border-radius: 10px; 
-      border: 2px solid #ffffff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      background: #ffffff;
-    }
-    .pwa-text h4 { font-size: 0.95rem; font-weight: 800; color: #ffffff; letter-spacing: -0.01em; }
+    .pwa-icon { width: 44px; height: 44px; border-radius: 10px; border: 2px solid #ffffff; background: #ffffff; }
+    .pwa-text h4 { font-size: 0.95rem; font-weight: 800; color: #ffffff; }
     .pwa-text p { font-size: 0.725rem; color: #e6fffa; font-weight: 600; }
     .pwa-btns { display: flex; gap: 6px; align-items: center; }
     .pwa-btns button { padding: 8px 14px; font-size: 0.8rem; font-weight: 800; width: auto; border-radius: 10px; }
-    .pwa-btns button.btn-secondary {
-      background: rgba(255, 255, 255, 0.2);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      padding: 8px 10px;
-    }
-    .pwa-btns button.btn-secondary:hover { background: rgba(255, 255, 255, 0.3); }
-    #pwa-install-btn {
-      background: #ffffff !important;
-      color: #059669 !important;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-      border: none;
-    }
-    #pwa-install-btn:active {
-      transform: scale(0.95);
-    }
-
-    @keyframes bannerPulse {
-      0% { box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4), 0 0 0 0 rgba(16, 185, 129, 0.4); }
-      100% { box-shadow: 0 15px 35px rgba(16, 185, 129, 0.6), 0 0 0 8px rgba(16, 185, 129, 0); }
-    }
+    .pwa-btns button.btn-secondary { background: rgba(255, 255, 255, 0.2); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.4); }
+    #pwa-install-btn { background: #ffffff !important; color: #059669 !important; border: none; }
 
     .hidden { display: none !important; }
     a { color: var(--primary); text-decoration: none; font-weight: 600; }
@@ -444,14 +318,12 @@
 </head>
 <body>
 
-  <!-- Loader -->
   <div id="page-loader">
     <div class="page-spinner"></div>
   </div>
 
   <div id="page-content">
 
-    <!-- PWA BANNER -->
     <div id="pwa-install-banner" class="pwa-banner">
       <div class="pwa-info">
         <img src="https://cdn-icons-png.flaticon.com/512/3652/3652191.png" class="pwa-icon" alt="App Icon">
@@ -466,7 +338,6 @@
       </div>
     </div>
 
-    <!-- NAVBAR -->
     <div id="navbar-container" class="hidden">
       <nav class="navbar">
         <div class="nav-left-group">
@@ -487,7 +358,6 @@
       </nav>
     </div>
 
-    <!-- DRAWER -->
     <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer(false)"></div>
     <div id="side-drawer" class="side-drawer">
       <div class="drawer-header">
@@ -515,9 +385,7 @@
     </div>
 
     <div class="app-container">
-      <!-- AUTH SECTION -->
       <div id="auth-section">
-        <!-- LOGIN -->
         <div id="login-box" class="card auth-card">
           <h2 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 2px;">Welcome Back</h2>
           <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 10px;">Sign in with Punching ID or Mobile Number.</p>
@@ -535,7 +403,6 @@
           </div>
         </div>
 
-        <!-- REGISTER -->
         <div id="reg-box" class="card auth-card hidden">
           <h2 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 2px;">Create Account</h2>
           <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 10px;">Fill in details to register.</p>
@@ -554,7 +421,6 @@
         </div>
       </div>
 
-      <!-- MAIN DASHBOARD -->
       <div id="dashboard-section" class="hidden">
         <div class="card">
           <div class="profile-header">
@@ -578,13 +444,16 @@
               <h4>Over Time</h4>
               <p id="stat-ot">0 Hrs</p>
             </div>
+            <div class="stat-box night">
+              <h4>Night Duty</h4>
+              <p id="stat-night">0 Shifts</p>
+            </div>
             <div class="stat-box absent">
               <h4>Absent</h4>
               <p id="stat-absent">0 Days</p>
             </div>
           </div>
 
-          <!-- HIGHLIGHTED RECORD ATTENDANCE CARD -->
           <div class="highlight-action-card">
             <div class="card-title-badge">
               <i class="fa-solid fa-bolt"></i> Quick Attendance Action
@@ -616,7 +485,6 @@
             <p id="punch-status" style="font-weight:700; color:#cbd5e1; margin-top:8px; font-size:0.725rem;"></p>
           </div>
 
-          <!-- RECENT ATTENDANCE LIST -->
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
               <h3 style="font-size: 0.875rem; font-weight: 800;">Recent History</h3>
@@ -629,7 +497,6 @@
         </div>
       </div>
 
-      <!-- ATTENDANCE HISTORY VIEW -->
       <div id="history-section" class="hidden">
         <div class="card">
           <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 2px;">Attendance History</h2>
@@ -653,6 +520,10 @@
             <div class="stat-box ot">
               <h4>Over Time</h4>
               <p id="hist-ot">0 Hrs</p>
+            </div>
+            <div class="stat-box night">
+              <h4>Night Duty</h4>
+              <p id="hist-night">0 Shifts</p>
             </div>
             <div class="stat-box absent">
               <h4>Absent</h4>
@@ -693,6 +564,10 @@
           <input type="number" id="prof-ot-rate" placeholder="e.g. 144" required>
         </div>
         <div class="form-group">
+          <label>Night Duty Rate Per Shift (₹) <span class="req">*</span></label>
+          <input type="number" id="prof-night-rate" placeholder="e.g. 200" required>
+        </div>
+        <div class="form-group">
           <label>Break Time Deduction (In Mins) <span class="req">*</span></label>
           <input type="number" id="prof-break-mins" placeholder="e.g. 30 or 60" required>
         </div>
@@ -706,7 +581,6 @@
       </div>
     </div>
 
-    <!-- CLOCK SELECTOR MODAL -->
     <div id="clock-window-modal" class="modal-overlay">
       <div class="custom-modal">
         <div class="modal-icon info" style="background: #dcfce7; color: #10b981;"><i class="fa-regular fa-clock"></i></div>
@@ -726,7 +600,6 @@
       </div>
     </div>
 
-    <!-- LEAVE REMARK MODAL (PROFESSIONALLY ADJUSTED) -->
     <div id="leave-modal" class="modal-overlay">
       <div class="custom-modal" style="text-align: left;">
         <div class="modal-icon warning" style="margin: 0 auto 10px; background: #fff7ed; color: #d97706; border: 1px solid #ffedd5;"><i class="fa-solid fa-umbrella-beach"></i></div>
@@ -735,7 +608,7 @@
         
         <div class="form-group">
           <label>Leave Remark / Reason <span class="req">*</span></label>
-          <input type="text" id="leave-remark-input" placeholder="e.g. Holiday, Sick Leave, Paid Leave..." required />
+          <input type="text" id="leave-remark-input" placeholder="e.g. Holiday, Sick Leave..." required />
         </div>
 
         <div class="modal-actions" style="margin-top: 14px;">
@@ -748,7 +621,6 @@
       </div>
     </div>
 
-    <!-- CUSTOM ALERT MODAL -->
     <div id="custom-alert-modal" class="modal-overlay">
       <div class="custom-modal">
         <div id="alert-icon" class="modal-icon info"><i id="alert-icon-i" class="fa-solid fa-info"></i></div>
@@ -758,13 +630,12 @@
       </div>
     </div>
 
-    <!-- ADD PAST DUTY MODAL -->
     <div id="past-duty-modal" class="modal-overlay">
       <div class="custom-modal" style="text-align: left;">
         <h3 class="modal-title" style="margin-bottom: 8px;">Add Past Duty Record</h3>
-        <div class="form-group"><label>Select Date</label><input type="date" id="past-date"></div>
-        <div class="form-group"><label>Punch IN Time</label><input type="time" id="past-in-time" value="08:30"></div>
-        <div class="form-group"><label>Punch OUT Time</label><input type="time" id="past-out-time" value="17:30"></div>
+        <div class="form-group"><label>Select Start Date (Punch IN Date)</label><input type="date" id="past-date"></div>
+        <div class="form-group"><label>Punch IN Time</label><input type="time" id="past-in-time" value="20:00"></div>
+        <div class="form-group"><label>Punch OUT Time (Can be next morning)</label><input type="time" id="past-out-time" value="08:00"></div>
         <div class="modal-actions" style="margin-top: 10px;">
           <button class="btn-secondary" style="flex:1;" onclick="closePastDutyModal()">Cancel</button>
           <button id="btn-save-past" style="flex:1;" onclick="submitPastDuty()">
@@ -775,7 +646,6 @@
       </div>
     </div>
 
-    <!-- EDIT ATTENDANCE MODAL (PROFESSIONALLY ADJUSTED) -->
     <div id="edit-duty-modal" class="modal-overlay">
       <div class="custom-modal" style="text-align: left;">
         <h3 class="modal-title" style="margin-bottom: 10px; font-size: 1.05rem;"><i class="fa-solid fa-pen-to-square" style="color: var(--primary);"></i> Edit Attendance Record</h3>
@@ -798,7 +668,7 @@
         
         <div class="form-group">
           <label>Remark / Note</label>
-          <input type="text" id="edit-remark-input" placeholder="e.g. Holiday, Sick Leave, Casual Leave, etc.">
+          <input type="text" id="edit-remark-input" placeholder="e.g. Holiday, Sick Leave...">
         </div>
         
         <div class="modal-actions" style="margin-top: 14px;">
@@ -822,17 +692,7 @@
       const userPid = currentUser ? (currentUser.punching_id || "Not Provided") : "Not Provided";
       const userMobile = currentUser ? (currentUser.mobile || "Not Provided") : "Not Provided";
 
-      const body = `Hello Support Team,
-
-I need assistance with my Attendance Pro account.
-
---- User Details ---
-Name: ${userName}
-Punching ID: ${userPid}
-Mobile Number: ${userMobile}
-
---- Message ---
-[Type your issue or query here]`;
+      const body = `Hello Support Team,\n\nI need assistance with my Attendance Pro account.\n\n--- User Details ---\nName: ${userName}\nPunching ID: ${userPid}\nMobile Number: ${userMobile}\n\n--- Message ---\n[Type your issue or query here]`;
 
       const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       window.location.href = mailtoUrl;
@@ -903,9 +763,10 @@ Mobile Number: ${userMobile}
       const company = currentUser.company_name ? String(currentUser.company_name).trim() : '';
       const salary = parseFloat(currentUser.monthly_salary || currentUser.salary || 0);
       const ot = parseFloat(currentUser.ot_rate_per_hour || currentUser.ot_rate || 0);
+      const nightRate = parseFloat(currentUser.night_rate || 0);
       const breakMins = currentUser.break_minutes;
 
-      return (!name || !company || isNaN(salary) || salary <= 0 || isNaN(ot) || ot <= 0 || breakMins === undefined || breakMins === null || breakMins === '');
+      return (!name || !company || isNaN(salary) || salary <= 0 || isNaN(ot) || ot <= 0 || isNaN(nightRate) || breakMins === undefined || breakMins === null || breakMins === '');
     }
 
     function openClockWindow(type) {
@@ -930,8 +791,7 @@ Mobile Number: ${userMobile}
       document.getElementById('clock-time-input').value = `${hours}:${minutes}`;
       document.getElementById('clock-modal-title').innerText = type === 'IN' ? 'Punch IN Time' : 'Punch OUT Time';
       
-      const clockModal = document.getElementById('clock-window-modal');
-      clockModal.classList.add('active');
+      document.getElementById('clock-window-modal').classList.add('active');
     }
 
     function closeClockWindow() {
@@ -947,14 +807,12 @@ Mobile Number: ${userMobile}
       }
     }
 
-    // LEAVE MODAL FUNCTIONS (WITH AUTOMATIC 'Holiday' DEFAULT VALUE)
     function openLeaveModal() {
       if (isProfileIncomplete()) {
         showCustomAlert('Profile Update Required', 'Please complete all profile details first!', 'info');
         openProfileModal();
         return;
       }
-      // Leave button click karte hi Remark me default "Holiday" fill ho jayega
       document.getElementById('leave-remark-input').value = 'Holiday';
       document.getElementById('leave-modal').classList.add('active');
     }
@@ -979,10 +837,8 @@ Mobile Number: ${userMobile}
 
       const today = getKolkataYMD();
 
-      // Clear existing record for today if exists
       await sbClient.from('attendance').delete().eq('punching_id', currentUser.punching_id).eq('date', today);
 
-      // Save Leave with NULL times to prevent SQL time syntax errors
       const { error } = await sbClient.from('attendance').insert([{
         punching_id: currentUser.punching_id,
         date: today,
@@ -991,6 +847,7 @@ Mobile Number: ${userMobile}
         total_hours: 8,
         duty_hours: 8,
         overtime_hours: 0,
+        is_night_duty: false,
         status: 'Leave',
         remark: remark
       }]);
@@ -1066,7 +923,6 @@ Mobile Number: ${userMobile}
     function shareApp() {
       toggleDrawer(false);
       const referCode = currentUser ? (currentUser.refer_code || currentUser.punching_id || '') : '';
-      
       const baseUrl = window.location.origin + window.location.pathname;
       const shareUrl = referCode ? `${baseUrl}?ref=${encodeURIComponent(referCode)}` : baseUrl;
 
@@ -1093,11 +949,13 @@ Mobile Number: ${userMobile}
     const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let currentUser = null;
 
-    function computeEstimatedSalary(totalPresent, totalOT, monthStr) {
+    // COMPUTE SALARY WITH NIGHT DUTY INCLUDED
+    function computeEstimatedSalary(totalPresent, totalOT, totalNightShifts) {
       if (!currentUser) return 0;
 
       const monthlySalary = parseFloat(currentUser.monthly_salary || currentUser.salary || 0);
       const hourlyOtRate = parseFloat(currentUser.ot_rate_per_hour || currentUser.ot_rate || 0);
+      const nightRate = parseFloat(currentUser.night_rate || 0);
 
       if (isNaN(monthlySalary) || monthlySalary === 0) return 0;
 
@@ -1106,15 +964,15 @@ Mobile Number: ${userMobile}
       
       const totalDutySalary = totalPresent * perDayRate;
       const totalOTAmount = totalOT * (isNaN(hourlyOtRate) ? 0 : hourlyOtRate);
+      const totalNightAmount = totalNightShifts * (isNaN(nightRate) ? 0 : nightRate);
 
-      return Math.round(totalDutySalary + totalOTAmount);
+      return Math.round(totalDutySalary + totalOTAmount + totalNightAmount);
     }
 
     async function initPage() {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const refCode = urlParams.get('ref');
-
         const savedUser = localStorage.getItem('attendance_pro_user');
         
         if (refCode) {
@@ -1192,6 +1050,7 @@ Mobile Number: ${userMobile}
       document.getElementById('prof-company').value = currentUser.company_name || '';
       document.getElementById('prof-salary').value = currentUser.monthly_salary || currentUser.salary || '';
       document.getElementById('prof-ot-rate').value = currentUser.ot_rate_per_hour || currentUser.ot_rate || '';
+      document.getElementById('prof-night-rate').value = currentUser.night_rate || '';
       document.getElementById('prof-break-mins').value = (currentUser.break_minutes !== undefined && currentUser.break_minutes !== null) ? currentUser.break_minutes : 60;
       document.getElementById('profile-settings-modal').classList.add('active');
     }
@@ -1205,18 +1064,20 @@ Mobile Number: ${userMobile}
       const newCompany = document.getElementById('prof-company').value.trim();
       const newSalaryStr = document.getElementById('prof-salary').value.trim();
       const newOtRateStr = document.getElementById('prof-ot-rate').value.trim();
+      const newNightRateStr = document.getElementById('prof-night-rate').value.trim();
       const newBreakMinsStr = document.getElementById('prof-break-mins').value.trim();
 
-      if (!newName || !newCompany || !newSalaryStr || !newOtRateStr || !newBreakMinsStr) {
+      if (!newName || !newCompany || !newSalaryStr || !newOtRateStr || !newNightRateStr || !newBreakMinsStr) {
         return showCustomAlert('Missing Details', 'All profile fields are mandatory. Please fill all fields!', 'danger');
       }
 
       const newSalary = parseFloat(newSalaryStr);
       const newOtRate = parseFloat(newOtRateStr);
+      const newNightRate = parseFloat(newNightRateStr);
       const newBreakMins = parseFloat(newBreakMinsStr);
 
-      if (isNaN(newSalary) || newSalary <= 0 || isNaN(newOtRate) || newOtRate <= 0 || isNaN(newBreakMins)) {
-        return showCustomAlert('Invalid Data', 'Please enter valid numbers for Salary and Overtime Rate!', 'danger');
+      if (isNaN(newSalary) || newSalary <= 0 || isNaN(newOtRate) || isNaN(newNightRate) || isNaN(newBreakMins)) {
+        return showCustomAlert('Invalid Data', 'Please enter valid numbers for salary and rates!', 'danger');
       }
 
       const btn = document.getElementById('btn-save-profile');
@@ -1232,6 +1093,7 @@ Mobile Number: ${userMobile}
         company_name: newCompany,
         monthly_salary: newSalary,
         ot_rate_per_hour: newOtRate,
+        night_rate: newNightRate,
         break_minutes: newBreakMins
       };
 
@@ -1251,6 +1113,7 @@ Mobile Number: ${userMobile}
         currentUser.company_name = newCompany;
         currentUser.monthly_salary = newSalary;
         currentUser.ot_rate_per_hour = newOtRate;
+        currentUser.night_rate = newNightRate;
         currentUser.break_minutes = newBreakMins;
 
         localStorage.setItem('attendance_pro_user', JSON.stringify(currentUser));
@@ -1363,6 +1226,7 @@ Mobile Number: ${userMobile}
           company_name: data.company_name || '',
           monthly_salary: data.monthly_salary || data.salary || 0,
           ot_rate_per_hour: data.ot_rate_per_hour || data.ot_rate || 0,
+          night_rate: data.night_rate || 0,
           break_minutes: (data.break_minutes !== undefined && data.break_minutes !== null) ? data.break_minutes : 60
         };
         localStorage.setItem('attendance_pro_user', JSON.stringify(currentUser));
@@ -1381,14 +1245,20 @@ Mobile Number: ${userMobile}
       toggleAuth(true);
     }
 
+    // UPDATED CALCULATION LOGIC FOR NIGHT DUTY & OVERNIGHT SHIFTS
     function calculateHours(punchIn, punchOut, dateStr) {
-      if (!punchIn || !punchOut || punchIn === '-' || punchOut === '-') return { totalHours: 0, dutyHours: 0, otHours: 0 };
+      if (!punchIn || !punchOut || punchIn === '-' || punchOut === '-') return { totalHours: 0, dutyHours: 0, otHours: 0, isNight: false };
       
-      const inTime = new Date(`${dateStr}T${punchIn}`);
-      const outTime = new Date(`${dateStr}T${punchOut}`);
-      let diffMs = outTime - inTime;
-      if (diffMs < 0) diffMs += 24 * 60 * 60 * 1000;
+      const inDateTime = new Date(`${dateStr}T${punchIn}`);
+      let outDateTime = new Date(`${dateStr}T${punchOut}`);
       
+      // If punch out time is earlier or equal to punch in time, it means shift ended the next morning
+      let isOvernight = outDateTime <= inDateTime;
+      if (isOvernight) {
+        outDateTime.setDate(outDateTime.getDate() + 1);
+      }
+
+      let diffMs = outDateTime - inDateTime;
       let rawTotalHours = (diffMs / (1000 * 60 * 60));
       
       const breakMins = parseFloat(currentUser ? (currentUser.break_minutes !== undefined ? currentUser.break_minutes : 60) : 60);
@@ -1410,7 +1280,12 @@ Mobile Number: ${userMobile}
           otHours = 0;
         }
       }
-      return { totalHours: rawTotalHours, dutyHours, otHours };
+
+      // Night Duty detection: Started in evening/night (e.g. >= 18:00 or 6 PM) or is overnight shift
+      const inHour = parseInt(punchIn.split(':')[0], 10);
+      let isNight = isOvernight || (inHour >= 18 || inHour < 5);
+
+      return { totalHours: rawTotalHours, dutyHours, otHours, isNight };
     }
 
     async function handlePunch(type, timeVal) {
@@ -1426,7 +1301,7 @@ Mobile Number: ${userMobile}
         spinner.classList.remove('hidden');
 
         const { error } = await sbClient.from('attendance').insert([
-          { punching_id: currentUser.punching_id, date: today, punch_in: timeVal, status: 'Present' }
+          { punching_id: currentUser.punching_id, date: today, punch_in: timeVal, status: 'Present', is_night_duty: false }
         ]);
 
         btn.disabled = false;
@@ -1454,7 +1329,8 @@ Mobile Number: ${userMobile}
             punch_out: timeVal,
             total_hours: calc.totalHours.toFixed(2),
             duty_hours: calc.dutyHours.toFixed(2),
-            overtime_hours: calc.otHours.toFixed(2)
+            overtime_hours: calc.otHours.toFixed(2),
+            is_night_duty: calc.isNight
           }).eq('id', data.id);
 
           btn.disabled = false;
@@ -1511,6 +1387,7 @@ Mobile Number: ${userMobile}
         total_hours: calc.totalHours.toFixed(2),
         duty_hours: calc.dutyHours.toFixed(2),
         overtime_hours: calc.otHours.toFixed(2),
+        is_night_duty: calc.isNight,
         status: 'Present'
       }]);
 
@@ -1539,7 +1416,6 @@ Mobile Number: ${userMobile}
       document.getElementById('edit-duty-modal').classList.add('active');
     }
 
-    // TOGGLE EDIT TIME INPUTS & AUTO-SET REMARK TO 'Holiday' IF LEAVE CHOSEN
     function toggleEditTimeInputs() {
       const status = document.getElementById('edit-status-select').value;
       const timeFields = document.getElementById('edit-time-fields');
@@ -1548,7 +1424,6 @@ Mobile Number: ${userMobile}
       if (status === 'Leave' || status === 'Absent') {
         timeFields.style.display = 'none';
         if (status === 'Leave') {
-          // Status 'Leave' hone par 'Holiday' set hoga, auto editable
           remarkInput.value = 'Holiday';
         } else if (status === 'Absent' && remarkInput.value === 'Holiday') {
           remarkInput.value = '';
@@ -1579,7 +1454,7 @@ Mobile Number: ${userMobile}
 
       btn.disabled = true;
       text.innerText = "Updating...";
-      spinner.classList.remove('hidden');
+      spinner.classList.add('hidden');
 
       let updatePayload = {};
 
@@ -1591,6 +1466,7 @@ Mobile Number: ${userMobile}
           total_hours: 8,
           duty_hours: 8,
           overtime_hours: 0,
+          is_night_duty: false,
           remark: remark
         };
       } else if (status === 'Absent') {
@@ -1601,6 +1477,7 @@ Mobile Number: ${userMobile}
           total_hours: 0,
           duty_hours: 0,
           overtime_hours: 0,
+          is_night_duty: false,
           remark: remark
         };
       } else {
@@ -1617,6 +1494,7 @@ Mobile Number: ${userMobile}
           total_hours: calc.totalHours.toFixed(2),
           duty_hours: calc.dutyHours.toFixed(2),
           overtime_hours: calc.otHours.toFixed(2),
+          is_night_duty: calc.isNight,
           status: 'Present',
           remark: remark
         };
@@ -1646,6 +1524,7 @@ Mobile Number: ${userMobile}
       history.forEach(row => {
         const isAbsent = row.status === 'Absent';
         const isLeave = row.status === 'Leave';
+        const isNight = row.is_night_duty === true;
         
         let statusBadgeClass = '';
         if (isAbsent) statusBadgeClass = 'absent';
@@ -1661,7 +1540,10 @@ Mobile Number: ${userMobile}
               <div class="att-card-date">
                 <i class="fa-regular fa-calendar-check" style="color: var(--primary);"></i> ${formattedDate}
               </div>
-              <span class="status-badge ${statusBadgeClass}">${row.status || 'Present'}</span>
+              <div class="status-badges-group">
+                ${isNight ? '<span class="status-badge night"><i class="fa-solid fa-moon"></i> Night Duty</span>' : ''}
+                <span class="status-badge ${statusBadgeClass}">${row.status || 'Present'}</span>
+              </div>
             </div>
             
             <div class="att-card-body">
@@ -1686,6 +1568,9 @@ Mobile Number: ${userMobile}
             ${row.remark ? `<div class="att-remark-box"><i class="fa-solid fa-comment-dots"></i> Remark: ${row.remark}</div>` : ''}
 
             <div class="att-card-footer">
+              <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700;">
+                ${isNight ? `Night Rate: ₹${currentUser.night_rate || 0}` : ''}
+              </span>
               <button class="btn-edit" onclick="editAttendance(${row.id}, '${row.date}', '${row.status}', '${row.remark || ''}')"><i class="fa-solid fa-pen"></i> Edit</button>
             </div>
           </div>
@@ -1714,7 +1599,7 @@ Mobile Number: ${userMobile}
         btnIn.classList.add('hidden');
         btnOut.classList.add('hidden');
         btnLeave.classList.add('hidden');
-        statusText.innerText = `Today on LEAVE (1 Day Duty, Reason: ${todayRec.remark || 'N/A'})`;
+        statusText.innerText = `Today on LEAVE (Reason: ${todayRec.remark || 'N/A'})`;
       } else if (todayRec.punch_in && (!todayRec.punch_out || todayRec.punch_out === '-')) {
         btnIn.classList.add('hidden');
         btnOut.classList.remove('hidden');
@@ -1724,7 +1609,7 @@ Mobile Number: ${userMobile}
         btnIn.classList.add('hidden');
         btnOut.classList.add('hidden');
         btnLeave.classList.add('hidden');
-        statusText.innerText = `Today's Shift Complete (${todayRec.duty_hours || 8} hrs duty, ${todayRec.overtime_hours || 0} hrs OT)`;
+        statusText.innerText = `Shift Complete (${todayRec.is_night_duty ? 'Night Duty' : 'Day Duty'})`;
       }
 
       const currentYearMonth = today.substring(0, 7);
@@ -1738,22 +1623,24 @@ Mobile Number: ${userMobile}
         .lte('date', endDate)
         .order('date', { ascending: false });
 
-      let totalPresent = 0, totalAbsent = 0, totalOT = 0;
+      let totalPresent = 0, totalAbsent = 0, totalOT = 0, totalNight = 0;
 
       if (history && history.length > 0) {
         history.forEach(row => {
           if (row.status === 'Absent') totalAbsent++;
-          else if (row.status === 'Present' || row.status === 'Leave') totalPresent++; // Leave is counted as Present Day
+          else if (row.status === 'Present' || row.status === 'Leave') totalPresent++;
           totalOT += parseFloat(row.overtime_hours || 0);
+          if (row.is_night_duty) totalNight++;
         });
       }
 
       renderAttendanceCards('attendance-cards-dash', history);
 
-      const estimatedSalary = computeEstimatedSalary(totalPresent, totalOT, currentYearMonth);
+      const estimatedSalary = computeEstimatedSalary(totalPresent, totalOT, totalNight);
 
       document.getElementById('stat-present').innerText = `${totalPresent} Days`;
       document.getElementById('stat-ot').innerText = `${totalOT.toFixed(1)} Hrs`;
+      document.getElementById('stat-night').innerText = `${totalNight} Shifts`;
       document.getElementById('stat-absent').innerText = `${totalAbsent} Days`;
       document.getElementById('stat-salary').innerText = `₹${estimatedSalary.toLocaleString('en-IN')}`;
     }
@@ -1773,21 +1660,23 @@ Mobile Number: ${userMobile}
         .lte('date', endDate)
         .order('date', { ascending: false });
 
-      let totalPresent = 0, totalAbsent = 0, totalOT = 0;
+      let totalPresent = 0, totalAbsent = 0, totalOT = 0, totalNight = 0;
       if (history && history.length > 0) {
         history.forEach(row => {
           if (row.status === 'Absent') totalAbsent++;
-          else if (row.status === 'Present' || row.status === 'Leave') totalPresent++; // Leave is counted as Present Day
+          else if (row.status === 'Present' || row.status === 'Leave') totalPresent++;
           totalOT += parseFloat(row.overtime_hours || 0);
+          if (row.is_night_duty) totalNight++;
         });
       }
 
       renderAttendanceCards('attendance-cards-hist', history);
 
-      const estimatedSalary = computeEstimatedSalary(totalPresent, totalOT, selectedMonth);
+      const estimatedSalary = computeEstimatedSalary(totalPresent, totalOT, totalNight);
 
       document.getElementById('hist-present').innerText = `${totalPresent} Days`;
       document.getElementById('hist-ot').innerText = `${totalOT.toFixed(1)} Hrs`;
+      document.getElementById('hist-night').innerText = `${totalNight} Shifts`;
       document.getElementById('hist-absent').innerText = `${totalAbsent} Days`;
       document.getElementById('hist-salary').innerText = `₹${estimatedSalary.toLocaleString('en-IN')}`;
     }
@@ -1824,12 +1713,13 @@ Mobile Number: ${userMobile}
         formatTime12Hour(r.punch_out), 
         r.duty_hours || '0', 
         r.overtime_hours || '0', 
+        r.is_night_duty ? 'Yes (Night)' : 'No',
         r.status || 'Present',
         r.remark || '-'
       ]) : [];
 
       doc.autoTable({
-        head: [['Date', 'In', 'Out', 'Duty (Hrs)', 'OT (Hrs)', 'Status', 'Remark']],
+        head: [['Date', 'In', 'Out', 'Duty', 'OT', 'Night Duty', 'Status', 'Remark']],
         body: tableData,
         startY: currentUser.company_name ? 40 : 35
       });
