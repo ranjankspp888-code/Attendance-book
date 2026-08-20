@@ -95,7 +95,6 @@
     .salary-badge-label { font-size: 0.7rem; font-weight: 800; color: #047857; text-transform: uppercase; letter-spacing: 0.03em; }
     .salary-badge-val { font-size: 0.95rem; font-weight: 800; color: #059669; }
 
-    /* Stats Grid Expanded for Night Duty */
     .stats-grid-single { 
       display: grid; 
       grid-template-columns: repeat(4, 1fr); 
@@ -293,7 +292,86 @@
     .modal-actions { display: flex; gap: 8px; }
 
     .time-picker-box { background: #f8fafc; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 8px; margin: 8px 0; }
-    .time-picker-box input[type="time"] { font-size: 1.25rem; font-weight: 800; text-align: center; color: #10b981; background: #ffffff; height: 42px; border-radius: 6px; }
+    .time-picker-box input[type="time"] { font-size: 1.25rem; font-weight: 800; text-align: center; color: #10b981; background: #ffffff; height: 42px; border-radius: 6px; cursor: pointer; }
+
+    /* Instant Progress Overlay */
+    .instant-progress-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 10px;
+    }
+    .instant-progress-spinner {
+      width: 42px;
+      height: 42px;
+      border: 4px solid #e2e8f0;
+      border-top: 4px solid #10b981;
+      border-radius: 50%;
+      animation: pageSpin 0.7s linear infinite;
+      margin-bottom: 12px;
+    }
+
+    .success-checkmark {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 12px;
+    }
+    .check-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      stroke-width: 3;
+      stroke: #10b981;
+      stroke-miterlimit: 10;
+      box-shadow: inset 0px 0px 0px #10b981;
+      animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+    }
+    .check-icon .icon-circle {
+      stroke-dasharray: 166;
+      stroke-dashoffset: 166;
+      stroke-width: 3;
+      stroke-miterlimit: 10;
+      stroke: #10b981;
+      fill: none;
+      animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+    .check-icon .icon-check {
+      transform-origin: 50% 50%;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+    }
+    @keyframes stroke {
+      100% { stroke-dashoffset: 0; }
+    }
+    @keyframes scale {
+      0%, 100% { transform: none; }
+      50% { transform: scale3d(1.1, 1.1, 1); }
+    }
+    @keyframes fill {
+      100% { box-shadow: inset 0px 0px 0px 30px #d1fae5; }
+    }
+
+    .punch-success-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 10px;
+      margin: 12px 0;
+      text-align: left;
+    }
+    .punch-success-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 0.775rem;
+    }
+    .punch-success-row:last-child { border-bottom: none; }
+    .punch-success-label { font-weight: 700; color: var(--text-muted); }
+    .punch-success-val { font-weight: 800; color: var(--text-main); }
 
     .pwa-banner {
       position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%) translateY(140%); width: calc(100% - 24px); max-width: 440px; 
@@ -565,11 +643,11 @@
         </div>
         <div class="form-group">
           <label>Night Duty Rate Per Shift (₹) <span class="req">*</span></label>
-          <input type="number" id="prof-night-rate" placeholder="e.g. 200" required>
+          <input type="number" id="prof-night-rate" placeholder="e.g. 200 (Can be 0)" required>
         </div>
         <div class="form-group">
           <label>Break Time Deduction (In Mins) <span class="req">*</span></label>
-          <input type="number" id="prof-break-mins" placeholder="e.g. 30 or 60" required>
+          <input type="number" id="prof-break-mins" placeholder="e.g. 30 or 0" required>
         </div>
         <div class="modal-actions" style="margin-top: 10px;">
           <button class="btn-secondary" style="flex:1;" onclick="closeProfileModal()">Cancel</button>
@@ -581,6 +659,7 @@
       </div>
     </div>
 
+    <!-- CLOCK WINDOW MODAL -->
     <div id="clock-window-modal" class="modal-overlay">
       <div class="custom-modal">
         <div class="modal-icon info" style="background: #dcfce7; color: #10b981;"><i class="fa-regular fa-clock"></i></div>
@@ -597,6 +676,57 @@
           <button class="btn-secondary" style="flex:1;" onclick="closeClockWindow()">Cancel</button>
           <button style="flex:1; background: var(--punch-in-gradient);" onclick="confirmClockPunch()">OK</button>
         </div>
+      </div>
+    </div>
+
+    <!-- INSTANT PROGRESS WINDOW MODAL -->
+    <div id="instant-progress-modal" class="modal-overlay">
+      <div class="custom-modal">
+        <div class="instant-progress-box">
+          <div class="instant-progress-spinner"></div>
+          <h3 class="modal-title" id="instant-progress-text" style="color: #059669;">Recording Punch...</h3>
+          <p style="font-size: 0.725rem; color: var(--text-muted); margin-top: 4px;">Please wait a moment</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PUNCH SUCCESS ANIMATED MODAL -->
+    <div id="punch-success-modal" class="modal-overlay">
+      <div class="custom-modal">
+        <div class="success-checkmark">
+          <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle class="icon-circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="icon-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        </div>
+        <h3 class="modal-title" id="punch-success-title" style="color: #059669;">Punch Recorded!</h3>
+        
+        <div class="punch-success-card">
+          <div class="punch-success-row">
+            <span class="punch-success-label">Date & Day</span>
+            <span class="punch-success-val" id="ps-date-day">-</span>
+          </div>
+          <div class="punch-success-row">
+            <span class="punch-success-label">Punch Time</span>
+            <span class="punch-success-val" id="ps-time" style="color: #2563eb;">-</span>
+          </div>
+          
+          <!-- Only Out Punch Rows -->
+          <div class="punch-success-row" id="ps-duty-row">
+            <span class="punch-success-label">Duty Hours</span>
+            <span class="punch-success-val" id="ps-duty">-</span>
+          </div>
+          <div class="punch-success-row" id="ps-ot-row">
+            <span class="punch-success-label">OT Hours</span>
+            <span class="punch-success-val" id="ps-ot">-</span>
+          </div>
+          <div class="punch-success-row" id="ps-night-row">
+            <span class="punch-success-label">Night Shift</span>
+            <span class="punch-success-val" id="ps-night" style="color: #7e22ce;">-</span>
+          </div>
+        </div>
+
+        <button style="background: var(--punch-in-gradient);" onclick="closePunchSuccessModal()">OK</button>
       </div>
     </div>
 
@@ -713,6 +843,12 @@
       return dateStr;
     }
 
+    function getDayName(dateStr) {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', { weekday: 'long' });
+    }
+
     function formatTime12Hour(timeStr) {
       if (!timeStr || timeStr === '-' || timeStr === null) return '-';
       const parts = timeStr.split(':');
@@ -763,10 +899,11 @@
       const company = currentUser.company_name ? String(currentUser.company_name).trim() : '';
       const salary = parseFloat(currentUser.monthly_salary || currentUser.salary || 0);
       const ot = parseFloat(currentUser.ot_rate_per_hour || currentUser.ot_rate || 0);
-      const nightRate = parseFloat(currentUser.night_rate || 0);
+      
+      const nightRate = currentUser.night_rate !== undefined && currentUser.night_rate !== null && currentUser.night_rate !== '' ? parseFloat(currentUser.night_rate) : NaN;
       const breakMins = currentUser.break_minutes;
 
-      return (!name || !company || isNaN(salary) || salary <= 0 || isNaN(ot) || ot <= 0 || isNaN(nightRate) || breakMins === undefined || breakMins === null || breakMins === '');
+      return (!name || !company || isNaN(salary) || salary <= 0 || isNaN(ot) || ot < 0 || isNaN(nightRate) || nightRate < 0 || breakMins === undefined || breakMins === null || breakMins === '' || isNaN(parseFloat(breakMins)) || parseFloat(breakMins) < 0);
     }
 
     function openClockWindow(type) {
@@ -776,26 +913,48 @@
         return;
       }
 
-      const now = new Date();
-      const timeParts = new Intl.DateTimeFormat('en-GB', {
-        timeZone: 'Asia/Kolkata',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      }).format(now).split(':');
-
-      const hours = timeParts[0];
-      const minutes = timeParts[1];
-      
       document.getElementById('selected-punch-type').value = type;
-      document.getElementById('clock-time-input').value = `${hours}:${minutes}`;
-      document.getElementById('clock-modal-title').innerText = type === 'IN' ? 'Punch IN Time' : 'Punch OUT Time';
+      
+      // Get current live time in HH:MM format (Asia/Kolkata timezone)
+      const now = new Date();
+      const options = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false };
+      const timeParts = new Intl.DateTimeFormat('en-GB', options).formatToParts(now);
+      let hh = timeParts.find(p => p.type === 'hour').value;
+      let mm = timeParts.find(p => p.type === 'minute').value;
+      const currentTimeStr = `${hh}:${mm}`;
+
+      document.getElementById('clock-time-input').value = currentTimeStr;
+      
+      if (type === 'IN') {
+        document.getElementById('clock-modal-title').innerText = 'Punch IN Time';
+      } else {
+        document.getElementById('clock-modal-title').innerText = 'Punch OUT Time';
+      }
       
       document.getElementById('clock-window-modal').classList.add('active');
+
+      setTimeout(() => {
+        const timeInput = document.getElementById('clock-time-input');
+        if (timeInput && typeof timeInput.showPicker === 'function') {
+          timeInput.showPicker();
+        } else if (timeInput) {
+          timeInput.focus();
+          timeInput.click();
+        }
+      }, 100);
     }
 
     function closeClockWindow() {
       document.getElementById('clock-window-modal').classList.remove('active');
+    }
+
+    function showInstantProgress(titleText = "Recording Punch...") {
+      document.getElementById('instant-progress-text').innerText = titleText;
+      document.getElementById('instant-progress-modal').classList.add('active');
+    }
+
+    function hideInstantProgress() {
+      document.getElementById('instant-progress-modal').classList.remove('active');
     }
 
     function confirmClockPunch() {
@@ -803,8 +962,51 @@
       const timeVal = document.getElementById('clock-time-input').value;
       closeClockWindow();
       if (timeVal) {
+        showInstantProgress(type === 'IN' ? 'Punching IN...' : 'Punching OUT...');
         handlePunch(type, timeVal);
       }
+    }
+
+    function showPunchSuccessModal(type, dateStr, timeStr, dutyHrs, otHrs, isNight, nightRate) {
+      hideInstantProgress();
+      
+      const formattedDate = formatDateDDMMYYYY(dateStr);
+      const dayName = getDayName(dateStr);
+      
+      document.getElementById('ps-date-day').innerText = `${formattedDate} (${dayName})`;
+      document.getElementById('ps-time').innerText = formatTime12Hour(timeStr);
+
+      const dutyRow = document.getElementById('ps-duty-row');
+      const otRow = document.getElementById('ps-ot-row');
+      const nightRow = document.getElementById('ps-night-row');
+
+      if (type === 'IN') {
+        // Hide Duty, OT & Night details during Punch IN
+        dutyRow.style.display = 'none';
+        otRow.style.display = 'none';
+        nightRow.style.display = 'none';
+        document.getElementById('punch-success-title').innerText = 'Punch IN Recorded!';
+      } else {
+        // Show Duty & OT details during Punch OUT
+        dutyRow.style.display = 'flex';
+        otRow.style.display = 'flex';
+        document.getElementById('ps-duty').innerText = `${dutyHrs || 0} Hours`;
+        document.getElementById('ps-ot').innerText = `${otHrs || 0} Hours`;
+        document.getElementById('punch-success-title').innerText = 'Punch OUT Recorded!';
+
+        if (isNight) {
+          nightRow.style.display = 'flex';
+          document.getElementById('ps-night').innerText = `Yes (Rate: ₹${nightRate || 0})`;
+        } else {
+          nightRow.style.display = 'none';
+        }
+      }
+
+      document.getElementById('punch-success-modal').classList.add('active');
+    }
+
+    function closePunchSuccessModal() {
+      document.getElementById('punch-success-modal').classList.remove('active');
     }
 
     function openLeaveModal() {
@@ -949,7 +1151,6 @@
     const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let currentUser = null;
 
-    // COMPUTE SALARY WITH NIGHT DUTY INCLUDED
     function computeEstimatedSalary(totalPresent, totalOT, totalNightShifts) {
       if (!currentUser) return 0;
 
@@ -1023,6 +1224,7 @@
     }
 
     function showCustomAlert(title, message, type = 'info') {
+      hideInstantProgress();
       const modal = document.getElementById('custom-alert-modal');
       const iconBox = document.getElementById('alert-icon');
       const iconI = document.getElementById('alert-icon-i');
@@ -1050,8 +1252,10 @@
       document.getElementById('prof-company').value = currentUser.company_name || '';
       document.getElementById('prof-salary').value = currentUser.monthly_salary || currentUser.salary || '';
       document.getElementById('prof-ot-rate').value = currentUser.ot_rate_per_hour || currentUser.ot_rate || '';
-      document.getElementById('prof-night-rate').value = currentUser.night_rate || '';
-      document.getElementById('prof-break-mins').value = (currentUser.break_minutes !== undefined && currentUser.break_minutes !== null) ? currentUser.break_minutes : 60;
+      
+      document.getElementById('prof-night-rate').value = (currentUser.night_rate !== undefined && currentUser.night_rate !== null && currentUser.night_rate !== '') ? currentUser.night_rate : '';
+      document.getElementById('prof-break-mins').value = (currentUser.break_minutes !== undefined && currentUser.break_minutes !== null && currentUser.break_minutes !== '') ? currentUser.break_minutes : 60;
+      
       document.getElementById('profile-settings-modal').classList.add('active');
     }
 
@@ -1067,7 +1271,7 @@
       const newNightRateStr = document.getElementById('prof-night-rate').value.trim();
       const newBreakMinsStr = document.getElementById('prof-break-mins').value.trim();
 
-      if (!newName || !newCompany || !newSalaryStr || !newOtRateStr || !newNightRateStr || !newBreakMinsStr) {
+      if (!newName || !newCompany || newSalaryStr === '' || newOtRateStr === '' || newNightRateStr === '' || newBreakMinsStr === '') {
         return showCustomAlert('Missing Details', 'All profile fields are mandatory. Please fill all fields!', 'danger');
       }
 
@@ -1076,8 +1280,8 @@
       const newNightRate = parseFloat(newNightRateStr);
       const newBreakMins = parseFloat(newBreakMinsStr);
 
-      if (isNaN(newSalary) || newSalary <= 0 || isNaN(newOtRate) || isNaN(newNightRate) || isNaN(newBreakMins)) {
-        return showCustomAlert('Invalid Data', 'Please enter valid numbers for salary and rates!', 'danger');
+      if (isNaN(newSalary) || newSalary <= 0 || isNaN(newOtRate) || newOtRate < 0 || isNaN(newNightRate) || newNightRate < 0 || isNaN(newBreakMins) || newBreakMins < 0) {
+        return showCustomAlert('Invalid Data', 'Please enter valid numbers or zero for rates and break time!', 'danger');
       }
 
       const btn = document.getElementById('btn-save-profile');
@@ -1226,7 +1430,7 @@
           company_name: data.company_name || '',
           monthly_salary: data.monthly_salary || data.salary || 0,
           ot_rate_per_hour: data.ot_rate_per_hour || data.ot_rate || 0,
-          night_rate: data.night_rate || 0,
+          night_rate: (data.night_rate !== undefined && data.night_rate !== null) ? data.night_rate : 0,
           break_minutes: (data.break_minutes !== undefined && data.break_minutes !== null) ? data.break_minutes : 60
         };
         localStorage.setItem('attendance_pro_user', JSON.stringify(currentUser));
@@ -1245,14 +1449,12 @@
       toggleAuth(true);
     }
 
-    // UPDATED CALCULATION LOGIC FOR NIGHT DUTY & OVERNIGHT SHIFTS
     function calculateHours(punchIn, punchOut, dateStr) {
       if (!punchIn || !punchOut || punchIn === '-' || punchOut === '-') return { totalHours: 0, dutyHours: 0, otHours: 0, isNight: false };
       
       const inDateTime = new Date(`${dateStr}T${punchIn}`);
       let outDateTime = new Date(`${dateStr}T${punchOut}`);
       
-      // If punch out time is earlier or equal to punch in time, it means shift ended the next morning
       let isOvernight = outDateTime <= inDateTime;
       if (isOvernight) {
         outDateTime.setDate(outDateTime.getDate() + 1);
@@ -1281,17 +1483,64 @@
         }
       }
 
-      // Night Duty detection: Started in evening/night (e.g. >= 18:00 or 6 PM) or is overnight shift
       const inHour = parseInt(punchIn.split(':')[0], 10);
-      let isNight = isOvernight || (inHour >= 18 || inHour < 5);
+      let isNight = inHour >= 12;
 
       return { totalHours: rawTotalHours, dutyHours, otHours, isNight };
+    }
+
+    function checkShiftExpired(shiftDateStr, punchInTimeStr) {
+      if (!shiftDateStr || !punchInTimeStr) return true;
+      const todayStr = getKolkataYMD();
+      
+      if (shiftDateStr === todayStr) {
+        return false;
+      }
+      
+      const t1 = new Date(shiftDateStr).setHours(0,0,0,0);
+      const t2 = new Date(todayStr).setHours(0,0,0,0);
+      const diffDays = Math.floor((t2 - t1) / (1000 * 60 * 60 * 24));
+      
+      if (diffDays > 1) {
+        return true;
+      }
+      
+      const inHour = parseInt(punchInTimeStr.split(':')[0], 10);
+      const isPMIn = inHour >= 12;
+      const currentHour = new Date().getHours();
+      const isCurrentAM = currentHour < 12;
+      
+      if (isPMIn && isCurrentAM) {
+        return false;
+      }
+      
+      return true;
     }
 
     async function handlePunch(type, timeVal) {
       const today = getKolkataYMD();
 
       if (type === 'IN') {
+        const { data: openShifts } = await sbClient.from('attendance')
+          .select('*')
+          .eq('punching_id', currentUser.punching_id)
+          .is('punch_out', null);
+
+        if (openShifts && openShifts.length > 0) {
+          for (const shift of openShifts) {
+             if (checkShiftExpired(shift.date, shift.punch_in)) {
+                 await sbClient.from('attendance').update({
+                     punch_out: '-',
+                     remark: 'Missed Punch Out (Auto-Closed)',
+                     total_hours: 0, duty_hours: 0, overtime_hours: 0
+                 }).eq('id', shift.id);
+             } else {
+                 hideInstantProgress();
+                 return showCustomAlert('Active Shift Found', `Aapka pichhla shift (${shift.date}) ka Punch Out nahi hua hai. Pehle use complete karein!`, 'warning');
+             }
+          }
+        }
+
         const btn = document.getElementById('btn-punch-in');
         const text = document.getElementById('btn-punch-in-text');
         const spinner = document.getElementById('btn-punch-in-spinner');
@@ -1300,16 +1549,25 @@
         text.innerText = "Punching...";
         spinner.classList.remove('hidden');
 
+        const inHour = parseInt(timeVal.split(':')[0], 10);
+        const isNight = inHour >= 12; 
+
         const { error } = await sbClient.from('attendance').insert([
-          { punching_id: currentUser.punching_id, date: today, punch_in: timeVal, status: 'Present', is_night_duty: false }
+          { punching_id: currentUser.punching_id, date: today, punch_in: timeVal, status: 'Present', is_night_duty: isNight }
         ]);
 
         btn.disabled = false;
         text.innerHTML = '<i class="fa-solid fa-fingerprint"></i> Punch In';
         spinner.classList.add('hidden');
 
-        if (!error) loadDashboard();
-        else showCustomAlert('Punch Error', error.message, 'danger');
+        if (!error) {
+          loadDashboard();
+          // Punch IN type only displays date and time
+          showPunchSuccessModal('IN', today, timeVal, 0, 0, isNight, currentUser.night_rate || 0);
+        } else {
+          hideInstantProgress();
+          showCustomAlert('Punch Error', error.message, 'danger');
+        }
       } 
       else if (type === 'OUT') {
         const btn = document.getElementById('btn-punch-out');
@@ -1320,28 +1578,37 @@
         text.innerText = "Punching...";
         spinner.classList.remove('hidden');
 
-        const { data } = await sbClient.from('attendance')
-          .select('*').eq('punching_id', currentUser.punching_id).eq('date', today).single();
+        const { data: activeShiftList } = await sbClient.from('attendance')
+          .select('*')
+          .eq('punching_id', currentUser.punching_id)
+          .is('punch_out', null)
+          .order('date', { ascending: false })
+          .limit(1);
 
-        if (data) {
-          const calc = calculateHours(data.punch_in, timeVal, today);
+        const shiftToClose = activeShiftList && activeShiftList.length > 0 ? activeShiftList[0] : null;
+
+        if (shiftToClose) {
+          const calc = calculateHours(shiftToClose.punch_in, timeVal, shiftToClose.date);
           await sbClient.from('attendance').update({
             punch_out: timeVal,
             total_hours: calc.totalHours.toFixed(2),
             duty_hours: calc.dutyHours.toFixed(2),
             overtime_hours: calc.otHours.toFixed(2),
             is_night_duty: calc.isNight
-          }).eq('id', data.id);
+          }).eq('id', shiftToClose.id);
 
           btn.disabled = false;
           text.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i> Punch Out';
           spinner.classList.add('hidden');
 
           loadDashboard();
+          // Punch OUT displays full duty & OT details
+          showPunchSuccessModal('OUT', shiftToClose.date, timeVal, calc.dutyHours.toFixed(1), calc.otHours.toFixed(1), calc.isNight, currentUser.night_rate || 0);
         } else {
           btn.disabled = false;
           text.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i> Punch Out';
           spinner.classList.add('hidden');
+          hideInstantProgress();
         }
       }
     }
@@ -1454,7 +1721,7 @@
 
       btn.disabled = true;
       text.innerText = "Updating...";
-      spinner.classList.add('hidden');
+      spinner.classList.remove('hidden');
 
       let updatePayload = {};
 
@@ -1582,34 +1849,60 @@
     async function loadDashboard() {
       if (!currentUser) return;
       const today = getKolkataYMD();
-      const { data: todayRec } = await sbClient.from('attendance')
-        .select('*').eq('punching_id', currentUser.punching_id).eq('date', today).maybeSingle();
+      
+      const { data: latestRecords } = await sbClient.from('attendance')
+        .select('*')
+        .eq('punching_id', currentUser.punching_id)
+        .order('date', { ascending: false })
+        .order('id', { ascending: false })
+        .limit(1);
+
+      const latestRec = latestRecords && latestRecords.length > 0 ? latestRecords[0] : null;
 
       const btnIn = document.getElementById('btn-punch-in');
       const btnOut = document.getElementById('btn-punch-out');
       const btnLeave = document.getElementById('btn-apply-leave');
       const statusText = document.getElementById('punch-status');
 
-      if (!todayRec) {
+      let activeShift = null;
+
+      if (latestRec && latestRec.punch_in && (!latestRec.punch_out || latestRec.punch_out === '-')) {
+          if (!checkShiftExpired(latestRec.date, latestRec.punch_in)) {
+              activeShift = latestRec;
+          }
+      }
+
+      const { data: todayRec } = await sbClient.from('attendance')
+        .select('*').eq('punching_id', currentUser.punching_id).eq('date', today).maybeSingle();
+
+      if (activeShift) {
+        btnIn.classList.add('hidden');
+        btnOut.classList.remove('hidden');
+        btnLeave.classList.add('hidden');
+        const dayLabel = activeShift.date === today ? 'Today' : 'Yesterday';
+        statusText.innerText = `Punched IN at ${formatTime12Hour(activeShift.punch_in)} (${dayLabel}). Click Punch Out to finish.`;
+      } else if (todayRec) {
+        if (todayRec.status === 'Leave') {
+          btnIn.classList.add('hidden');
+          btnOut.classList.add('hidden');
+          btnLeave.classList.add('hidden');
+          statusText.innerText = `Today on LEAVE (Reason: ${todayRec.remark || 'N/A'})`;
+        } else if (todayRec.punch_out && todayRec.punch_out !== '-') {
+          btnIn.classList.add('hidden');
+          btnOut.classList.add('hidden');
+          btnLeave.classList.add('hidden');
+          statusText.innerText = `Shift Complete (${todayRec.is_night_duty ? 'Night Duty' : 'Day Duty'})`;
+        } else {
+          btnIn.classList.remove('hidden');
+          btnOut.classList.add('hidden');
+          btnLeave.classList.remove('hidden');
+          statusText.innerText = "Status: Not Punched In Today";
+        }
+      } else {
         btnIn.classList.remove('hidden');
         btnOut.classList.add('hidden');
         btnLeave.classList.remove('hidden');
         statusText.innerText = "Status: Not Punched In Today";
-      } else if (todayRec.status === 'Leave') {
-        btnIn.classList.add('hidden');
-        btnOut.classList.add('hidden');
-        btnLeave.classList.add('hidden');
-        statusText.innerText = `Today on LEAVE (Reason: ${todayRec.remark || 'N/A'})`;
-      } else if (todayRec.punch_in && (!todayRec.punch_out || todayRec.punch_out === '-')) {
-        btnIn.classList.add('hidden');
-        btnOut.classList.remove('hidden');
-        btnLeave.classList.add('hidden');
-        statusText.innerText = `Punched IN at ${formatTime12Hour(todayRec.punch_in)}. Click Punch Out to finish.`;
-      } else {
-        btnIn.classList.add('hidden');
-        btnOut.classList.add('hidden');
-        btnLeave.classList.add('hidden');
-        statusText.innerText = `Shift Complete (${todayRec.is_night_duty ? 'Night Duty' : 'Day Duty'})`;
       }
 
       const currentYearMonth = today.substring(0, 7);
