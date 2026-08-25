@@ -212,8 +212,7 @@
       background: #f1f5f9; border: 1px solid var(--border); font-size: 0.9rem; color: var(--text-main); cursor: pointer; 
       width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; 
     }
-    .nav-icon-btn.support-btn { color: #2563eb; background: #eff6ff; border-color: #bfdbfe; }
-    .nav-icon-btn.profile-btn { color: #059669; background: #ecfdf5; border-color: #a7f3d0; }
+    .nav-icon-btn.profile-btn { color: #059669; background: #ecfdf5; border-color: #a7f3d0; width: 34px; padding: 0; font-size: 0.9rem; }
 
     .side-drawer { 
       position: fixed; top: 0; left: -280px; width: 250px; height: 100%; background: var(--surface); 
@@ -253,11 +252,16 @@
     .attendance-card-item {
       background: #ffffff; border: 1px solid var(--border); border-radius: 12px; padding: 10px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 6px;
     }
+    .attendance-card-item.status-present { background: #f0fdf4; border-color: #bbf7d0; }
+    .attendance-card-item.status-absent { background: #fef2f2; border-color: #fecaca; }
+    .attendance-card-item.status-leave { background: #fffbeb; border-color: #fef3c7; }
+    .attendance-card-item.status-night { background: #faf5ff; border-color: #e9d5ff; }
+
     .att-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 6px; }
     .att-card-date { font-size: 0.8rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 5px; }
 
     .att-card-body {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: #f8fafc; padding: 6px; border-radius: 8px; text-align: center;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: rgba(255, 255, 255, 0.6); padding: 6px; border-radius: 8px; text-align: center; border: 1px solid rgba(226, 232, 240, 0.6);
     }
     .att-info-box { display: flex; flex-direction: column; }
     .att-info-box label { font-size: 0.55rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); }
@@ -294,7 +298,6 @@
     .time-picker-box { background: #f8fafc; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 8px; margin: 8px 0; }
     .time-picker-box input[type="time"] { font-size: 1.25rem; font-weight: 800; text-align: center; color: #10b981; background: #ffffff; height: 42px; border-radius: 6px; cursor: pointer; }
 
-    /* Instant Progress Overlay */
     .instant-progress-box {
       display: flex;
       flex-direction: column;
@@ -426,12 +429,7 @@
         </div>
         
         <div class="nav-right-group">
-          <button class="nav-icon-btn profile-btn" onclick="openProfileModal()" title="Edit Profile">
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-          <button class="nav-icon-btn support-btn" onclick="openCustomerSupport()" title="Customer Support">
-            <i class="fa-solid fa-headset"></i>
-          </button>
+          <!-- Support Button Removed from Here -->
         </div>
       </nav>
     </div>
@@ -506,6 +504,9 @@
               <h2 class="user-greeting" id="user-name-display">Name</h2>
               <p class="emp-id-text">ID: <span id="user-pid-display"></span> <span id="user-company-display" style="color: var(--primary); font-weight: 700; margin-left: 2px;"></span></p>
             </div>
+            <button class="nav-icon-btn profile-btn" onclick="openProfileModal()" title="Edit Profile">
+              <i class="fa-solid fa-gear"></i>
+            </button>
           </div>
 
           <div class="salary-badge-row">
@@ -711,7 +712,6 @@
             <span class="punch-success-val" id="ps-time" style="color: #2563eb;">-</span>
           </div>
           
-          <!-- Only Out Punch Rows -->
           <div class="punch-success-row" id="ps-duty-row">
             <span class="punch-success-label">Duty Hours</span>
             <span class="punch-success-val" id="ps-duty">-</span>
@@ -915,7 +915,6 @@
 
       document.getElementById('selected-punch-type').value = type;
       
-      // Get current live time in HH:MM format (Asia/Kolkata timezone)
       const now = new Date();
       const options = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false };
       const timeParts = new Intl.DateTimeFormat('en-GB', options).formatToParts(now);
@@ -981,13 +980,11 @@
       const nightRow = document.getElementById('ps-night-row');
 
       if (type === 'IN') {
-        // Hide Duty, OT & Night details during Punch IN
         dutyRow.style.display = 'none';
         otRow.style.display = 'none';
         nightRow.style.display = 'none';
         document.getElementById('punch-success-title').innerText = 'Punch IN Recorded!';
       } else {
-        // Show Duty & OT details during Punch OUT
         dutyRow.style.display = 'flex';
         otRow.style.display = 'flex';
         document.getElementById('ps-duty').innerText = `${dutyHrs || 0} Hours`;
@@ -1562,7 +1559,6 @@
 
         if (!error) {
           loadDashboard();
-          // Punch IN type only displays date and time
           showPunchSuccessModal('IN', today, timeVal, 0, 0, isNight, currentUser.night_rate || 0);
         } else {
           hideInstantProgress();
@@ -1602,7 +1598,6 @@
           spinner.classList.add('hidden');
 
           loadDashboard();
-          // Punch OUT displays full duty & OT details
           showPunchSuccessModal('OUT', shiftToClose.date, timeVal, calc.dutyHours.toFixed(1), calc.otHours.toFixed(1), calc.isNight, currentUser.night_rate || 0);
         } else {
           btn.disabled = false;
@@ -1794,15 +1789,24 @@
         const isNight = row.is_night_duty === true;
         
         let statusBadgeClass = '';
-        if (isAbsent) statusBadgeClass = 'absent';
-        else if (isLeave) statusBadgeClass = 'leave';
+        let cardBgClass = 'status-present';
+
+        if (isAbsent) {
+          statusBadgeClass = 'absent';
+          cardBgClass = 'status-absent';
+        } else if (isLeave) {
+          statusBadgeClass = 'leave';
+          cardBgClass = 'status-leave';
+        } else if (isNight) {
+          cardBgClass = 'status-night';
+        }
 
         const formattedDate = formatDateDDMMYYYY(row.date);
         const formattedIn = formatTime12Hour(row.punch_in);
         const formattedOut = formatTime12Hour(row.punch_out);
 
         const cardHtml = `
-          <div class="attendance-card-item">
+          <div class="attendance-card-item ${cardBgClass}">
             <div class="att-card-header">
               <div class="att-card-date">
                 <i class="fa-regular fa-calendar-check" style="color: var(--primary);"></i> ${formattedDate}
