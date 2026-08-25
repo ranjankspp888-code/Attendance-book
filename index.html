@@ -186,6 +186,35 @@
     button.btn-secondary:hover { background: #e2e8f0; }
     button.btn-edit { background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; width: auto; padding: 4px 12px; font-size: 0.725rem; box-shadow: none; border-radius: 6px; }
 
+    /* Colorful Status Toggle Buttons for Past Duty */
+    .status-buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .status-select-btn {
+      padding: 8px 6px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      background: #f8fafc;
+      color: var(--text-muted);
+      box-shadow: none;
+    }
+    .status-select-btn.present-opt { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+    .status-select-btn.present-opt.active { background: #10b981; color: #ffffff; border-color: #059669; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
+
+    .status-select-btn.leave-opt { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+    .status-select-btn.leave-opt.active { background: #f59e0b; color: #ffffff; border-color: #d97706; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); }
+
+    .status-select-btn.absent-opt { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+    .status-select-btn.absent-opt.active { background: #ef4444; color: #ffffff; border-color: #dc2626; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+
     .spinner {
       width: 14px; height: 14px; border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%;
       border-top-color: #ffffff; animation: spin 0.8s linear infinite; display: inline-block;
@@ -428,9 +457,7 @@
           <div class="nav-brand"><i class="fa-solid fa-business-time"></i> Attendance Pro</div>
         </div>
         
-        <div class="nav-right-group">
-          <!-- Support Button Removed from Here -->
-        </div>
+        <div class="nav-right-group"></div>
       </nav>
     </div>
 
@@ -447,10 +474,10 @@
       <div class="drawer-body">
         <a href="#" class="drawer-item" onclick="switchView('dashboard'); return false;"><i class="fa-solid fa-house"></i> Dashboard</a>
         <a href="#" class="drawer-item" onclick="switchView('history'); return false;"><i class="fa-solid fa-calendar-days"></i> Attendance History</a>
-        <a href="#" class="drawer-item" onclick="openPastDutyModal(); return false;"><i class="fa-solid fa-calendar-plus"></i> Add Past Duty</a>
+        <a href="#" class="drawer-item" onclick="openPastDutyModal(); return false;"><i class="fa-solid fa-calendar-plus"></i> Add Attendance</a>
         <a href="#" class="drawer-item" onclick="openProfileModal(); return false;"><i class="fa-solid fa-user-gear"></i> Profile Settings</a>
         <a href="#" class="drawer-item" onclick="openCustomerSupport(); return false;"><i class="fa-solid fa-headset"></i> Customer Support</a>
-        <a href="#" class="drawer-item" onclick="refreshAppData(); return false;"><i id="drawer-refresh-icon" class="fa-solid fa-arrows-rotate"></i> Refresh Data</a>
+        <a href="#" class="drawer-item" onclick="refreshAppData(); return false;"><i id="drawer-refresh-icon" class="fa-solid fa-arrows-rotate"></i> Refresh</a>
         <a href="#" id="drawer-install-item" class="drawer-item hidden" onclick="installPWA(); return false;"><i class="fa-solid fa-mobile-screen-button"></i> Install App</a>
         <a href="#" class="drawer-item" onclick="shareApp(); return false;"><i class="fa-solid fa-share-nodes"></i> Share App</a>
         
@@ -556,9 +583,8 @@
                 <span id="btn-punch-out-spinner" class="spinner hidden"></span>
               </button>
 
-              <button id="btn-apply-leave" class="btn-leave" onclick="openLeaveModal()">
-                <span id="btn-leave-text"><i class="fa-solid fa-umbrella-beach"></i> Leave</span>
-                <span id="btn-leave-spinner" class="spinner hidden"></span>
+              <button id="btn-add-past-duty" class="btn-leave" onclick="openPastDutyModal()">
+                <span><i class="fa-solid fa-calendar-plus"></i> Add  Manual</span>
               </button>
             </div>
             <p id="punch-status" style="font-weight:700; color:#cbd5e1; margin-top:8px; font-size:0.725rem;"></p>
@@ -707,7 +733,7 @@
             <span class="punch-success-label">Date & Day</span>
             <span class="punch-success-val" id="ps-date-day">-</span>
           </div>
-          <div class="punch-success-row">
+          <div class="punch-success-row" id="ps-time-row">
             <span class="punch-success-label">Punch Time</span>
             <span class="punch-success-val" id="ps-time" style="color: #2563eb;">-</span>
           </div>
@@ -730,27 +756,6 @@
       </div>
     </div>
 
-    <div id="leave-modal" class="modal-overlay">
-      <div class="custom-modal" style="text-align: left;">
-        <div class="modal-icon warning" style="margin: 0 auto 10px; background: #fff7ed; color: #d97706; border: 1px solid #ffedd5;"><i class="fa-solid fa-umbrella-beach"></i></div>
-        <h3 class="modal-title" style="text-align:center; margin-bottom: 2px;">Apply Leave</h3>
-        <p style="font-size: 0.725rem; color: var(--text-muted); text-align:center; margin-bottom: 12px;">1 Full Day Present Duty will be counted.</p>
-        
-        <div class="form-group">
-          <label>Leave Remark / Reason <span class="req">*</span></label>
-          <input type="text" id="leave-remark-input" placeholder="e.g. Holiday, Sick Leave..." required />
-        </div>
-
-        <div class="modal-actions" style="margin-top: 14px;">
-          <button class="btn-secondary" style="flex:1;" onclick="closeLeaveModal()">Cancel</button>
-          <button id="btn-confirm-leave" style="flex:1; background: var(--leave-gradient);" onclick="confirmLeaveSubmit()">
-            <span id="btn-leave-modal-text">OK (Submit)</span>
-            <span id="btn-leave-modal-spinner" class="spinner hidden"></span>
-          </button>
-        </div>
-      </div>
-    </div>
-
     <div id="custom-alert-modal" class="modal-overlay">
       <div class="custom-modal">
         <div id="alert-icon" class="modal-icon info"><i id="alert-icon-i" class="fa-solid fa-info"></i></div>
@@ -760,12 +765,35 @@
       </div>
     </div>
 
+    <!-- PAST DUTY MODAL WITH COLORFUL STATUS BUTTONS AT TOP -->
     <div id="past-duty-modal" class="modal-overlay">
       <div class="custom-modal" style="text-align: left;">
-        <h3 class="modal-title" style="margin-bottom: 8px;">Add Past Duty Record</h3>
-        <div class="form-group"><label>Select Start Date (Punch IN Date)</label><input type="date" id="past-date"></div>
-        <div class="form-group"><label>Punch IN Time</label><input type="time" id="past-in-time" value="20:00"></div>
-        <div class="form-group"><label>Punch OUT Time (Can be next morning)</label><input type="time" id="past-out-time" value="08:00"></div>
+        <h3 class="modal-title" style="margin-bottom: 8px;">Add Attendance</h3>
+        
+        <!-- Date Selection First -->
+        <div class="form-group"><label>Select Date</label><input type="date" id="past-date"></div>
+
+        <!-- Colorful Status Buttons Selector -->
+        <div class="form-group">
+          <label>Status</label>
+          <div class="status-buttons-grid">
+            <button type="button" class="status-select-btn present-opt active" id="past-btn-present" onclick="setPastStatus('Present')">Present</button>
+            <button type="button" class="status-select-btn leave-opt" id="past-btn-leave" onclick="setPastStatus('Leave')">Leave</button>
+            <button type="button" class="status-select-btn absent-opt" id="past-btn-absent" onclick="setPastStatus('Absent')">Absent</button>
+          </div>
+          <input type="hidden" id="past-status-value" value="Present">
+        </div>
+        
+        <div id="past-time-fields">
+          <div class="form-group"><label>Punch IN Time</label><input type="time" id="past-in-time" value="20:00"></div>
+          <div class="form-group"><label>Punch OUT Time (Can be next morning)</label><input type="time" id="past-out-time" value="08:00"></div>
+        </div>
+
+        <div class="form-group">
+          <label>Remark / Note</label>
+          <input type="text" id="past-remark-input" placeholder="e.g. Holiday, Sick Leave...">
+        </div>
+
         <div class="modal-actions" style="margin-top: 10px;">
           <button class="btn-secondary" style="flex:1;" onclick="closePastDutyModal()">Cancel</button>
           <button id="btn-save-past" style="flex:1;" onclick="submitPastDuty()">
@@ -973,29 +1001,47 @@
       const dayName = getDayName(dateStr);
       
       document.getElementById('ps-date-day').innerText = `${formattedDate} (${dayName})`;
-      document.getElementById('ps-time').innerText = formatTime12Hour(timeStr);
-
+      
+      const timeRow = document.getElementById('ps-time-row');
       const dutyRow = document.getElementById('ps-duty-row');
       const otRow = document.getElementById('ps-ot-row');
       const nightRow = document.getElementById('ps-night-row');
 
-      if (type === 'IN') {
-        dutyRow.style.display = 'none';
-        otRow.style.display = 'none';
-        nightRow.style.display = 'none';
-        document.getElementById('punch-success-title').innerText = 'Punch IN Recorded!';
-      } else {
+      if (type === 'PAST_DUTY') {
+        timeRow.style.display = 'none';
         dutyRow.style.display = 'flex';
         otRow.style.display = 'flex';
         document.getElementById('ps-duty').innerText = `${dutyHrs || 0} Hours`;
         document.getElementById('ps-ot').innerText = `${otHrs || 0} Hours`;
-        document.getElementById('punch-success-title').innerText = 'Punch OUT Recorded!';
-
+        document.getElementById('punch-success-title').innerText = 'Attendance Recorded!';
+        
         if (isNight) {
           nightRow.style.display = 'flex';
           document.getElementById('ps-night').innerText = `Yes (Rate: ₹${nightRate || 0})`;
         } else {
           nightRow.style.display = 'none';
+        }
+      } else {
+        timeRow.style.display = 'flex';
+        document.getElementById('ps-time').innerText = formatTime12Hour(timeStr);
+        if (type === 'IN') {
+          dutyRow.style.display = 'none';
+          otRow.style.display = 'none';
+          nightRow.style.display = 'none';
+          document.getElementById('punch-success-title').innerText = 'Punch IN Recorded!';
+        } else {
+          dutyRow.style.display = 'flex';
+          otRow.style.display = 'flex';
+          document.getElementById('ps-duty').innerText = `${dutyHrs || 0} Hours`;
+          document.getElementById('ps-ot').innerText = `${otHrs || 0} Hours`;
+          document.getElementById('punch-success-title').innerText = 'Punch OUT Recorded!';
+
+          if (isNight) {
+            nightRow.style.display = 'flex';
+            document.getElementById('ps-night').innerText = `Yes (Rate: ₹${nightRate || 0})`;
+          } else {
+            nightRow.style.display = 'none';
+          }
         }
       }
 
@@ -1004,66 +1050,6 @@
 
     function closePunchSuccessModal() {
       document.getElementById('punch-success-modal').classList.remove('active');
-    }
-
-    function openLeaveModal() {
-      if (isProfileIncomplete()) {
-        showCustomAlert('Profile Update Required', 'Please complete all profile details first!', 'info');
-        openProfileModal();
-        return;
-      }
-      document.getElementById('leave-remark-input').value = 'Holiday';
-      document.getElementById('leave-modal').classList.add('active');
-    }
-
-    function closeLeaveModal() {
-      document.getElementById('leave-modal').classList.remove('active');
-    }
-
-    async function confirmLeaveSubmit() {
-      const remark = document.getElementById('leave-remark-input').value.trim();
-      if (!remark) {
-        return showCustomAlert('Remark Required', 'Please enter a leave remark / reason!', 'danger');
-      }
-
-      const btn = document.getElementById('btn-confirm-leave');
-      const text = document.getElementById('btn-leave-modal-text');
-      const spinner = document.getElementById('btn-leave-modal-spinner');
-
-      btn.disabled = true;
-      text.innerText = "Saving...";
-      spinner.classList.remove('hidden');
-
-      const today = getKolkataYMD();
-
-      await sbClient.from('attendance').delete().eq('punching_id', currentUser.punching_id).eq('date', today);
-
-      const { error } = await sbClient.from('attendance').insert([{
-        punching_id: currentUser.punching_id,
-        date: today,
-        punch_in: null,
-        punch_out: null,
-        total_hours: 8,
-        duty_hours: 8,
-        overtime_hours: 0,
-        is_night_duty: false,
-        status: 'Leave',
-        remark: remark
-      }]);
-
-      btn.disabled = false;
-      text.innerText = "OK (Submit)";
-      spinner.classList.add('hidden');
-
-      closeLeaveModal();
-
-      if (error) {
-        showCustomAlert('Error', error.message, 'danger');
-      } else {
-        showCustomAlert('Leave Applied', 'Leave has been recorded as 1 Day Present Duty!', 'success');
-        loadDashboard();
-        loadHistoryData();
-      }
     }
 
     const manifest = {
@@ -1615,7 +1601,43 @@
         return;
       }
       toggleDrawer(false);
+      setPastStatus('Present');
+      document.getElementById('past-date').value = getKolkataYMD();
+      document.getElementById('past-remark-input').value = '';
       document.getElementById('past-duty-modal').classList.add('active');
+    }
+
+    function setPastStatus(status) {
+      document.getElementById('past-status-value').value = status;
+      
+      document.getElementById('past-btn-present').classList.remove('active');
+      document.getElementById('past-btn-leave').classList.remove('active');
+      document.getElementById('past-btn-absent').classList.remove('active');
+
+      if (status === 'Present') {
+        document.getElementById('past-btn-present').classList.add('active');
+      } else if (status === 'Leave') {
+        document.getElementById('past-btn-leave').classList.add('active');
+      } else if (status === 'Absent') {
+        document.getElementById('past-btn-absent').classList.add('active');
+      }
+
+      const timeFields = document.getElementById('past-time-fields');
+      const remarkInput = document.getElementById('past-remark-input');
+
+      if (status === 'Leave' || status === 'Absent') {
+        timeFields.style.display = 'none';
+        if (status === 'Leave') {
+          remarkInput.value = 'Holiday';
+        } else if (status === 'Absent' && remarkInput.value === 'Holiday') {
+          remarkInput.value = '';
+        }
+      } else {
+        timeFields.style.display = 'block';
+        if (remarkInput.value === 'Holiday') {
+          remarkInput.value = '';
+        }
+      }
     }
 
     function closePastDutyModal() {
@@ -1624,11 +1646,13 @@
 
     async function submitPastDuty() {
       const dateInput = document.getElementById('past-date').value;
+      const status = document.getElementById('past-status-value').value;
+      const remark = document.getElementById('past-remark-input').value.trim();
       const inTime = document.getElementById('past-in-time').value;
       const outTime = document.getElementById('past-out-time').value;
 
-      if (!dateInput || !inTime || !outTime) {
-        return showCustomAlert('Missing Info', 'Please enter all time & date details!', 'danger');
+      if (!dateInput) {
+        return showCustomAlert('Missing Info', 'Please select a date!', 'danger');
       }
 
       const btn = document.getElementById('btn-save-past');
@@ -1639,19 +1663,61 @@
       text.innerText = "Saving...";
       spinner.classList.remove('hidden');
 
-      const calc = calculateHours(inTime, outTime, dateInput);
+      let insertPayload = {};
+      let calc = { dutyHours: 0, otHours: 0, isNight: false };
 
-      const { error } = await sbClient.from('attendance').insert([{
-        punching_id: currentUser.punching_id,
-        date: dateInput,
-        punch_in: inTime,
-        punch_out: outTime,
-        total_hours: calc.totalHours.toFixed(2),
-        duty_hours: calc.dutyHours.toFixed(2),
-        overtime_hours: calc.otHours.toFixed(2),
-        is_night_duty: calc.isNight,
-        status: 'Present'
-      }]);
+      if (status === 'Leave') {
+        insertPayload = {
+          punching_id: currentUser.punching_id,
+          date: dateInput,
+          punch_in: null,
+          punch_out: null,
+          total_hours: 8,
+          duty_hours: 8,
+          overtime_hours: 0,
+          is_night_duty: false,
+          status: 'Leave',
+          remark: remark || 'Holiday'
+        };
+        calc = { dutyHours: 8, otHours: 0, isNight: false };
+      } else if (status === 'Absent') {
+        insertPayload = {
+          punching_id: currentUser.punching_id,
+          date: dateInput,
+          punch_in: null,
+          punch_out: null,
+          total_hours: 0,
+          duty_hours: 0,
+          overtime_hours: 0,
+          is_night_duty: false,
+          status: 'Absent',
+          remark: remark
+        };
+        calc = { dutyHours: 0, otHours: 0, isNight: false };
+      } else {
+        if (!inTime || !outTime) {
+          btn.disabled = false;
+          text.innerText = "Save Duty";
+          spinner.classList.add('hidden');
+          return showCustomAlert('Missing Info', 'Please enter Punch IN and OUT times!', 'danger');
+        }
+        calc = calculateHours(inTime, outTime, dateInput);
+        insertPayload = {
+          punching_id: currentUser.punching_id,
+          date: dateInput,
+          punch_in: inTime,
+          punch_out: outTime,
+          total_hours: calc.totalHours.toFixed(2),
+          duty_hours: calc.dutyHours.toFixed(2),
+          overtime_hours: calc.otHours.toFixed(2),
+          is_night_duty: calc.isNight,
+          status: 'Present',
+          remark: remark
+        };
+      }
+
+      await sbClient.from('attendance').delete().eq('punching_id', currentUser.punching_id).eq('date', dateInput);
+      const { error } = await sbClient.from('attendance').insert([insertPayload]);
 
       btn.disabled = false;
       text.innerText = "Save Duty";
@@ -1662,9 +1728,9 @@
       if (error) {
         showCustomAlert('Error', error.message, 'danger');
       } else {
-        showCustomAlert('Success', 'Past Duty Added Successfully!', 'success');
         loadDashboard();
         loadHistoryData();
+        showPunchSuccessModal('PAST_DUTY', dateInput, null, calc.dutyHours.toFixed(1), calc.otHours.toFixed(1), calc.isNight, currentUser.night_rate || 0);
       }
     }
 
@@ -1865,7 +1931,6 @@
 
       const btnIn = document.getElementById('btn-punch-in');
       const btnOut = document.getElementById('btn-punch-out');
-      const btnLeave = document.getElementById('btn-apply-leave');
       const statusText = document.getElementById('punch-status');
 
       let activeShift = null;
@@ -1882,30 +1947,25 @@
       if (activeShift) {
         btnIn.classList.add('hidden');
         btnOut.classList.remove('hidden');
-        btnLeave.classList.add('hidden');
         const dayLabel = activeShift.date === today ? 'Today' : 'Yesterday';
         statusText.innerText = `Punched IN at ${formatTime12Hour(activeShift.punch_in)} (${dayLabel}). Click Punch Out to finish.`;
       } else if (todayRec) {
         if (todayRec.status === 'Leave') {
-          btnIn.classList.add('hidden');
+          btnIn.classList.remove('hidden');
           btnOut.classList.add('hidden');
-          btnLeave.classList.add('hidden');
           statusText.innerText = `Today on LEAVE (Reason: ${todayRec.remark || 'N/A'})`;
         } else if (todayRec.punch_out && todayRec.punch_out !== '-') {
-          btnIn.classList.add('hidden');
+          btnIn.classList.remove('hidden');
           btnOut.classList.add('hidden');
-          btnLeave.classList.add('hidden');
           statusText.innerText = `Shift Complete (${todayRec.is_night_duty ? 'Night Duty' : 'Day Duty'})`;
         } else {
           btnIn.classList.remove('hidden');
           btnOut.classList.add('hidden');
-          btnLeave.classList.remove('hidden');
           statusText.innerText = "Status: Not Punched In Today";
         }
       } else {
         btnIn.classList.remove('hidden');
         btnOut.classList.add('hidden');
-        btnLeave.classList.remove('hidden');
         statusText.innerText = "Status: Not Punched In Today";
       }
 
