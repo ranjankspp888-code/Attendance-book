@@ -1159,12 +1159,13 @@
         const refCode = urlParams.get('ref');
         const savedUser = localStorage.getItem('attendance_pro_user');
         
-        if (refCode) {
-          document.getElementById('reg-refer').value = refCode;
-          toggleAuth(false);
-        } else if (savedUser) {
+        // Agar user pehle se logged in hai, toh refer code ya normal open hone par seedha dashboard dikhao
+        if (savedUser) {
           currentUser = JSON.parse(savedUser);
           await initUserSession();
+        } else if (refCode) {
+          document.getElementById('reg-refer').value = refCode;
+          toggleAuth(false);
         }
       } catch (e) {
         localStorage.removeItem('attendance_pro_user');
@@ -2064,7 +2065,7 @@
         .lte('date', endDate)
         .order('date', { ascending: false });
 
-      const tableData = data ? data.map(r => [
+      const tableData = data ? data.app(r => [
         formatDateDDMMYYYY(r.date), 
         formatTime12Hour(r.punch_in), 
         formatTime12Hour(r.punch_out), 
