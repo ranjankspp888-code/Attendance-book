@@ -169,7 +169,7 @@
     
     button.btn-secondary { background: #f1f5f9; color: var(--text-main); border: 1px solid var(--border); box-shadow: none; width: auto; }
     button.btn-secondary:hover { background: #e2e8f0; }
-    button.btn-edit { background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; width: auto; padding: 4px 12px; font-size: 0.725rem; box-shadow: none; border-radius: 6px; }
+    button.btn-edit { background: #0f172a; color: #ffffff; border: 1px solid #334155; width: auto; padding: 4px 12px; font-size: 0.725rem; box-shadow: none; border-radius: 6px; }
 
     .status-buttons-grid {
       display: grid;
@@ -274,22 +274,23 @@
 
     .punch-controls { display: flex; gap: 6px; justify-content: center; align-items: center; width: 100%; margin: 0 auto; }
     
-    .attendance-cards-list { display: flex; flex-direction: column; gap: 8px; }
+    .attendance-cards-list { display: flex; flex-direction: column; gap: 12px; }
     .attendance-card-item {
       background: #ffffff; border: 1px solid var(--border); border-radius: 12px; padding: 10px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 6px;
     }
-    .attendance-card-item.status-present { background: #f0fdf4; border-color: #bbf7d0; }
-    .attendance-card-item.status-absent { background: #fef2f2; border-color: #fecaca; }
-    .attendance-card-item.status-leave { background: #fffbeb; border-color: #fef3c7; }
-    .attendance-card-item.status-night { background: #faf5ff; border-color: #e9d5ff; }
-    .attendance-card-item.status-sunday-green { background: #f0fdf4 !important; border-color: #bbf7d0 !important; }
-    .attendance-card-item.status-sunday-red { background: #fef2f2 !important; border-color: #fecaca !important; }
+    
+    .attendance-card-item.status-present { background: #dcfce7; border-color: #86efac; }
+    .attendance-card-item.status-absent { background: #fee2e2; border-color: #fca5a5; }
+    .attendance-card-item.status-leave { background: #fef3c7; border-color: #fde68a; }
+    .attendance-card-item.status-night { background: #f3e8ff; border-color: #d8b4fe; }
+    .attendance-card-item.status-sunday-green { background: #d1fae5 !important; border-color: #6ee7b7 !important; }
+    .attendance-card-item.status-sunday-red { background: #fecaca !important; border-color: #f87171 !important; }
 
-    .att-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 6px; }
+    .att-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(0,0,0,0.15); padding-bottom: 6px; }
     .att-card-date { font-size: 0.8rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 5px; }
 
     .att-card-body {
-      display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.6); padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(226, 232, 240, 0.6);
+      display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.75); padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(0, 0, 0, 0.06);
     }
     .att-info-box { display: flex; align-items: center; gap: 6px; }
     .att-info-box label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0; }
@@ -298,19 +299,20 @@
     .att-card-footer { display: flex; justify-content: space-between; align-items: center; }
     
     .status-badges-group { display: flex; gap: 4px; align-items: center; }
-    .status-badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 9999px; font-size: 0.65rem; font-weight: 800; background: #d1fae5; color: #065f46; }
-    .status-badge.absent { background: #fee2e2; color: #991b1b; }
-    .status-badge.leave { background: #fef3c7; color: #92400e; }
-    .status-badge.night { background: #f3e8ff; color: #6b21a8; }
-    .status-badge.sunday-green { background: #d1fae5 !important; color: #065f46 !important; }
-    .status-badge.sunday-red { background: #fee2e2 !important; color: #991b1b !important; }
+    
+    .status-badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 9999px; font-size: 0.7rem; font-weight: 800; background: #059669; color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+    .status-badge.absent { background: #dc2626; color: #ffffff; }
+    .status-badge.leave { background: #d97706; color: #ffffff; }
+    .status-badge.night { background: #7e22ce; color: #ffffff; }
+    .status-badge.sunday-green { background: #047857 !important; color: #ffffff !important; }
+    .status-badge.sunday-red { background: #b91c1c !important; color: #ffffff !important; }
 
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(5px); z-index: 3000; 
       display: flex; align-items: center; justify-content: center; padding: 12px; opacity: 0; pointer-events: none; transition: opacity 0.25s;
     }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
-    .custom-modal { background: #ffffff; border-radius: var(--radius-lg); width: 100%; max-width: 360px; padding: 20px 18px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15); transform: scale(0.92); transition: transform 0.25s; text-align: center; border: 1px solid var(--border); }
+    .custom-modal { background: #ffffff; border-radius: var(--radius-lg); width: 100%; max-width: 360px; max-height: 90vh; overflow-y: auto; padding: 20px 18px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15); transform: scale(0.92); transition: transform 0.25s; text-align: center; border: 1px solid var(--border); }
     .modal-overlay.active .custom-modal { transform: scale(1); }
     .modal-icon { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 1.15rem; }
     .modal-icon.info { background: #dbeafe; color: #2563eb; }
@@ -322,26 +324,12 @@
     .modal-actions { display: flex; gap: 8px; }
 
     @keyframes proFieldHighlight {
-      0% {
-        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.6);
-        border-color: #2563eb;
-        background-color: #eff6ff;
-      }
-      50% {
-        box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.25);
-        border-color: #1d4ed8;
-        background-color: #dbeafe;
-      }
-      100% {
-        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
-        border-color: var(--border);
-        background-color: #f8fafc;
-      }
+      0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.6); border-color: #2563eb; background-color: #eff6ff; }
+      50% { box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.25); border-color: #1d4ed8; background-color: #dbeafe; }
+      100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); border-color: var(--border); background-color: #f8fafc; }
     }
 
-    .pro-highlight-anim {
-      animation: proFieldHighlight 1s ease-in-out 1;
-    }
+    .pro-highlight-anim { animation: proFieldHighlight 1s ease-in-out 1; }
 
     @keyframes shakeError {
       0%, 100% { transform: translateX(0); border-color: #ef4444; background-color: #fef2f2; }
@@ -415,16 +403,9 @@
       stroke-dashoffset: 48;
       animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
     }
-    @keyframes stroke {
-      100% { stroke-dashoffset: 0; }
-    }
-    @keyframes scale {
-      0%, 100% { transform: none; }
-      50% { transform: scale3d(1.1, 1.1, 1); }
-    }
-    @keyframes fill {
-      100% { box-shadow: inset 0px 0px 0px 30px #d1fae5; }
-    }
+    @keyframes stroke { 100% { stroke-dashoffset: 0; } }
+    @keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
+    @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 30px #d1fae5; } }
 
     .punch-success-card {
       background: #f8fafc;
@@ -479,13 +460,13 @@
       <div class="pwa-info">
         <img src="https://cdn-icons-png.flaticon.com/512/3652/3652191.png" class="pwa-icon" alt="App Icon">
         <div class="pwa-text">
-          <h4>Attendance Pro</h4>
-          <p>Install App for fast access</p>
+          <h4 data-i18n="pwa_title">Attendance Pro</h4>
+          <p data-i18n="pwa_desc">Install App for fast access</p>
         </div>
       </div>
       <div class="pwa-btns">
         <button class="btn-secondary" onclick="dismissPWA()"><i class="fa-solid fa-xmark"></i></button>
-        <button id="pwa-install-btn" onclick="installPWA()"><i class="fa-solid fa-download"></i> Install</button>
+        <button id="pwa-install-btn" onclick="installPWA()"><i class="fa-solid fa-download"></i> <span data-i18n="install">Install</span></button>
       </div>
     </div>
 
@@ -517,18 +498,19 @@
         <button class="nav-icon-btn" onclick="toggleDrawer(false)"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="drawer-body">
-        <a href="#" class="drawer-item" onclick="switchView('dashboard'); return false;"><i class="fa-solid fa-house"></i> Dashboard</a>
-        <a href="#" class="drawer-item" onclick="switchView('referral'); return false;"><i class="fa-solid fa-user-plus" style="color: #10b981;"></i> Referral Program</a>
-        <a href="#" class="drawer-item" onclick="switchView('history'); return false;"><i class="fa-solid fa-calendar-days"></i> Attendance History</a>
-        <a href="#" class="drawer-item" onclick="openAttendanceModal(); return false;"><i class="fa-solid fa-calendar-plus"></i> Add Attendance</a>
-        <a href="#" class="drawer-item" onclick="openProfileModal(); return false;"><i class="fa-solid fa-user-gear"></i> Profile Settings</a>
-        <a href="#" class="drawer-item" onclick="openCustomerSupport(); return false;"><i class="fa-solid fa-headset"></i> Customer Support</a>
-        <a href="#" class="drawer-item" onclick="refreshAppData(); return false;"><i id="drawer-refresh-icon" class="fa-solid fa-arrows-rotate"></i> Refresh</a>
-        <a href="#" id="drawer-install-item" class="drawer-item hidden" onclick="installPWA(); return false;"><i class="fa-solid fa-mobile-screen-button"></i> Install App</a>
-        <a href="#" class="drawer-item" onclick="shareApp(); return false;"><i class="fa-solid fa-share-nodes"></i> Share App</a>
+        <a href="#" class="drawer-item" onclick="switchView('dashboard'); return false;"><i class="fa-solid fa-house"></i> <span data-i18n="nav_dashboard">Dashboard</span></a>
+        <a href="#" class="drawer-item" onclick="switchView('referral'); return false;"><i class="fa-solid fa-user-plus" style="color: #10b981;"></i> <span data-i18n="nav_referral">Referral Program</span></a>
+        <a href="#" class="drawer-item" onclick="switchView('history'); return false;"><i class="fa-solid fa-calendar-days"></i> <span data-i18n="nav_history">Attendance History</span></a>
+        <a href="#" class="drawer-item" onclick="openAttendanceModal(); return false;"><i class="fa-solid fa-calendar-plus"></i> <span data-i18n="nav_add_att">Add Attendance</span></a>
+        <a href="#" class="drawer-item" onclick="openProfileModal(); return false;"><i class="fa-solid fa-user-gear"></i> <span data-i18n="nav_profile">Profile Settings</span></a>
+        <a href="#" class="drawer-item" onclick="openLanguageModal(); return false;"><i class="fa-solid fa-language" style="color: #2563eb;"></i> <span data-i18n="nav_language">Language / भाषा</span></a>
+        <a href="#" class="drawer-item" onclick="openCustomerSupport(); return false;"><i class="fa-solid fa-headset"></i> <span data-i18n="nav_support">Customer Support</span></a>
+        <a href="#" class="drawer-item" onclick="refreshAppData(); return false;"><i id="drawer-refresh-icon" class="fa-solid fa-arrows-rotate"></i> <span data-i18n="nav_refresh">Refresh</span></a>
+        <a href="#" id="drawer-install-item" class="drawer-item hidden" onclick="installPWA(); return false;"><i class="fa-solid fa-mobile-screen-button"></i> <span data-i18n="nav_install">Install App</span></a>
+        <a href="#" class="drawer-item" onclick="shareApp(); return false;"><i class="fa-solid fa-share-nodes"></i> <span data-i18n="nav_share">Share App</span></a>
         
         <div style="margin-top: auto; padding-top: 6px;">
-          <a href="#" class="drawer-item" onclick="logout(); return false;" style="color: #ef4444;"><i class="fa-solid fa-right-from-bracket" style="color: #ef4444;"></i> Logout</a>
+          <a href="#" class="drawer-item" onclick="logout(); return false;" style="color: #ef4444;"><i class="fa-solid fa-right-from-bracket" style="color: #ef4444;"></i> <span data-i18n="nav_logout">Logout</span></a>
         </div>
       </div>
     </div>
@@ -536,37 +518,37 @@
     <div class="app-container">
       <div id="auth-section">
         <div id="login-box" class="card auth-card">
-          <h2 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 2px;">Welcome Back</h2>
-          <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 10px;">Sign in with Punching ID or Mobile Number.</p>
+          <h2 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 2px;" data-i18n="welcome_back">Welcome Back</h2>
+          <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 10px;" data-i18n="login_subtitle">Sign in with Punching ID or Mobile Number.</p>
 
-          <div class="form-group"><label>ID or Mobile Number</label><input type="text" id="login-id" placeholder="Enter ID or Mobile" required></div>
-          <div class="form-group"><label>Password</label><input type="password" id="login-password" placeholder="••••••••" required></div>
+          <div class="form-group"><label data-i18n="lbl_id_mobile">ID or Mobile Number</label><input type="text" id="login-id" placeholder="Enter ID or Mobile" required></div>
+          <div class="form-group"><label data-i18n="lbl_password">Password</label><input type="password" id="login-password" placeholder="••••••••" required></div>
 
           <button id="btn-login" onclick="loginUser()">
-            <span id="btn-login-text">Sign In</span>
+            <span id="btn-login-text" data-i18n="btn_signin">Sign In</span>
             <span id="btn-login-spinner" class="spinner hidden"></span>
           </button>
           <div class="auth-footer">
-            <p style="margin-bottom: 4px;"><a href="#" onclick="showCustomAlert('Information', 'Contact Admin to Reset Password!', 'info'); return false;">Forgot Password?</a></p>
-            <p>Don't have an account? <a href="#" onclick="toggleAuth(false); return false;">Register Here</a></p>
+            <p style="margin-bottom: 4px;"><a href="#" onclick="showCustomAlert('Information', 'Contact Admin to Reset Password!', 'info'); return false;" data-i18n="forgot_password">Forgot Password?</a></p>
+            <p><span data-i18n="no_account">Don't have an account?</span> <a href="#" onclick="toggleAuth(false); return false;" data-i18n="register_here">Register Here</a></p>
           </div>
         </div>
 
         <div id="reg-box" class="card auth-card hidden">
-          <h2 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 2px;">Create Account</h2>
-          <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 10px;">Fill in details to register.</p>
+          <h2 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 2px;" data-i18n="create_account">Create Account</h2>
+          <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 10px;" data-i18n="reg_subtitle">Fill in details to register.</p>
           
-          <div class="form-group"><label>Punching ID (Optional)</label><input type="text" id="reg-punching-id" placeholder="e.g. EMP-1024"></div>
-          <div class="form-group"><label>Full Name</label><input type="text" id="reg-name" placeholder="John Doe" required></div>
-          <div class="form-group"><label>Mobile Number</label><input type="text" id="reg-mobile" placeholder="9876543210" required></div>
-          <div class="form-group"><label>Password</label><input type="password" id="reg-password" placeholder="••••••••" required></div>
-          <div class="form-group"><label>Referral Code (Optional)</label><input type="text" id="reg-refer" placeholder="REF123"></div>
+          <div class="form-group"><label data-i18n="lbl_punch_id_opt">Punching ID (Optional)</label><input type="text" id="reg-punching-id" placeholder="e.g. EMP-1024"></div>
+          <div class="form-group"><label data-i18n="lbl_fullname">Full Name</label><input type="text" id="reg-name" placeholder="John Doe" required></div>
+          <div class="form-group"><label data-i18n="lbl_mobile">Mobile Number</label><input type="text" id="reg-mobile" placeholder="9876543210" required></div>
+          <div class="form-group"><label data-i18n="lbl_password">Password</label><input type="password" id="reg-password" placeholder="••••••••" required></div>
+          <div class="form-group"><label data-i18n="lbl_refer_code">Referral Code (Optional)</label><input type="text" id="reg-refer" placeholder="REF123"></div>
 
           <button id="btn-reg" onclick="registerUser()">
-            <span id="btn-reg-text">Register Account</span>
+            <span id="btn-reg-text" data-i18n="btn_register">Register Account</span>
             <span id="btn-reg-spinner" class="spinner hidden"></span>
           </button>
-          <div class="auth-footer">Already have an account? <a href="#" onclick="toggleAuth(true); return false;">Login Here</a></div>
+          <div class="auth-footer"><span data-i18n="have_account">Already have an account?</span> <a href="#" onclick="toggleAuth(true); return false;" data-i18n="login_here">Login Here</a></div>
         </div>
       </div>
 
@@ -584,32 +566,32 @@
           </div>
 
           <div class="salary-badge-row">
-            <span class="salary-badge-label">Est. Monthly Salary:</span>
+            <span class="salary-badge-label" data-i18n="est_salary">Est. Monthly Salary:</span>
             <span class="salary-badge-val" id="stat-salary">₹0</span>
           </div>
 
           <div class="stats-grid-single">
             <div class="stat-box present">
-              <h4>Present</h4>
+              <h4 data-i18n="stat_present">Present</h4>
               <p id="stat-present">0 Days</p>
             </div>
             <div class="stat-box ot">
-              <h4>Over Time</h4>
+              <h4 data-i18n="stat_ot">Over Time</h4>
               <p id="stat-ot">0 Hrs</p>
             </div>
             <div class="stat-box night">
-              <h4>Night Duty</h4>
+              <h4 data-i18n="stat_night">Night Duty</h4>
               <p id="stat-night">0 Shifts</p>
             </div>
             <div class="stat-box absent">
-              <h4>Absent</h4>
+              <h4 data-i18n="stat_absent">Absent</h4>
               <p id="stat-absent">0 Days</p>
             </div>
           </div>
 
           <div class="highlight-action-card">
             <div class="card-title-badge">
-              <i class="fa-solid fa-bolt"></i> Quick Attendance Action
+              <i class="fa-solid fa-bolt"></i> <span data-i18n="quick_action">Quick Attendance Action</span>
             </div>
             
             <div style="display: flex; justify-content: center;">
@@ -621,15 +603,15 @@
 
             <div class="punch-controls">
               <button id="btn-add-past-duty" class="btn-leave" onclick="openAttendanceModal()">
-                <span><i class="fa-solid fa-calendar-plus"></i> Add Attendance</span>
+                <span><i class="fa-solid fa-calendar-plus"></i> <span data-i18n="btn_add_attendance">Add Attendance</span></span>
               </button>
             </div>
           </div>
 
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <h3 style="font-size: 0.875rem; font-weight: 800;">Recent History</h3>
-              <button onclick="downloadPDF()" class="btn-secondary" style="background:#0891b2; color:white; width: auto; font-size: 0.675rem; padding: 4px 10px; border-radius: 6px;"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+              <h3 style="font-size: 0.875rem; font-weight: 800;" data-i18n="recent_history">Recent History</h3>
+              <button onclick="downloadPDF()" class="btn-secondary" style="background:#0891b2; color:white; width: auto; font-size: 0.675rem; padding: 4px 10px; border-radius: 6px;"><i class="fa-solid fa-file-pdf"></i> <span data-i18n="export_pdf">Export PDF</span></button>
             </div>
 
             <div id="attendance-cards-dash" class="attendance-cards-list"></div>
@@ -641,72 +623,69 @@
       <!-- REFERRAL SECTION -->
       <div id="referral-section" class="hidden">
         <div class="card">
-          <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 2px;"><i class="fa-solid fa-user-plus" style="color: #10b981;"></i> Referral Program</h2>
-          <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 12px;">Invite friends & earn ₹5 per referral!</p>
+          <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 2px;"><i class="fa-solid fa-user-plus" style="color: #10b981;"></i> <span data-i18n="ref_program">Referral Program</span></h2>
+          <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 12px;" data-i18n="ref_subtitle">Invite friends & earn ₹5 per referral!</p>
 
-          <!-- Reward Balance Card with Withdraw Button Inside -->
           <div class="salary-badge-row" style="margin-bottom: 10px; padding: 10px 12px; background: #f0fdf4; border: 1px solid #bbf7d0;">
             <div>
-              <span class="salary-badge-label" style="display: block; margin-bottom: 2px;">Reward Balance</span>
+              <span class="salary-badge-label" style="display: block; margin-bottom: 2px;" data-i18n="reward_balance">Reward Balance</span>
               <span class="salary-badge-val" id="ref-total-rewards" style="font-size: 1.1rem;">₹0</span>
             </div>
             <button onclick="showCustomAlert('Withdrawal', 'Withdrawal feature is Coming Soon!', 'info')" class="btn-secondary" style="background:#f59e0b; color:white; width: auto; font-size: 0.75rem; padding: 6px 12px; border-radius: 8px; font-weight: 800; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);">
-              <i class="fa-solid fa-wallet"></i> Withdraw
+              <i class="fa-solid fa-wallet"></i> <span data-i18n="withdraw">Withdraw</span>
             </button>
           </div>
 
           <div style="margin-bottom: 14px;">
             <button onclick="shareApp()" style="background: var(--punch-in-gradient); font-weight: 800; border-radius: 12px; padding: 10px;">
-              <i class="fa-solid fa-share-nodes"></i> Share Referral Link
+              <i class="fa-solid fa-share-nodes"></i> <span data-i18n="share_referral">Share Referral Link</span>
             </button>
           </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <h3 style="font-size: 0.875rem; font-weight: 800;">Referred Users List</h3>
+            <h3 style="font-size: 0.875rem; font-weight: 800;" data-i18n="referred_list">Referred Users List</h3>
           </div>
 
-          <div id="referred-users-list" class="attendance-cards-list">
-            <!-- Dynamically populated -->
-          </div>
+          <div id="referred-users-list" class="attendance-cards-list"></div>
         </div>
       </div>
 
       <div id="history-section" class="hidden">
         <div class="card">
-          <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 2px;">Attendance History</h2>
-          <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 10px;">Select month to review records.</p>
+          <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 2px;" data-i18n="att_history">Attendance History</h2>
+          <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 10px;" data-i18n="hist_subtitle">Select month to review records.</p>
 
           <div class="form-group" style="margin-bottom: 8px;">
-            <label>Select Month</label>
+            <label data-i18n="select_month">Select Month</label>
             <input type="month" id="filter-month" onchange="loadHistoryData()">
           </div>
 
           <div class="salary-badge-row">
-            <span class="salary-badge-label">Month Salary:</span>
+            <span class="salary-badge-label" data-i18n="month_salary">Month Salary:</span>
             <span class="salary-badge-val" id="hist-salary">₹0</span>
           </div>
 
           <div class="stats-grid-single">
             <div class="stat-box present">
-              <h4>Present</h4>
+              <h4 data-i18n="stat_present">Present</h4>
               <p id="hist-present">0 Days</p>
             </div>
             <div class="stat-box ot">
-              <h4>Over Time</h4>
+              <h4 data-i18n="stat_ot">Over Time</h4>
               <p id="hist-ot">0 Hrs</p>
             </div>
             <div class="stat-box night">
-              <h4>Night Duty</h4>
+              <h4 data-i18n="stat_night">Night Duty</h4>
               <p id="hist-night">0 Shifts</p>
             </div>
             <div class="stat-box absent">
-              <h4>Absent</h4>
+              <h4 data-i18n="stat_absent">Absent</h4>
               <p id="hist-absent">0 Days</p>
             </div>
           </div>
 
           <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
-            <button onclick="downloadPDF('history')" class="btn-secondary" style="background:#0891b2; color:white; width: auto; font-size: 0.675rem; padding: 4px 10px; border-radius: 6px;"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+            <button onclick="downloadPDF('history')" class="btn-secondary" style="background:#0891b2; color:white; width: auto; font-size: 0.675rem; padding: 4px 10px; border-radius: 6px;"><i class="fa-solid fa-file-pdf"></i> <span data-i18n="export_pdf">Export PDF</span></button>
           </div>
 
           <div id="attendance-cards-hist" class="attendance-cards-list"></div>
@@ -715,32 +694,55 @@
 
     </div>
 
+    <!-- LANGUAGE SETTINGS MODAL -->
+    <div id="language-settings-modal" class="modal-overlay">
+      <div class="custom-modal" style="text-align: left;">
+        <h3 class="modal-title" style="margin-bottom: 4px;"><i class="fa-solid fa-language"></i> <span data-i18n="lang_modal_title">Select Language / भाषा चुनें</span></h3>
+        <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 12px;" data-i18n="lang_modal_sub">Choose your preferred language for the app.</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
+          <button type="button" onclick="setAppLanguage('en')" class="btn-secondary" style="justify-content: flex-start; font-weight: 800; background: #f8fafc; border: 1.5px solid var(--border);" id="lang-btn-en">
+            <i class="fa-solid fa-circle-check" style="color: #10b981;"></i> English
+          </button>
+          <button type="button" onclick="setAppLanguage('hi')" class="btn-secondary" style="justify-content: flex-start; font-weight: 800; background: #f8fafc; border: 1.5px solid var(--border);" id="lang-btn-hi">
+            <i class="fa-solid fa-circle" style="color: #cbd5e1;"></i> हिन्दी (Hindi)
+          </button>
+        </div>
+
+        <button class="btn-secondary" style="width: 100%; font-weight: 800;" onclick="closeLanguageModal()" data-i18n="close">Close</button>
+      </div>
+    </div>
+
     <!-- PROFILE MODAL -->
     <div id="profile-settings-modal" class="modal-overlay">
       <div class="custom-modal" style="text-align: left;">
-        <h3 class="modal-title" style="margin-bottom: 4px;"><i class="fa-solid fa-user-gear"></i> Update Profile Settings</h3>
-        <p style="font-size: 0.7rem; color: #ef4444; font-weight: 700; margin-bottom: 10px;">* All fields are mandatory to proceed.</p>
+        <h3 class="modal-title" style="margin-bottom: 4px;"><i class="fa-solid fa-user-gear"></i> <span data-i18n="prof_modal_title">Update Profile Settings</span></h3>
+        <p style="font-size: 0.7rem; color: #ef4444; font-weight: 700; margin-bottom: 10px;" data-i18n="prof_mandatory">* All fields are mandatory to proceed.</p>
         
         <div class="form-group">
-          <label>Full Name <span class="req">*</span></label>
+          <label><span data-i18n="lbl_fullname">Full Name</span> <span class="req">*</span></label>
           <input type="text" id="prof-name" placeholder="Enter Full Name" required>
         </div>
         <div class="form-group">
-          <label>Company Name <span class="req">*</span></label>
+          <label><span data-i18n="lbl_company">Company Name</span> <span class="req">*</span></label>
           <input type="text" id="prof-company" placeholder="e.g. Acme Corp" required>
         </div>
         <div class="form-group">
-          <label>8 Hrs Basic Monthly Salary (₹) <span class="req">*</span></label>
+          <label><span data-i18n="lbl_monthly_salary">8 Hrs Basic Monthly Salary (₹)</span> <span class="req">*</span></label>
           <input type="number" id="prof-salary" placeholder="e.g. 15000" required>
         </div>
         <div class="form-group">
-          <label>Overtime Rate Per Hour (₹) <span class="req">*</span></label>
+          <label><span data-i18n="lbl_ot_rate">Overtime Rate Per Hour (₹)</span> <span class="req">*</span></label>
           <input type="number" id="prof-ot-rate" placeholder="e.g. 144" required>
         </div>
+        <div class="form-group">
+          <label><span data-i18n="lbl_night_rate">Night Shift Extra Allowance (₹)</span> <span class="req">*</span></label>
+          <input type="number" id="prof-night-rate" placeholder="e.g. 100" required>
+        </div>
         <div class="modal-actions" style="margin-top: 10px;">
-          <button class="btn-secondary" style="flex:1;" onclick="closeProfileModal()">Cancel</button>
+          <button class="btn-secondary" style="flex:1;" onclick="closeProfileModal()" data-i18n="cancel">Cancel</button>
           <button id="btn-save-profile" style="flex:1;" onclick="updateUserProfile()">
-            <span id="btn-prof-text">Save Profile</span>
+            <span id="btn-prof-text" data-i18n="save_profile">Save Profile</span>
             <span id="btn-prof-spinner" class="spinner hidden"></span>
           </button>
         </div>
@@ -756,27 +758,27 @@
             <path class="icon-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
           </svg>
         </div>
-        <h3 class="modal-title" id="punch-success-title" style="color: #059669;">Attendance Recorded!</h3>
+        <h3 class="modal-title" id="punch-success-title" style="color: #059669;" data-i18n="att_recorded">Attendance Recorded!</h3>
         
         <div class="punch-success-card">
           <div class="punch-success-row">
-            <span class="punch-success-label">Date</span>
+            <span class="punch-success-label" data-i18n="date">Date</span>
             <span class="punch-success-val" id="ps-date-day">-</span>
           </div>
           <div class="punch-success-row">
-            <span class="punch-success-label">Status</span>
+            <span class="punch-success-label" data-i18n="status">Status</span>
             <span class="punch-success-val" id="ps-status">-</span>
           </div>
           <div class="punch-success-row" id="ps-shift-row">
-            <span class="punch-success-label">Shift Type</span>
+            <span class="punch-success-label" data-i18n="shift_type">Shift Type</span>
             <span class="punch-success-val" id="ps-shift">-</span>
           </div>
           <div class="punch-success-row" id="ps-ot-row">
-            <span class="punch-success-label">Overtime (OT)</span>
+            <span class="punch-success-label" data-i18n="overtime">Overtime (OT)</span>
             <span class="punch-success-val" id="ps-ot">-</span>
           </div>
           <div class="punch-success-row" id="ps-remark-row" style="display:none;">
-            <span class="punch-success-label">Remark</span>
+            <span class="punch-success-label" data-i18n="remark">Remark</span>
             <span class="punch-success-val" id="ps-remark">-</span>
           </div>
         </div>
@@ -797,34 +799,32 @@
     <!-- ATTENDANCE MODAL -->
     <div id="attendance-modal" class="modal-overlay">
       <div class="custom-modal" style="text-align: left;">
-        <h3 class="modal-title" id="att-modal-title" style="margin-bottom: 8px;">Add Attendance</h3>
+        <h3 class="modal-title" id="att-modal-title" style="margin-bottom: 8px;" data-i18n="add_attendance">Add Attendance</h3>
         <input type="hidden" id="att-edit-row-id" value="">
         
         <div class="form-group" id="group-att-date">
-          <label>Select Date</label>
+          <label data-i18n="select_date">Select Date</label>
           <input type="date" id="att-date" onchange="onAttendanceDateChange()">
         </div>
 
-        <!-- Present, Absent, Leave series with Right Tick -->
         <div class="form-group" id="group-att-status">
-          <label>Status <span class="req">*</span></label>
+          <label><span data-i18n="status">Status</span> <span class="req">*</span></label>
           <div class="status-buttons-grid">
             <button type="button" class="status-select-btn present-opt" id="att-btn-present" onclick="setAttendanceStatus('Present')">
-              <span>Present</span> <i class="fa-solid fa-check check-icon-badge"></i>
+              <span data-i18n="status_present">Present</span> <i class="fa-solid fa-check check-icon-badge"></i>
             </button>
             <button type="button" class="status-select-btn absent-opt" id="att-btn-absent" onclick="setAttendanceStatus('Absent')">
-              <span>Absent</span> <i class="fa-solid fa-check check-icon-badge"></i>
+              <span data-i18n="status_absent">Absent</span> <i class="fa-solid fa-check check-icon-badge"></i>
             </button>
             <button type="button" class="status-select-btn leave-opt" id="att-btn-leave" onclick="setAttendanceStatus('Leave')">
-              <span>Leave</span> <i class="fa-solid fa-check check-icon-badge"></i>
+              <span data-i18n="status_leave">Leave</span> <i class="fa-solid fa-check check-icon-badge"></i>
             </button>
           </div>
           <input type="hidden" id="att-status-value" value="">
         </div>
 
-        <!-- Overtime Counter (+/-) -->
         <div class="form-group" id="att-ot-group">
-          <label>Overtime (Hours)</label>
+          <label data-i18n="overtime_hrs">Overtime (Hours)</label>
           <div class="counter-control" id="group-att-ot">
             <button type="button" class="counter-btn" onclick="adjustOT(-0.5)"><i class="fa-solid fa-minus"></i></button>
             <span class="counter-val" id="att-ot-display">0.0 Hrs</span>
@@ -833,24 +833,23 @@
           <input type="hidden" id="att-ot-value" value="0">
         </div>
 
-        <!-- Shift Selector dropdown -->
         <div class="form-group" id="group-att-shift">
-          <label>Select Shift <span class="req">*</span></label>
+          <label><span data-i18n="select_shift">Select Shift</span> <span class="req">*</span></label>
           <select id="att-shift-select">
-            <option value="Day">Day Shift</option>
-            <option value="Night">Night Shift</option>
+            <option value="Day" data-i18n="shift_day">Day Shift</option>
+            <option value="Night" data-i18n="shift_night">Night Shift</option>
           </select>
         </div>
 
         <div class="form-group" id="group-att-remark">
-          <label>Remark / Note</label>
+          <label data-i18n="remark_note">Remark / Note</label>
           <input type="text" id="att-remark-input" placeholder="e.g. Sick leave, Personal work...">
         </div>
 
         <div class="modal-actions" style="margin-top: 10px;">
-          <button class="btn-secondary" style="flex:1;" onclick="closeAttendanceModal()">Cancel</button>
+          <button class="btn-secondary" style="flex:1;" onclick="closeAttendanceModal()" data-i18n="cancel">Cancel</button>
           <button id="btn-save-att" style="flex:1;" onclick="submitAttendance()">
-            <span id="btn-att-text">Save</span>
+            <span id="btn-att-text" data-i18n="save">Save</span>
             <span id="btn-att-spinner" class="spinner hidden"></span>
           </button>
         </div>
@@ -860,6 +859,225 @@
   </div>
 
   <script>
+    // --- MULTILINGUAL TRANSLATIONS DICTIONARY ---
+    const translations = {
+      en: {
+        pwa_title: "Attendance Pro",
+        pwa_desc: "Install App for fast access",
+        install: "Install",
+        nav_dashboard: "Dashboard",
+        nav_referral: "Referral Program",
+        nav_history: "Attendance History",
+        nav_add_att: "Add Attendance",
+        nav_profile: "Profile Settings",
+        nav_language: "Language / भाषा",
+        nav_support: "Customer Support",
+        nav_refresh: "Refresh",
+        nav_install: "Install App",
+        nav_share: "Share App",
+        nav_logout: "Logout",
+        welcome_back: "Welcome Back",
+        login_subtitle: "Sign in with Punching ID or Mobile Number.",
+        lbl_id_mobile: "ID or Mobile Number",
+        lbl_password: "Password",
+        btn_signin: "Sign In",
+        forgot_password: "Forgot Password?",
+        no_account: "Don't have an account?",
+        register_here: "Register Here",
+        create_account: "Create Account",
+        reg_subtitle: "Fill in details to register.",
+        lbl_punch_id_opt: "Punching ID (Optional)",
+        lbl_fullname: "Full Name",
+        lbl_mobile: "Mobile Number",
+        lbl_refer_code: "Referral Code (Optional)",
+        btn_register: "Register Account",
+        have_account: "Already have an account?",
+        login_here: "Login Here",
+        est_salary: "Est. Monthly Salary:",
+        stat_present: "Present",
+        stat_ot: "Over Time",
+        stat_night: "Night Duty",
+        stat_absent: "Absent",
+        quick_action: "Quick Attendance Action",
+        btn_add_attendance: "Add Attendance",
+        recent_history: "Recent History",
+        export_pdf: "Export PDF",
+        ref_program: "Referral Program",
+        ref_subtitle: "Invite friends & earn ₹5 per referral!",
+        reward_balance: "Reward Balance",
+        withdraw: "Withdraw",
+        share_referral: "Share Referral Link",
+        referred_list: "Referred Users List",
+        att_history: "Attendance History",
+        hist_subtitle: "Select month to review records.",
+        select_month: "Select Month",
+        month_salary: "Month Salary:",
+        lang_modal_title: "Select Language / भाषा चुनें",
+        lang_modal_sub: "Choose your preferred language for the app.",
+        close: "Close",
+        prof_modal_title: "Update Profile Settings",
+        prof_mandatory: "* All fields are mandatory to proceed.",
+        lbl_company: "Company Name",
+        lbl_monthly_salary: "8 Hrs Basic Monthly Salary (₹)",
+        lbl_ot_rate: "Overtime Rate Per Hour (₹)",
+        lbl_night_rate: "Night Shift Extra Allowance (₹)",
+        cancel: "Cancel",
+        save_profile: "Save Profile",
+        att_recorded: "Attendance Recorded!",
+        date: "Date",
+        status: "Status",
+        shift_type: "Shift Type",
+        overtime: "Overtime (OT)",
+        remark: "Remark",
+        add_attendance: "Add Attendance",
+        select_date: "Select Date",
+        status_present: "Present",
+        status_absent: "Absent",
+        status_leave: "Leave",
+        overtime_hrs: "Overtime (Hours)",
+        select_shift: "Select Shift",
+        shift_day: "Day Shift",
+        shift_night: "Night Shift",
+        remark_note: "Remark / Note",
+        save: "Save"
+      },
+      hi: {
+        pwa_title: "Attendance Pro",
+        pwa_desc: "तय समय पर पंचिंग के लिए ऐप इनस्टॉल करें",
+        install: "इनस्टॉल",
+        nav_dashboard: "डैशबोर्ड (Dashboard)",
+        nav_referral: "रेफरल प्रोग्राम (Referral)",
+        nav_history: "उपस्थिति इतिहास (History)",
+        nav_add_att: "उपस्थिति जोड़ें (Add Attendance)",
+        nav_profile: "प्रोफाइल सेटिंग (Profile)",
+        nav_language: "भाषा / Language",
+        nav_support: "ग्राहक सहायता (Support)",
+        nav_refresh: "रिफ्रेश (Refresh)",
+        nav_install: "ऐप इनस्टॉल करें",
+        nav_share: "ऐप शेयर करें",
+        nav_logout: "लॉग आउट",
+        welcome_back: "पुनः स्वागत है",
+        login_subtitle: "पंचिंग आईडी या मोबाइल नंबर से लॉगिन करें।",
+        lbl_id_mobile: "आईडी या मोबाइल नंबर",
+        lbl_password: "पासवर्ड",
+        btn_signin: "लॉगिन करें",
+        forgot_password: "पासवर्ड भूल गए?",
+        no_account: "खाता नहीं है?",
+        register_here: "यहाँ रजिस्टर करें",
+        create_account: "नया खाता बनाएं",
+        reg_subtitle: "पंजीकरण के लिए विवरण भरें।",
+        lbl_punch_id_opt: "पंचिंग आईडी (वैकल्पिक)",
+        lbl_fullname: "पूरा नाम",
+        lbl_mobile: "मोबाइल नंबर",
+        lbl_refer_code: "रेफरल कोड (वैकल्पिक)",
+        btn_register: "खाता रजिस्टर करें",
+        have_account: "पहले से खाता है?",
+        login_here: "लॉगिन करें",
+        est_salary: "अनुमानित मासिक वेतन:",
+        stat_present: "उपस्थित",
+        stat_ot: "ओवरटाइम",
+        stat_night: "नाइट ड्यूटी",
+        stat_absent: "अनुपस्थित",
+        quick_action: "त्वरित उपस्थिति कार्यवाही",
+        btn_add_attendance: "उपस्थिति दर्ज करें",
+        recent_history: "हाल का इतिहास",
+        export_pdf: "पीडीएफ डाउनलोड",
+        ref_program: "रेफरल प्रोग्राम",
+        ref_subtitle: "दोस्तों को आमंत्रित करें और प्रत्येक रेफरल पर ₹5 कमाएं!",
+        reward_balance: "इनाम राशि (Reward)",
+        withdraw: "निकासी",
+        share_referral: "रेफरल लिंक शेयर करें",
+        referred_list: "रेफर किए गए उपयोगकर्ताओं की सूची",
+        att_history: "उपस्थिति इतिहास",
+        hist_subtitle: "रिकॉर्ड देखने के लिए महीना चुनें।",
+        select_month: "महीना चुनें",
+        month_salary: "मासिक वेतन:",
+        lang_modal_title: "भाषा चुनें / Select Language",
+        lang_modal_sub: "ऐप के लिए अपनी पसंदीदा भाषा चुनें।",
+        close: "बंद करें",
+        prof_modal_title: "प्रोफाइल सेटिंग अपडेट करें",
+        prof_mandatory: "* आगे बढ़ने के लिए सभी फ़ील्ड अनिवार्य हैं।",
+        lbl_company: "कंपनी का नाम",
+        lbl_monthly_salary: "8 घंटे का मूल मासिक वेतन (₹)",
+        lbl_ot_rate: "प्रति घंटे ओवरटाइम दर (₹)",
+        lbl_night_rate: "नाइट शिफ्ट अतिरिक्त भत्ता (₹)",
+        cancel: "रद्द करें",
+        save_profile: "प्रोफाइल सेव करें",
+        att_recorded: "उपस्थिति दर्ज हो गई!",
+        date: "दिनांक",
+        status: "स्थिति",
+        shift_type: "शिफ्ट का प्रकार",
+        overtime: "ओवरटाइम (OT)",
+        remark: "टिप्पणी",
+        add_attendance: "उपस्थिति जोड़ें",
+        select_date: "दिनांक चुनें",
+        status_present: "उपस्थित",
+        status_absent: "अनुपस्थित",
+        status_leave: "अवकाश (Leave)",
+        overtime_hrs: "ओवरटाइम (घंटे)",
+        select_shift: "शिफ्ट चुनें",
+        shift_day: "दिन की शिफ्ट (Day)",
+        shift_night: "रात की शिफ्ट (Night)",
+        remark_note: "टिप्पणी / नोट",
+        save: "सुरक्षित करें"
+      }
+    };
+
+    let currentLang = localStorage.getItem('attendance_pro_lang') || 'en';
+
+    function setAppLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('attendance_pro_lang', lang);
+      applyTranslations();
+      closeLanguageModal();
+    }
+
+    function applyTranslations() {
+      const dict = translations[currentLang] || translations['en'];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+          el.innerText = dict[key];
+        }
+      });
+
+      const btnEn = document.getElementById('lang-btn-en');
+      const btnHi = document.getElementById('lang-btn-hi');
+      if (btnEn && btnHi) {
+        if (currentLang === 'hi') {
+          btnHi.style.borderColor = '#10b981';
+          btnHi.style.background = '#f0fdf4';
+          btnHi.querySelector('i').className = 'fa-solid fa-circle-check';
+          btnHi.querySelector('i').style.color = '#10b981';
+
+          btnEn.style.borderColor = 'var(--border)';
+          btnEn.style.background = '#f8fafc';
+          btnEn.querySelector('i').className = 'fa-solid fa-circle';
+          btnEn.querySelector('i').style.color = '#cbd5e1';
+        } else {
+          btnEn.style.borderColor = '#10b981';
+          btnEn.style.background = '#f0fdf4';
+          btnEn.querySelector('i').className = 'fa-solid fa-circle-check';
+          btnEn.querySelector('i').style.color = '#10b981';
+
+          btnHi.style.borderColor = 'var(--border)';
+          btnHi.style.background = '#f8fafc';
+          btnHi.querySelector('i').className = 'fa-solid fa-circle';
+          btnHi.querySelector('i').style.color = '#cbd5e1';
+        }
+      }
+    }
+
+    function openLanguageModal() {
+      toggleDrawer(false);
+      applyTranslations();
+      document.getElementById('language-settings-modal').classList.add('active');
+    }
+
+    function closeLanguageModal() {
+      document.getElementById('language-settings-modal').classList.remove('active');
+    }
+
     function openCustomerSupport() {
       const email = "ranjankspp888@gmail.com";
       const subject = "Attendance Pro - Support Request";
@@ -924,8 +1142,9 @@
       const company = currentUser.company_name ? String(currentUser.company_name).trim() : '';
       const salary = parseFloat(currentUser.monthly_salary || currentUser.salary || 0);
       const ot = parseFloat(currentUser.ot_rate_per_hour || currentUser.ot_rate || 0);
+      const nightRate = parseFloat(currentUser.night_rate || 0);
 
-      return (!name || !company || isNaN(salary) || salary <= 0 || isNaN(ot) || ot < 0);
+      return (!name || !company || isNaN(salary) || salary <= 0 || isNaN(ot) || ot < 0 || isNaN(nightRate) || nightRate < 0);
     }
 
     function showPunchSuccessModal(dateStr, status, otHrs, isNight, remarkText = '') {
@@ -948,22 +1167,22 @@
       if (status === 'Absent') {
         otRow.style.display = 'none';
         shiftRow.style.display = 'none';
-        document.getElementById('punch-success-title').innerText = 'Absent Recorded!';
+        document.getElementById('punch-success-title').innerText = currentLang === 'hi' ? 'अनुपस्थित दर्ज हुई!' : 'Absent Recorded!';
       } else if (status === 'Leave') {
         otRow.style.display = 'flex';
         shiftRow.style.display = 'none';
         document.getElementById('ps-ot').innerHTML = `<b>${otHrs || 0} hrs</b>`;
-        document.getElementById('punch-success-title').innerText = 'Leave Recorded!';
+        document.getElementById('punch-success-title').innerText = currentLang === 'hi' ? 'अवकाश दर्ज हुआ!' : 'Leave Recorded!';
       } else {
         otRow.style.display = 'flex';
         shiftRow.style.display = 'flex';
         document.getElementById('ps-ot').innerHTML = `<b>${otHrs || 0} hrs</b>`;
-        document.getElementById('punch-success-title').innerText = 'Attendance Recorded!';
+        document.getElementById('punch-success-title').innerText = currentLang === 'hi' ? 'उपस्थिति दर्ज हो गई!' : 'Attendance Recorded!';
         
         if (isNight) {
-          document.getElementById('ps-shift').innerHTML = `<span style="color: #7e22ce; font-weight: 800;"><i class="fa-solid fa-moon"></i> Night Shift</span>`;
+          document.getElementById('ps-shift').innerHTML = `<span style="color: #7e22ce; font-weight: 800;"><i class="fa-solid fa-moon"></i> ${currentLang === 'hi' ? 'नाइट शिफ्ट' : 'Night Shift'}</span>`;
         } else {
-          document.getElementById('ps-shift').innerHTML = `<span style="color: #1d4ed8; font-weight: 800;"><i class="fa-solid fa-sun"></i> Day Shift</span>`;
+          document.getElementById('ps-shift').innerHTML = `<span style="color: #1d4ed8; font-weight: 800;"><i class="fa-solid fa-sun"></i> ${currentLang === 'hi' ? 'डे शिफ्ट' : 'Day Shift'}</span>`;
         }
       }
 
@@ -1061,6 +1280,7 @@
 
       const monthlySalary = parseFloat(currentUser.monthly_salary || currentUser.salary || 0);
       const hourlyOtRate = parseFloat(currentUser.ot_rate_per_hour || currentUser.ot_rate || 0);
+      const nightRate = parseFloat(currentUser.night_rate || 0);
 
       if (isNaN(monthlySalary) || monthlySalary === 0) return 0;
 
@@ -1080,12 +1300,14 @@
 
       const totalDutySalary = totalPayableDays * perDayRate;
       const totalOTAmount = totalOT * (isNaN(hourlyOtRate) ? 0 : hourlyOtRate);
+      const totalNightAmount = totalNightShifts * (isNaN(nightRate) ? 0 : nightRate);
 
-      return Math.round(totalDutySalary + totalOTAmount);
+      return Math.round(totalDutySalary + totalOTAmount + totalNightAmount);
     }
 
     async function initPage() {
       try {
+        applyTranslations();
         const urlParams = new URLSearchParams(window.location.search);
         const refCode = urlParams.get('ref');
         const savedUser = localStorage.getItem('attendance_pro_user');
@@ -1166,6 +1388,7 @@
       document.getElementById('prof-company').value = currentUser.company_name || '';
       document.getElementById('prof-salary').value = currentUser.monthly_salary || currentUser.salary || '';
       document.getElementById('prof-ot-rate').value = currentUser.ot_rate_per_hour || currentUser.ot_rate || '';
+      document.getElementById('prof-night-rate').value = currentUser.night_rate || '';
       
       document.getElementById('profile-settings-modal').classList.add('active');
     }
@@ -1179,15 +1402,17 @@
       const newCompany = document.getElementById('prof-company').value.trim();
       const newSalaryStr = document.getElementById('prof-salary').value.trim();
       const newOtRateStr = document.getElementById('prof-ot-rate').value.trim();
+      const newNightRateStr = document.getElementById('prof-night-rate').value.trim();
 
-      if (!newName || !newCompany || newSalaryStr === '' || newOtRateStr === '') {
+      if (!newName || !newCompany || newSalaryStr === '' || newOtRateStr === '' || newNightRateStr === '') {
         return showCustomAlert('Missing Details', 'All profile fields are mandatory. Please fill all fields!', 'danger');
       }
 
       const newSalary = parseFloat(newSalaryStr);
       const newOtRate = parseFloat(newOtRateStr);
+      const newNightRate = parseFloat(newNightRateStr);
 
-      if (isNaN(newSalary) || newSalary <= 0 || isNaN(newOtRate) || newOtRate < 0) {
+      if (isNaN(newSalary) || newSalary <= 0 || isNaN(newOtRate) || newOtRate < 0 || isNaN(newNightRate) || newNightRate < 0) {
         return showCustomAlert('Invalid Data', 'Please enter valid numbers or zero for rates!', 'danger');
       }
 
@@ -1203,7 +1428,8 @@
         name: newName,
         company_name: newCompany,
         monthly_salary: newSalary,
-        ot_rate_per_hour: newOtRate
+        ot_rate_per_hour: newOtRate,
+        night_rate: newNightRate
       };
 
       const { error } = await sbClient
@@ -1222,6 +1448,7 @@
         currentUser.company_name = newCompany;
         currentUser.monthly_salary = newSalary;
         currentUser.ot_rate_per_hour = newOtRate;
+        currentUser.night_rate = newNightRate;
 
         localStorage.setItem('attendance_pro_user', JSON.stringify(currentUser));
         
@@ -1384,7 +1611,8 @@
           ...data,
           company_name: data.company_name || '',
           monthly_salary: data.monthly_salary || data.salary || 0,
-          ot_rate_per_hour: data.ot_rate_per_hour || data.ot_rate || 0
+          ot_rate_per_hour: data.ot_rate_per_hour || data.ot_rate || 0,
+          night_rate: data.night_rate || 0
         };
         localStorage.setItem('attendance_pro_user', JSON.stringify(currentUser));
         initUserSession();
@@ -1439,7 +1667,7 @@
           document.getElementById('att-remark-input').value = '';
         }
       } else {
-        document.getElementById('att-modal-title').innerText = 'Add Attendance';
+        document.getElementById('att-modal-title').innerText = translations[currentLang].add_attendance || 'Add Attendance';
         document.getElementById('att-edit-row-id').value = '';
         
         const selectedDateStr = getKolkataYMD();
@@ -1474,9 +1702,7 @@
       });
     }
 
-    function onAttendanceDateChange() {
-      // Keep date change logic flexible if user wants manual status selection
-    }
+    function onAttendanceDateChange() {}
 
     function checkShiftVisibility() {
       const status = document.getElementById('att-status-value').value;
@@ -1666,19 +1892,25 @@
           statusBadgeClass = 'absent';
           cardBgClass = 'status-absent';
         } else if (isLeave) {
-          if (otVal > 0) {
-            statusBadgeClass = 'leave';
-            cardBgClass = 'status-present'; // Green style for Leave with OT > 0
-          } else {
-            statusBadgeClass = 'leave';
-            cardBgClass = 'status-leave';
-          }
+          statusBadgeClass = 'leave';
+          cardBgClass = 'status-leave';
         } else if (isNight) {
           cardBgClass = 'status-night';
+          statusBadgeClass = 'night';
+        } else {
+          cardBgClass = 'status-present';
+          statusBadgeClass = '';
         }
 
         const formattedDate = formatDateDDMMYYYY(row.date);
         const showShiftOnCard = (!isAbsent && (row.status === 'Present' || otVal > 0));
+
+        let displayStatus = row.status || 'Present';
+        if (currentLang === 'hi') {
+          if (displayStatus === 'Present') displayStatus = 'उपस्थित';
+          else if (displayStatus === 'Absent') displayStatus = 'अनुपस्थित';
+          else if (displayStatus === 'Leave') displayStatus = 'अवकाश';
+        }
 
         const cardHtml = `
           <div class="attendance-card-item ${cardBgClass}">
@@ -1687,29 +1919,29 @@
                 <i class="fa-regular fa-calendar-check" style="color: var(--primary);"></i> ${formattedDate}
               </div>
               <div class="status-badges-group">
-                ${showShiftOnCard ? (isNight ? '<span class="status-badge night"><i class="fa-solid fa-moon"></i> Night Shift</span>' : '<span class="status-badge" style="background:#e0f2fe; color:#0369a1;"><i class="fa-solid fa-sun"></i> Day Shift</span>') : ''}
-                <span class="status-badge ${statusBadgeClass}">${row.status || 'Present'}</span>
+                ${showShiftOnCard ? (isNight ? `<span class="status-badge night"><i class="fa-solid fa-moon"></i> ${currentLang==='hi'?'नाइट शिफ्ट':'Night Shift'}</span>` : `<span class="status-badge" style="background:#0284c7; color:#ffffff;"><i class="fa-solid fa-sun"></i> ${currentLang==='hi'?'डे शिफ्ट':'Day Shift'}</span>`) : ''}
+                <span class="status-badge ${statusBadgeClass}">${displayStatus}</span>
               </div>
             </div>
             
             ${!isAbsent ? `
             <div class="att-card-body">
               <div class="att-info-box">
-                <label>Overtime (OT):</label>
+                <label>${currentLang==='hi'?'ओवरटाइम (OT):':'Overtime (OT):'}</label>
                 <span><b>${row.overtime_hours || 0} hrs</b></span>
               </div>
             </div>
             ` : ''}
 
             ${(row.status !== 'Present' && row.remark) ? `
-            <div style="font-size: 0.725rem; color: var(--text-muted); font-weight: 600; background: rgba(255,255,255,0.7); padding: 4px 8px; border-radius: 6px;">
+            <div style="font-size: 0.725rem; color: #1e293b; font-weight: 700; background: rgba(255,255,255,0.85); padding: 4px 8px; border-radius: 6px;">
               <i class="fa-solid fa-note-sticky" style="color: var(--primary); margin-right: 4px;"></i> ${row.remark}
             </div>
             ` : ''}
 
             <div class="att-card-footer">
               <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700;"></span>
-              <button class="btn-edit" onclick='openAttendanceModal(${JSON.stringify(row)})'><i class="fa-solid fa-pen"></i> Edit</button>
+              <button class="btn-edit" onclick='openAttendanceModal(${JSON.stringify(row)})'><i class="fa-solid fa-pen"></i> ${currentLang==='hi'?'संपादित करें':'Edit'}</button>
             </div>
           </div>
         `;
@@ -1753,10 +1985,13 @@
 
       const estimatedSalary = computeEstimatedSalary(salaryPayableDays, totalOT, totalNight, currentYearMonth);
 
-      document.getElementById('stat-present').innerText = `${totalPresent} Days`;
+      const daysUnit = currentLang === 'hi' ? ' दिन' : ' Days';
+      const shiftsUnit = currentLang === 'hi' ? ' शिफ्ट' : ' Shifts';
+
+      document.getElementById('stat-present').innerText = `${totalPresent}${daysUnit}`;
       document.getElementById('stat-ot').innerText = `${totalOT.toFixed(1)} Hrs`;
-      document.getElementById('stat-night').innerText = `${totalNight} Shifts`;
-      document.getElementById('stat-absent').innerText = `${totalAbsent} Days`;
+      document.getElementById('stat-night').innerText = `${totalNight}${shiftsUnit}`;
+      document.getElementById('stat-absent').innerText = `${totalAbsent}${daysUnit}`;
       document.getElementById('stat-salary').innerText = `₹${estimatedSalary.toLocaleString('en-IN')}`;
     }
 
@@ -1796,10 +2031,13 @@
 
       const estimatedSalary = computeEstimatedSalary(salaryPayableDays, totalOT, totalNight, selectedMonth);
 
-      document.getElementById('hist-present').innerText = `${totalPresent} Days`;
+      const daysUnit = currentLang === 'hi' ? ' दिन' : ' Days';
+      const shiftsUnit = currentLang === 'hi' ? ' शिफ्ट' : ' Shifts';
+
+      document.getElementById('hist-present').innerText = `${totalPresent}${daysUnit}`;
       document.getElementById('hist-ot').innerText = `${totalOT.toFixed(1)} Hrs`;
-      document.getElementById('hist-night').innerText = `${totalNight} Shifts`;
-      document.getElementById('hist-absent').innerText = `${totalAbsent} Days`;
+      document.getElementById('hist-night').innerText = `${totalNight}${shiftsUnit}`;
+      document.getElementById('hist-absent').innerText = `${totalAbsent}${daysUnit}`;
       document.getElementById('hist-salary').innerText = `₹${estimatedSalary.toLocaleString('en-IN')}`;
     }
 
