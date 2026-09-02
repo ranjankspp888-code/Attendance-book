@@ -1832,11 +1832,11 @@
       let error = null;
 
       if (editId) {
-        const { err } = await sbClient.from('attendance').update(payload).eq('id', editId);
+        const { error: err } = await sbClient.from('attendance').update(payload).eq('id', editId);
         error = err;
       } else {
         await sbClient.from('attendance').delete().eq('punching_id', currentUser.punching_id).eq('date', dateInput);
-        const { err } = await sbClient.from('attendance').insert([payload]);
+        const { error: err } = await sbClient.from('attendance').insert([payload]);
         error = err;
       }
 
@@ -1954,8 +1954,11 @@
       const today = getKolkataYMD();
       
       const currentYearMonth = today.substring(0, 7);
+      const [yearStr, monthStr] = currentYearMonth.split('-');
+      const lastDay = new Date(parseInt(yearStr), parseInt(monthStr), 0).getDate();
+      
       const startDate = `${currentYearMonth}-01`;
-      const endDate = `${currentYearMonth}-31`;
+      const endDate = `${currentYearMonth}-${lastDay}`;
 
       const { data: history } = await sbClient.from('attendance')
         .select('*')
@@ -2000,8 +2003,11 @@
       const selectedMonth = document.getElementById('filter-month').value;
       if (!selectedMonth) return;
 
+      const [yearStr, monthStr] = selectedMonth.split('-');
+      const lastDay = new Date(parseInt(yearStr), parseInt(monthStr), 0).getDate();
+      
       const startDate = `${selectedMonth}-01`;
-      const endDate = `${selectedMonth}-31`;
+      const endDate = `${selectedMonth}-${lastDay}`;
 
       const { data: history } = await sbClient.from('attendance')
         .select('*')
@@ -2057,8 +2063,11 @@
         doc.text(`Punching ID: ${currentUser.punching_id}`, 14, 28);
       }
 
+      const [yearStr, monthStr] = selectedMonth.split('-');
+      const lastDay = new Date(parseInt(yearStr), parseInt(monthStr), 0).getDate();
+      
       const startDate = `${selectedMonth}-01`;
-      const endDate = `${selectedMonth}-31`;
+      const endDate = `${selectedMonth}-${lastDay}`;
 
       const { data } = await sbClient.from('attendance')
         .select('*')
