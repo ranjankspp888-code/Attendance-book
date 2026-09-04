@@ -1220,25 +1220,55 @@
       navigator.serviceWorker.register(swUrl).catch(()=>{});
     }
 
+    // -- PWA Install Updates for iPad/Tablet & iOS Compatibility --
     let deferredPrompt;
+
+    const isPWAInstalled = () => {
+      return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    };
+
+    const isIosDevice = () => {
+      return /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+    };
+
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      setTimeout(() => {
-        document.getElementById('pwa-install-banner').classList.add('show');
+      if (!isPWAInstalled()) {
+        setTimeout(() => {
+          document.getElementById('pwa-install-banner').classList.add('show');
+          document.getElementById('drawer-install-item').classList.remove('hidden');
+        }, 1000);
+      }
+    });
+
+    window.addEventListener('load', () => {
+      if (!isPWAInstalled()) {
         document.getElementById('drawer-install-item').classList.remove('hidden');
-      }, 1000);
+        if (isIosDevice()) {
+          setTimeout(() => {
+            document.getElementById('pwa-install-banner').classList.add('show');
+          }, 1500);
+        }
+      }
     });
 
     function installPWA() {
       if (deferredPrompt) {
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === 'accepted') dismissPWA();
+          if (choiceResult.outcome === 'accepted') {
+            dismissPWA();
+            document.getElementById('drawer-install-item').classList.add('hidden');
+          }
           deferredPrompt = null;
         });
       } else {
-        showCustomAlert('App Install', 'Tap on Browser menu (3 dots) and select "Add to Home Screen".', 'info');
+        if (isIosDevice()) {
+          showCustomAlert('Install on iOS/iPad', 'Tap the Share icon (square with an up arrow) at the top or bottom of your browser, and select "Add to Home Screen".', 'info');
+        } else {
+          showCustomAlert('App Install', 'Tap on the Browser menu (3 dots) and select "Add to Home Screen" or "Install App".', 'info');
+        }
       }
     }
 
@@ -2068,33 +2098,33 @@
       
       const startDate = `${selectedMonth}-01`;
       const endDate = `${selectedMonth}-${lastDay}`;
-
-      const { data } = await sbClient.from('attendance')
+      
+      doc.text(`Report Period: ${startDate} to ${endDate}`, 14, 40);
+      
+      const { data: history } = await sbClient.from('attendance')
         .select('*')
         .eq('punching_id', currentUser.punching_id)
         .gte('date', startDate)
         .lte('date', endDate)
         .order('date', { ascending: false });
 
-      const tableData = data ? data.map(r => {
-        const otVal = parseFloat(r.overtime_hours || 0);
-        const showShift = (r.status !== 'Absent' && (r.status === 'Present' || otVal > 0));
-        const remarkText = (r.status !== 'Present') ? (r.remark || '-') : '-';
-        return [
-          formatDateDDMMYYYY(r.date), 
-          r.status || 'Present', 
-          showShift ? (r.is_night_duty ? 'Night Shift' : 'Day Shift') : '-',
-          r.status === 'Absent' ? '-' : `${r.overtime_hours || 0} Hrs`,
-          remarkText
-        ];
-      }) : [];
-
-      doc.autoTable({
-        head: [['Date', 'Status', 'Shift Type', 'Overtime (OT)', 'Remark']],
-        body: tableData,
-        startY: currentUser.company_name ? 40 : 35
-      });
-
+      if (history && history.length > 0) {
+        const tableData = history.map(row => [
+          formatDateDDMMYYYY(row.date),
+          row.status,
+          row.is_night_duty ? 'Night' : 'Day',
+          row.overtime_hours,
+          row.remark || '-'
+        ]);
+        doc.autoTable({
+          startY: 45,
+          head: [['Date', 'Status', 'Shift', 'OT (Hrs)', 'Remark']],
+          body: tableData,
+        });
+      } else {
+        doc.text("No attendance records found for this period.", 14, 50);
+      }
+      
       doc.save(`Attendance_${currentUser.punching_id}_${selectedMonth}.pdf`);
     }
   </script>
