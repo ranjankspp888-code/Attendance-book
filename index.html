@@ -1220,7 +1220,6 @@
       navigator.serviceWorker.register(swUrl).catch(()=>{});
     }
 
-    // -- PWA Install Updates for iPad/Tablet & iOS Compatibility --
     let deferredPrompt;
 
     const isPWAInstalled = () => {
@@ -1278,7 +1277,8 @@
 
     function shareApp() {
       toggleDrawer(false);
-      const referCode = currentUser ? (currentUser.refer_code || currentUser.punching_id || '') : '';
+      // BUG FIX: Ensure the user shares their *own* punching ID as the referral code
+      const referCode = currentUser ? currentUser.punching_id : '';
       const baseUrl = window.location.origin + window.location.pathname;
       const shareUrl = referCode ? `${baseUrl}?ref=${encodeURIComponent(referCode)}` : baseUrl;
 
@@ -1531,7 +1531,8 @@
 
     async function loadReferralData() {
       if (!currentUser) return;
-      const myRefCode = currentUser.refer_code || currentUser.punching_id;
+      // BUG FIX: Search for users who used THIS user's punching ID as their referral code. 
+      const myRefCode = currentUser.punching_id;
 
       const { data: referredUsers, error } = await sbClient.from('users')
         .select('name, punching_id, mobile')
